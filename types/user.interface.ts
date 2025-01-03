@@ -7,4 +7,5 @@ export interface User {
 	roles: string[]
 	myCourses: string[]
 	createdCourses: string[]
+	avatars: string[]
 }
