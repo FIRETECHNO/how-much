@@ -66,6 +66,10 @@ export const useCourse = defineStore('course', () => {
     return await CourseApi.getLessonsByCourseId(courseId)
   }
 
+  async function getLessonsByCourses(courses: string[]) {
+    return await CourseApi.getLessonsByCourses(courses)
+  }
+
   async function getHomeworksByCourses(courses: string[]) {
     return await CourseApi.getHomeworksByCourses(courses)
   }
@@ -85,7 +89,7 @@ export const useCourse = defineStore('course', () => {
 
   return {
     // functions
-    getAll, getCourseByIdWithLessons, addUserToCourse, createLesson, createCourse,
+    getAll, getCourseByIdWithLessons, addUserToCourse, createLesson, createCourse, getLessonsByCourses,
     getLessonsByCourseId, getHomeworksByCourses, uploadImages, updateCourse, getUserLessonsGroupedByCourse,
     // variables
     courses, currentCourse,

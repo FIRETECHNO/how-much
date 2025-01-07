@@ -12,24 +12,17 @@ let { lesson } = defineProps<{
 
 </script>
 <template>
-  <div
-    class="border rounded-lg relative cursor-pointer h-100"
-    @click="router.push(`lesson?_id=${lesson._id}&course_id=${route.params?.course_id || lesson.course}`)"
-  >
+  <div class="border rounded-lg relative cursor-pointer h-100"
+    style="border-radius: 36px !important; padding: 12px 24px;"
+    @click="router.push(`lesson?_id=${lesson._id}&course_id=${route.params?.course_id || lesson.course}`)">
     <v-col cols="12" class="flex justify-center">
       <img class="w-50 mt-5" :src="lesson.images?.logo" />
-      <v-btn
-        v-if="authStore.user?.roles[0] == 'teacher' || authStore.user?.roles[0] == 'admin'"
-        @click.stop="
-          router.push(
-            `/${authStore.user?.roles[0]}/lesson-manage?lesson_id=${lesson._id}&course_id=${
-              route.params?.course_id || lesson.course
-            }`
-          )
-        "
-        class="absolute -top-6 z-50 btn border"
-        icon="mdi-pencil-outline"
-      ></v-btn>
+      <v-btn v-if="authStore.user?.roles[0] == 'teacher' || authStore.user?.roles[0] == 'admin'" @click.stop="
+        router.push(
+          `/${authStore.user?.roles[0]}/lesson-manage?lesson_id=${lesson._id}&course_id=${route.params?.course_id || lesson.course
+          }`
+        )
+        " class="absolute -top-6 z-50 btn border" icon="mdi-pencil-outline"></v-btn>
     </v-col>
     <v-col cols="12">
       <p class="text-2xl font-semibold">{{ lesson.name }}</p>

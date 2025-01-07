@@ -33,6 +33,14 @@ export default {
       method: 'GET'
     })
   },
+  getLessonsByCourses(courses: string[]): Promise<any> {
+    return useApiFetch('/lesson/lessons-by-courses', {
+      method: 'POST',
+      body: {
+        courses
+      }
+    })
+  },
   getHomeworksByCourses(courses: string[]): Promise<any> {
     return useApiFetch('/lesson/homeworks-by-courses', {
       method: 'POST',

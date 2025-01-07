@@ -15,7 +15,7 @@ await courseStore.getAll()
 <template>
   <v-container>
     <v-col>
-      <p class="text-4xl font-semibold">Мои курсы</p>
+      <p class="text-4xl font-semibold mb-6">Мои курсы</p>
     </v-col>
     <v-row>
       <v-col cols="12" sm="6" md="4" lg="3">
