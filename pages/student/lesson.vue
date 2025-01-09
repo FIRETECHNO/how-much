@@ -32,7 +32,7 @@ if (route.query.course_id) {
 
 await courseStore.getCourseByIdWithLessons(String(route.query.course_id))
 
-let breadcrums = ref([
+let breadcrumbs = ref([
   {
     title: `${currentCourse.value?.name}`,
     disabled: false,
@@ -50,7 +50,7 @@ let breadcrums = ref([
     <v-row>
       <v-col cols="12">
         <BackButton />
-        <v-breadcrumbs :items="breadcrums" class="text-xs md:text-base" />
+        <v-breadcrumbs :items="breadcrumbs" class="text-xs md:text-base" />
       </v-col>
     </v-row>
     <v-row>
@@ -70,30 +70,6 @@ let breadcrums = ref([
           <v-btn class="ma-1 w-100 border" variant="text" rounded="lg">{{ link.name }}</v-btn>
         </NuxtLink>
       </v-col>
-      <v-col cols="12" md="6">
-        <p class="text-4xl font-semibold mb-5">Домашнее задание</p>
-        <v-row>
-          <v-col cols="12" md="6" v-for="task in homeworks">
-            <div
-              class="border rounded-lg cursor-pointer h-100"
-              @click="
-                router.push(
-                  `/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`
-                )
-              "
-            >
-              <v-col cols="12" class="d-flex justify-space-between">
-                <p class="text-2xl font-semibold">{{ task.name }}</p>
-              </v-col>
-              <v-col cols="12" class="text-base">
-                <p>
-                  {{ task.hwText }}
-                </p>
-              </v-col>
-            </div>
-          </v-col>
-        </v-row>
-      </v-col>
       <v-col cols="12" md="6" class="flex flex-row">
         <v-col>
           <p class="text-4xl font-semibold mb-5">Материалы</p>
@@ -102,7 +78,49 @@ let breadcrums = ref([
           </div>
         </v-col>
       </v-col>
+      <v-col cols="12">
+        <p class="text-4xl font-semibold mb-5">Домашнее задание</p>
+        <v-row>
+          <v-col
+            cols="12"
+            v-for="task of homeworks"
+            class="border rounded-lg cursor-pointer h-100 mb-5"
+            @click.stop="
+              router.push(
+                `/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`
+              )
+            "
+          >
+            <v-row>
+              <v-col cols="12">
+                <v-row>
+                  <v-col cols="12">
+                    <p class="text-2xl font-semibold">{{ task.name }}</p>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <p class="micro-heading">Текст задания</p>
+                    <p>
+                      {{ task.hwText }}
+                    </p>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <p class="micro-heading">Прикреплённые материалы</p>
+                    {{ task.materials }}
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-col>
     </v-row>
   </v-container>
   <v-container v-else> писец... </v-container>
 </template>
+<style lang="scss" scoped>
+.micro-heading {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+</style>
