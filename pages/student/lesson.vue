@@ -82,6 +82,7 @@ let breadcrumbs = ref([
         <p class="text-4xl font-semibold mb-5">Домашнее задание</p>
         <v-row>
           <v-col
+            v-if="homeworks.length > 0"
             cols="12"
             v-for="task of homeworks"
             class="border rounded-lg cursor-pointer h-100 mb-5"
@@ -111,6 +112,9 @@ let breadcrumbs = ref([
               </v-col>
             </v-row>
           </v-col>
+          <v-col
+            v-else
+            cols="12">Пусто</v-col>
         </v-row>
       </v-col>
     </v-row>
