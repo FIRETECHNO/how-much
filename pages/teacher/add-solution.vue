@@ -139,7 +139,7 @@ async function submit() {
         res = await UploadApi.uploadArchive(archiveFD, destination, solutionId)
       }
     } else {
-      displayError("Ошибка при загрузке папки! 😭")
+      displayError("Ошибка при загрузке архивов! 😭")
       return
     }
 
@@ -152,7 +152,7 @@ async function submit() {
         res = await UploadApi.uploadAnyFiles(anyFilesFD, destination, solutionId)
       }
     } else {
-      displayError("Ошибка при загрузке архивов! 😭")
+      displayError("Ошибка при загрузке файлов! 😭")
       return
     }
 

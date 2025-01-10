@@ -25,5 +25,14 @@ export default {
       method: 'POST',
       body: { solution }
     })
+  },
+  addHomework(newHomework: any, lessonId: string): Promise<any> {
+    return useApiFetch(`/lesson/add-homework`, {
+      method: 'POST',
+      body: {
+        newHomework,
+        lessonId
+      }
+    })
   }
 }
