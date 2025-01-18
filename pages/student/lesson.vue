@@ -86,45 +86,13 @@ let breadcrumbs = ref([
             cols="12"
             v-for="task of homeworks"
             class="border rounded-lg cursor-pointer h-100 mb-5"
-            @click.stop="
-              router.push(
-                `/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`
-              )
-            "
           >
-            <v-row>
-              <v-col cols="12">
-                <v-row>
-                  <v-col cols="12">
-                    <p class="text-2xl font-semibold">{{ task.name }}</p>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <p class="micro-heading">Текст задания</p>
-                    <p>
-                      {{ task.hwText }}
-                    </p>
-                  </v-col>
-                  <v-col cols="12" md="6">
-                    <p class="micro-heading">Прикреплённые материалы</p>
-                    {{ task.materials }}
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
+            <HomeworkCardLessonPage :link="`/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`" :hw="task" />
           </v-col>
-          <v-col
-            v-else
-            cols="12">Пусто</v-col>
+          <v-col v-else cols="12">Пусто</v-col>
         </v-row>
       </v-col>
     </v-row>
   </v-container>
   <v-container v-else> писец... </v-container>
 </template>
-<style lang="scss" scoped>
-.micro-heading {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-</style>
