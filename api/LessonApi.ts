@@ -34,5 +34,14 @@ export default {
         lessonId
       }
     })
+  },
+  addVideo(videoUrl: string, lessonId: string): Promise<any> {
+    return useApiFetch(`/lesson/add-video`, {
+      method: 'POST',
+      body: {
+        videoUrl,
+        lessonId
+      }
+    })
   }
 }

@@ -6,13 +6,15 @@ const uploadProgress = ref<Number | null>(null)
 const chunkSize = 1024 * 1024 * 5 // 1 MB
 let mp4FileName = ""
 
-const emit = defineEmits(["upload-finished"])
+const emit = defineEmits(["upload-finished", "start-upload"])
 
 let loading = ref<boolean>(false)
 
+// this is the main function
 const handleFileUpload = async (event: any) => {
   const file = event.target.files[0]
   if (file) {
+    emit('start-upload')
     loading.value = true
     await uploadFileInChunks(file)
     await convertVideo()
@@ -20,6 +22,7 @@ const handleFileUpload = async (event: any) => {
     loading.value = false
   }
 }
+// this is the main function
 
 const uploadToYandexCloud = async () => {
   uploadStatus.value = "Загрузка в облако..."

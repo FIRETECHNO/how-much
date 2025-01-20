@@ -53,7 +53,7 @@ async function submit() {
             type: "success",
             autoClose: 500,
             onClose: () => {
-              router.back()
+              router.push(`upload-video?lesson_id=${lesson_id}`)
             },
           })
         } else {
