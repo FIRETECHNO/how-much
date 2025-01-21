@@ -27,8 +27,8 @@ const lessonStore = useLesson()
 const router = useRouter()
 const route = useRoute()
 
-const CURRENT_LESSON_ID: string = String(route.query?.lesson_id);
-const CURRENT_COURSE_ID: string = String(route.query?.course_id);
+const CURRENT_LESSON_ID: string = String(route.query?.lesson_id)
+const CURRENT_COURSE_ID: string = String(route.query?.course_id)
 
 let videoUploadedPath = ref<string | null>()
 let form = ref<Form>({
@@ -127,13 +127,15 @@ function editLinkAndClose() {
 
 function navigateToAddHomework() {
   if (!selectedCourse.value?._id || !selectedLesson.value?._id) {
-    toast('Сначала выберите курс и урок! 😭', {
-      type: 'error'
+    toast("Сначала выберите курс и урок! 😭", {
+      type: "error",
     })
     return
   }
 
-  router.push(`/teacher/add-homework?lesson_id=${CURRENT_LESSON_ID}&course_id=${CURRENT_COURSE_ID}&course_name=${selectedCourse.value.name}&lesson_name=${selectedLesson.value.name}`)
+  router.push(
+    `/teacher/add-homework?lesson_id=${CURRENT_LESSON_ID}&course_id=${CURRENT_COURSE_ID}&course_name=${selectedCourse.value.name}&lesson_name=${selectedLesson.value.name}`
+  )
 }
 async function uploadFinished(uploadPath: string) {
   videoUploadedPath.value = "https://factum-videos.website.yandexcloud.net/" + uploadPath
@@ -281,54 +283,56 @@ if (typeof route.query.course_id === "string") {
         <v-btn class="ml-4" icon="mdi-plus" size="small" @click="form.links.push(newLink), (newLink = '')"></v-btn>
       </v-col> -->
 
-      <v-col cols="12" md="6" class="border" style="border-radius: 36px">
-        <p class="font-bold text-2xl ma-2">Прикреплённые ссылки</p>
+      <v-col cols="12" md="6">
+        <div class="border" style="border-radius: 36px; padding: 12px;">
+          <p class="font-bold text-2xl ma-2">Прикреплённые ссылки</p>
 
-        <v-row>
-          <v-col
-            v-for="(link, index) of form.links"
-            :key="index"
-            cols="12"
-            class="d-flex align-center justify-space-between ma-2"
-          >
-            <div class="link-container">
-              <div>
-                Имя ссылки: <b>{{ link.name }}</b>
+          <v-row>
+            <v-col
+              v-for="(link, index) of form.links"
+              :key="index"
+              cols="12"
+              class="d-flex align-center justify-space-between ma-2"
+            >
+              <div class="link-container">
+                <div>
+                  Имя ссылки: <b>{{ link.name }}</b>
+                </div>
+                <div>
+                  Адрес ссылки:
+                  <b
+                    ><a :href="link.value">{{ link.value }}</a></b
+                  >
+                </div>
               </div>
-              <div>
-                Адрес ссылки:
-                <b
-                  ><a :href="link.value">{{ link.value }}</a></b
+
+              <div class="d-flex">
+                <v-btn
+                  class="default-btn mx-2"
+                  variant="tonal"
+                  prepend-icon="mdi-pencil"
+                  @click="openEditLinkDialog(index)"
+                  >Изменить ссылку</v-btn
+                >
+                <v-btn
+                  class="default-btn mx-2"
+                  variant="tonal"
+                  prepend-icon="mdi-delete-outline"
+                  @click="form.links.splice(index, 1)"
+                  >Открепить ссылку</v-btn
                 >
               </div>
-            </div>
+            </v-col>
+          </v-row>
 
-            <div class="d-flex">
-              <v-btn
-                class="default-btn mx-2"
-                variant="tonal"
-                prepend-icon="mdi-pencil"
-                @click="openEditLinkDialog(index)"
-                >Изменить ссылку</v-btn
+          <v-row>
+            <v-col cols="12">
+              <v-btn @click="addLink" class="default-btn" variant="tonal" block prepend-icon="mdi-plus"
+                >Добавить ссылку</v-btn
               >
-              <v-btn
-                class="default-btn mx-2"
-                variant="tonal"
-                prepend-icon="mdi-delete-outline"
-                @click="form.links.splice(index, 1)"
-                >Открепить ссылку</v-btn
-              >
-            </div>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col cols="12">
-            <v-btn @click="addLink" class="default-btn" variant="tonal" block prepend-icon="mdi-plus"
-              >Добавить ссылку</v-btn
-            >
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
+        </div>
       </v-col>
 
       <v-dialog max-width="600" v-model="addLinkDialog" persistent>

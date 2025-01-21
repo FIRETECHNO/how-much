@@ -1,10 +1,23 @@
 <script setup lang="ts">
 definePageMeta({
   middleware: ["admin"],
+  // or middleware: 'auth'
 })
 
 import type { Course } from "~/types/course.interface"
 import type { Lesson } from "~/types/lesson.interface"
+
+interface Link {
+  name: string
+  value: string
+}
+
+interface Form {
+  name: string
+  shortDescription: string
+  links: Link[]
+  homework: any
+}
 
 import { toast } from "vue3-toastify"
 
@@ -14,15 +27,16 @@ const lessonStore = useLesson()
 const router = useRouter()
 const route = useRoute()
 
+const CURRENT_LESSON_ID: string = String(route.query?.lesson_id)
+const CURRENT_COURSE_ID: string = String(route.query?.course_id)
+
 let videoUploadedPath = ref<string | null>()
-let form = ref<any>({
+let form = ref<Form>({
   name: "",
   shortDescription: "",
   links: [],
   homework: [],
 })
-
-let newLink = ref<string>("")
 
 let newHomeworkDialog = ref<boolean>(false)
 let homeworks = ref<any>([])
@@ -54,14 +68,74 @@ if (courses.value) {
     })
   }
 }
+let currentLink = ref({
+  name: "",
+  value: "",
+})
+let addLinkDialog = ref<boolean>(false)
+function addLink() {
+  addLinkDialog.value = true
+}
 
-function addNewHomework() {
-  homeworks.value.push(Object.assign({}, newHomework.value))
-  newHomeworkDialog.value = false
+function addLinkAndClose() {
+  let copy = Object.assign({}, currentLink.value)
+  // save current link
+  form.value.links.push(copy)
+  // clear current link
+  currentLink.value.name = ""
+  currentLink.value.value = ""
+  addLinkDialog.value = false
+}
 
-  Object.assign(newHomework.value, {
-    hwText: "",
-  })
+let editLinkDialog = ref<boolean>(false)
+
+let currentIndex = ref<number | null>(null)
+function openEditLinkDialog(linkIndex: number) {
+  try {
+    currentLink.value.name = form.value.links[linkIndex].name
+    currentLink.value.value = form.value.links[linkIndex].value
+
+    currentIndex.value = linkIndex
+    editLinkDialog.value = true
+  } catch (error) {}
+}
+
+function closeEditLink() {
+  // clear
+  currentIndex.value = null
+
+  currentLink.value.name = ""
+  currentLink.value.value = ""
+
+  editLinkDialog.value = false
+}
+
+function editLinkAndClose() {
+  if (currentIndex.value == null) return
+
+  form.value.links[currentIndex.value].name = currentLink.value.name
+  form.value.links[currentIndex.value].value = currentLink.value.value
+
+  // clear
+  currentIndex.value = null
+
+  currentLink.value.name = ""
+  currentLink.value.value = ""
+
+  editLinkDialog.value = false
+}
+
+function navigateToAddHomework() {
+  if (!selectedCourse.value?._id || !selectedLesson.value?._id) {
+    toast("Сначала выберите курс и урок! 😭", {
+      type: "error",
+    })
+    return
+  }
+
+  router.push(
+    `/teacher/add-homework?lesson_id=${CURRENT_LESSON_ID}&course_id=${CURRENT_COURSE_ID}&course_name=${selectedCourse.value.name}&lesson_name=${selectedLesson.value.name}`
+  )
 }
 async function uploadFinished(uploadPath: string) {
   videoUploadedPath.value = "https://factum-videos.website.yandexcloud.net/" + uploadPath
@@ -91,7 +165,7 @@ async function submit() {
   if (videoUploadedPath.value) {
     toSend.videos = [videoUploadedPath.value]
   }
-  
+
   let res = await lessonStore.updateLesson(toSend, homeworksToSend)
   if (res.status.value == "success") {
     loading.value = false
@@ -157,7 +231,7 @@ if (typeof route.query.course_id === "string") {
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" class="mb-4">
+      <v-col cols="12">
         <p class="text-4xl font-semibold">Редактировать урок</p>
         <BackButton class="mt-4" />
       </v-col>
@@ -191,7 +265,7 @@ if (typeof route.query.course_id === "string") {
         <v-textarea variant="outlined" label="Описание" v-model="form.shortDescription" hide-details></v-textarea>
       </v-col>
 
-      <v-col cols="12">
+      <!-- <v-col cols="12">
         <p class="text-1xl font-semibold">Ссылки</p>
         <v-chip v-for="(link, index) of form.links" :key="index" class="ma-1">
           <NuxtLink :to="link" target="_blank">{{ link }}</NuxtLink>
@@ -207,19 +281,119 @@ if (typeof route.query.course_id === "string") {
           density="compact"
         ></v-text-field>
         <v-btn class="ml-4" icon="mdi-plus" size="small" @click="form.links.push(newLink), (newLink = '')"></v-btn>
+      </v-col> -->
+
+      <v-col cols="12" md="6">
+        <div class="border" style="border-radius: 36px; padding: 12px;">
+          <p class="font-bold text-2xl ma-2">Прикреплённые ссылки</p>
+
+          <v-row>
+            <v-col
+              v-for="(link, index) of form.links"
+              :key="index"
+              cols="12"
+              class="d-flex align-center justify-space-between ma-2"
+            >
+              <div class="link-container">
+                <div>
+                  Имя ссылки: <b>{{ link.name }}</b>
+                </div>
+                <div>
+                  Адрес ссылки:
+                  <b
+                    ><a :href="link.value">{{ link.value }}</a></b
+                  >
+                </div>
+              </div>
+
+              <div class="d-flex">
+                <v-btn
+                  class="default-btn mx-2"
+                  variant="tonal"
+                  prepend-icon="mdi-pencil"
+                  @click="openEditLinkDialog(index)"
+                  >Изменить ссылку</v-btn
+                >
+                <v-btn
+                  class="default-btn mx-2"
+                  variant="tonal"
+                  prepend-icon="mdi-delete-outline"
+                  @click="form.links.splice(index, 1)"
+                  >Открепить ссылку</v-btn
+                >
+              </div>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="12">
+              <v-btn @click="addLink" class="default-btn" variant="tonal" block prepend-icon="mdi-plus"
+                >Добавить ссылку</v-btn
+              >
+            </v-col>
+          </v-row>
+        </div>
       </v-col>
+
+      <v-dialog max-width="600" v-model="addLinkDialog" persistent>
+        <v-card title="Добавить" prepend-icon="mdi-plus">
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  variant="outlined"
+                  label="Имя ссылки"
+                  v-model="currentLink.name"
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field variant="outlined" label="Адрес" v-model="currentLink.value" hide-details></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn class="default-btn" variant="tonal" color="error" @click="addLinkDialog = false">Отмена</v-btn>
+            <v-btn class="default-btn" variant="tonal" color="success" @click="addLinkAndClose">Готово</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog max-width="600" v-model="editLinkDialog" persistent>
+        <v-card title="Изменить" prepend-icon="mdi-pencil">
+          <v-card-text>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  variant="outlined"
+                  label="Имя ссылки"
+                  v-model="currentLink.name"
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <v-text-field variant="outlined" label="Адрес" v-model="currentLink.value" hide-details></v-text-field>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn class="default-btn" variant="tonal" color="error" @click="closeEditLink">Отмена</v-btn>
+            <v-btn class="default-btn" variant="tonal" color="success" @click="editLinkAndClose">Готово</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <v-col cols="12">
         <UploadVideo @upload-finished="uploadFinished" />
       </v-col>
 
       <v-col cols="12">
-        <p class="text-1xl font-semibold">Домашнее задание</p>
+        <p class="text-2xl font-semibold">Домашнее задание</p>
       </v-col>
       <v-col cols="3">
         <div
           class="border rounded-lg cursor-pointer h-100 d-flex justify-center align-center"
-          @click="newHomeworkDialog = true"
+          @click="navigateToAddHomework"
           style="font-size: 40px"
         >
           <v-icon class="text-zinc-600 ma-8" icon="mdi-plus"></v-icon>
@@ -261,8 +435,16 @@ if (typeof route.query.course_id === "string") {
       </v-col>
     </v-row>
 
-    <v-dialog v-model="newHomeworkDialog" fullscreen>
-      <v-card prepend-icon="mdi-plus" title="Домашнее задание">
+    <!-- <v-dialog v-model="newHomeworkDialog" fullscreen>
+      <v-card>
+        <v-card-title class="d-flex justify-space-between">
+          <div class="d-flex align-center">
+            <v-icon class="mr-4">mdi-plus</v-icon>
+            Домашнее задание
+          </div>
+
+          <v-icon @click="newHomeworkDialog = false" class="cursor-pointer pa-2">mdi-close</v-icon>
+        </v-card-title>
         <v-card-text>
           <v-row>
             <v-col cols="12">
@@ -281,10 +463,6 @@ if (typeof route.query.course_id === "string") {
                 v-model="newHomework.hwText"
               ></v-textarea>
             </v-col>
-            <v-col cols="12">
-              <p class="text-1xl font-semibold">Материалы</p>
-              что такое материалы?
-            </v-col>
           </v-row>
         </v-card-text>
 
@@ -292,6 +470,36 @@ if (typeof route.query.course_id === "string") {
           <v-btn class="mx-auto mb-5" @click="addNewHomework" size="x-large" variant="tonal">Добавить</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </v-container>
 </template>
+<style lang="scss">
+.folder-input-container {
+  height: 100px;
+  input {
+    opacity: 0;
+    // display: none;
+    width: 100%;
+    height: 100%;
+  }
+  position: relative;
+  .upload-icon {
+    font-size: 40px;
+  }
+  .centered {
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: -1;
+  }
+}
+.link-container {
+  overflow: hidden;
+}
+</style>
