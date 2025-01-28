@@ -85,6 +85,7 @@ async function submit() {
 
     homeworksToSend[i].lesson = selectedLessonId.value
     homeworksToSend[i].lessonName = selectedLesson.value.name
+    homeworksToSend[i].lessonImages = selectedLesson.value.images
   }
 
   // add new video

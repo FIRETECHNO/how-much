@@ -144,7 +144,6 @@ async function submit() {
 
 <style>
 .btn {
-  background-color: white !important;
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0)

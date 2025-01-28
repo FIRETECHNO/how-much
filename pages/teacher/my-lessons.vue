@@ -5,39 +5,60 @@ definePageMeta({
   middleware: ["teacher"],
 })
 
+// type LessonFromDb = {
+//   course: {
+//     _id: string;
+//     [key: string]: any;
+//   };
+//   [key: string]: any;
+// };
+
 const courseStore = useCourse()
 const authStore = useAuth()
 const router = useRouter()
 
 let lessons = ref()
-
-function groupByCourseWithIndixes(array) {
-  const courseMap = {};
-  let index = 0;
-
-  return array.reduce((acc, obj) => {
-    const course = obj.course;
-    if (!(course in courseMap)) {
-      courseMap[course] = index++;
-    }
-    const groupIndex = courseMap[course];
-    if (!acc[groupIndex]) {
-      acc[groupIndex] = [];
-    }
-    acc[groupIndex].push(obj);
-    return acc;
-  }, []);
-}
+let { courses } = storeToRefs(courseStore)
 
 if (authStore.user?._id) {
   await courseStore.getAll()
-  let courses = authStore.user?.createdCourses
 
-  let res = await courseStore.getLessonsByCourses(courses)
+  let coursesIds = authStore.user?.createdCourses
+
+  let res = await courseStore.getLessonsByCourses(coursesIds)
   let lessonsArr = res.data.value;
 
   if (res.status.value == 'success') {
-    lessons.value = groupByCourseWithIndixes(lessonsArr)
+    const groupedByCourseId = lessonsArr.reduce((acc: any, lesson: any) => {
+      const { course } = lesson;
+
+      if (!acc[course]) {
+        acc[course] = [];
+      }
+
+      acc[course].push(lesson);
+      return acc;
+    }, {});
+
+    if (courses.value) {
+      const combinedData = courses.value.map((course) => {
+        return {
+          ...course,
+          lessons: groupedByCourseId[course._id] || [],
+        };
+      });
+      lessons.value = combinedData
+      // данные типа
+      // let lessons.value = [
+      //   {
+      //     course: info,
+      //     lessons: [{ les1 }, { les2 }]
+      //   } 
+      //   {
+      //     course: info,
+      //     lessons: [{ les1 }, { les2 }]
+      //   }]
+    }
   }
 }
 </script>
@@ -47,12 +68,13 @@ if (authStore.user?._id) {
       <p class="text-4xl font-semibold mb-6">Мои уроки</p>
     </v-col>
 
-    <v-col v-for="(course, index) in lessons">
+    <v-col v-for="(course, index) in lessons"> 
       <v-col class="flex flex-row align-center">
-        <img v-if="courseStore?.courses[index]?.images?.logo" class="w-24 md:w-28 rounded-lg mr-4" :src="courseStore?.courses[index]?.images?.logo" />
+        <img v-if="course?.images?.logo" class="w-24 md:w-28 rounded-lg mr-4"
+          :src="course.images.logo" />
         <div class="flex flex-col">
-          <p class="ml-2">Курс: {{ courseStore?.courses[index].name }}</p>
-          <div class="flex flex-row mt-4 border py-2 px-3 rounded-md">
+          <p class="ml-2 text-xs md:text-lg">Курс: {{ course.name }}</p>
+          <div class="flex flex-row mt-4 border py-2 px-3 rounded-md max-w-fit">
             <div class="mr-2" v-if="authStore.user?.avatars[0]">
               <v-avatar class="border" :image="authStore.user?.avatars[0]"></v-avatar>
             </div>
@@ -73,12 +95,12 @@ if (authStore.user?._id) {
       <v-row class="mt-4">
         <v-col cols="12" sm="6" md="4" lg="3">
           <div class="border cursor-pointer h-100 d-flex justify-center align-center"
-            @click="router.push(`add-lesson?course_id=${ courseStore?.courses[index]._id}`)"
+            @click="router.push(`add-lesson?course_id=${course._id}`)"
             style="font-size: 40px; border-radius: 36px;">
             <v-icon class="text-zinc-600 ma-8" icon="mdi-plus"></v-icon>
           </div>
         </v-col>
-        <v-col cols="12" sm="6" md="4" lg="3" v-for="(lesson, index) in course">
+        <v-col cols="12" sm="6" md="4" lg="3" v-for="(lesson, index) in course.lessons">
           <LessonCard :lesson="lesson" :key="index" />
         </v-col>
       </v-row>

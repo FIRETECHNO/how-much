@@ -23,7 +23,7 @@ export const useCourse = defineStore('course', () => {
     if (!roles) return null;
 
     let res;
-    if (roles.indexOf('teacher') != -1 && auth.user != null) {      
+    if (roles.indexOf('teacher') != -1 && auth.user != null) { 
       res = await CourseApi.getAll('teacher', auth.user?.createdCourses)
     } else if (roles.indexOf('admin') != -1) {
       res = await CourseApi.getAll('admin', null)

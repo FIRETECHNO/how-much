@@ -7,4 +7,5 @@ export interface Homework {
   courseName: string
   lesson: string
   lessonName: string
+  lessonImages: { logo: string }
 }

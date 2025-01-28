@@ -22,7 +22,7 @@ function setActiveTab(tabPath: string) {
   activeTab.value = tabPath
   if (tabPath == '/courses') {
     router.push(`/teacher`)
-  } else if (tabPath == '/tasks') {
+  } else if (tabPath == '/teacher/my-tasks') {
     router.push(`/teacher/my-tasks`)
   } else if (tabPath == "/teacher/my-lessons") {
     router.push(tabPath)
@@ -42,8 +42,8 @@ async function logOut() {
 const fullPath = router.currentRoute.value.fullPath
 if (fullPath.endsWith('/teacher')) {
   activeTab.value = "/courses"
-} else if (fullPath.endsWith("/tasks")) {
-  activeTab.value = "/tasks"
+} else if (fullPath.endsWith("/teacher/my-tasks")) {
+  activeTab.value = "/teacher/my-tasks"
 } else if (fullPath.endsWith("/my-lessons")) {
   activeTab.value = "/teacher/my-lessons"
 }
@@ -78,10 +78,10 @@ if (fullPath.endsWith('/teacher')) {
             }">
               Мои уроки
             </div>
-            <div class="select-item" @click="setActiveTab('/tasks')" :class="{
-              'active-item': activeTab == '/tasks',
-              'black-border': activeTab == '/tasks' && theme.global.name.value == 'light',
-              'white-border': activeTab == '/tasks' && theme.global.name.value == 'dark',
+            <div class="select-item" @click="setActiveTab('/teacher/my-tasks')" :class="{
+              'active-item': activeTab == '/teacher/my-tasks',
+              'black-border': activeTab == '/teacher/my-tasks' && theme.global.name.value == 'light',
+              'white-border': activeTab == '/teacher/my-tasks' && theme.global.name.value == 'dark',
             }">
               Мои задания
             </div>
@@ -188,10 +188,10 @@ if (fullPath.endsWith('/teacher')) {
           }">
             Уроки
           </div>
-          <div class="select-item" @click="setActiveTab('/tasks')" :class="{
-            'active-item': activeTab == '/tasks',
-            'black-border': activeTab == '/tasks' && theme.global.name.value == 'light',
-            'white-border': activeTab == '/tasks' && theme.global.name.value == 'dark',
+          <div class="select-item" @click="setActiveTab('/teacher/my-tasks')" :class="{
+            'active-item': activeTab == '/teacher/my-tasks',
+            'black-border': activeTab == '/teacher/my-tasks' && theme.global.name.value == 'light',
+            'white-border': activeTab == '/teacher/my-tasks' && theme.global.name.value == 'dark',
           }">
             Задания
           </div>

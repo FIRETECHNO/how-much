@@ -84,7 +84,7 @@ async function submit() {
         type: "success",
         autoClose: 500,
         onClose: () => {
-          router.back()
+          router.push(`/${authStore.user?.roles[0]}`)
         },
       })
     } else {
@@ -181,7 +181,6 @@ async function submit() {
 
 <style lang="scss" scoped>
 .btn {
-  background-color: white !important;
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0)
