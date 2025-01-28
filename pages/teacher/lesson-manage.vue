@@ -18,7 +18,7 @@ interface Form {
   name: string
   shortDescription: string
   links: Link[]
-  homework: Homework[]
+  homework: any
 }
 
 import { toast } from "vue3-toastify"
@@ -28,6 +28,9 @@ const lessonStore = useLesson()
 
 const router = useRouter()
 const route = useRoute()
+
+const CURRENT_LESSON_ID: string = String(route.query?.lesson_id)
+const CURRENT_COURSE_ID: string = String(route.query?.course_id)
 
 let videoUploadedPath = ref<string | null>()
 let form = ref<Form>({
@@ -67,29 +70,6 @@ if (courses.value) {
     })
   }
 }
-
-// upload code
-let codeFiles = ref<any>()
-let codeFilesNames = ref<string>()
-let codeFilesLength = ref<number>(0)
-async function onCodeFilesChange(event: any) {
-  const files = event.target.files
-  if (files.length <= 40) {
-    codeFiles.value = files
-    let names: string[] = []
-    for (let f of files) {
-      names.push(f.name)
-    }
-    codeFilesNames.value = names.join(",")
-  } else {
-    toast("Максимум 40 файлов!", {
-      type: "warning",
-    })
-    return
-  }
-  codeFilesLength.value = files.length
-}
-// upload code
 let currentLink = ref({
   name: "",
   value: "",
@@ -147,13 +127,17 @@ function editLinkAndClose() {
   editLinkDialog.value = false
 }
 
-function addNewHomework() {
-  homeworks.value.push(Object.assign({}, newHomework.value))
-  newHomeworkDialog.value = false
+function navigateToAddHomework() {
+  if (!selectedCourse.value?._id || !selectedLesson.value?._id) {
+    toast("Сначала выберите курс и урок! 😭", {
+      type: "error",
+    })
+    return
+  }
 
-  Object.assign(newHomework.value, {
-    hwText: "",
-  })
+  router.push(
+    `/teacher/add-homework?lesson_id=${CURRENT_LESSON_ID}&course_id=${CURRENT_COURSE_ID}&course_name=${selectedCourse.value.name}&lesson_name=${selectedLesson.value.name}`
+  )
 }
 async function uploadFinished(uploadPath: string) {
   videoUploadedPath.value = "https://factum-videos.website.yandexcloud.net/" + uploadPath
@@ -302,54 +286,56 @@ if (typeof route.query.course_id === "string") {
         <v-btn class="ml-4" icon="mdi-plus" size="small" @click="form.links.push(newLink), (newLink = '')"></v-btn>
       </v-col> -->
 
-      <v-col cols="12" md="6" class="border" style="border-radius: 36px">
-        <p class="font-bold text-2xl ma-2">Прикреплённые ссылки</p>
+      <v-col cols="12" md="6">
+        <div class="border" style="border-radius: 36px; padding: 12px;">
+          <p class="font-bold text-2xl ma-2">Прикреплённые ссылки</p>
 
-        <v-row>
-          <v-col
-            v-for="(link, index) of form.links"
-            :key="index"
-            cols="12"
-            class="d-flex align-center justify-space-between ma-2"
-          >
-            <div class="link-container">
-              <div>
-                Имя ссылки: <b>{{ link.name }}</b>
+          <v-row>
+            <v-col
+              v-for="(link, index) of form.links"
+              :key="index"
+              cols="12"
+              class="d-flex align-center justify-space-between ma-2"
+            >
+              <div class="link-container">
+                <div>
+                  Имя ссылки: <b>{{ link.name }}</b>
+                </div>
+                <div>
+                  Адрес ссылки:
+                  <b
+                    ><a :href="link.value">{{ link.value }}</a></b
+                  >
+                </div>
               </div>
-              <div>
-                Адрес ссылки:
-                <b
-                  ><a :href="link.value">{{ link.value }}</a></b
+
+              <div class="d-flex">
+                <v-btn
+                  class="default-btn mx-2"
+                  variant="tonal"
+                  prepend-icon="mdi-pencil"
+                  @click="openEditLinkDialog(index)"
+                  >Изменить ссылку</v-btn
+                >
+                <v-btn
+                  class="default-btn mx-2"
+                  variant="tonal"
+                  prepend-icon="mdi-delete-outline"
+                  @click="form.links.splice(index, 1)"
+                  >Открепить ссылку</v-btn
                 >
               </div>
-            </div>
+            </v-col>
+          </v-row>
 
-            <div class="d-flex">
-              <v-btn
-                class="default-btn mx-2"
-                variant="tonal"
-                prepend-icon="mdi-pencil"
-                @click="openEditLinkDialog(index)"
-                >Изменить ссылку</v-btn
+          <v-row>
+            <v-col cols="12">
+              <v-btn @click="addLink" class="default-btn" variant="tonal" block prepend-icon="mdi-plus"
+                >Добавить ссылку</v-btn
               >
-              <v-btn
-                class="default-btn mx-2"
-                variant="tonal"
-                prepend-icon="mdi-delete-outline"
-                @click="form.links.splice(index, 1)"
-                >Открепить ссылку</v-btn
-              >
-            </div>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col cols="12">
-            <v-btn @click="addLink" class="default-btn" variant="tonal" block prepend-icon="mdi-plus"
-              >Добавить ссылку</v-btn
-            >
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
+        </div>
       </v-col>
 
       <v-dialog max-width="600" v-model="addLinkDialog" persistent>
@@ -410,7 +396,7 @@ if (typeof route.query.course_id === "string") {
       <v-col cols="3">
         <div
           class="border rounded-lg cursor-pointer h-100 d-flex justify-center align-center"
-          @click="newHomeworkDialog = true"
+          @click="navigateToAddHomework"
           style="font-size: 40px"
         >
           <v-icon class="text-zinc-600 ma-8" icon="mdi-plus"></v-icon>
@@ -452,7 +438,7 @@ if (typeof route.query.course_id === "string") {
       </v-col>
     </v-row>
 
-    <v-dialog v-model="newHomeworkDialog" fullscreen>
+    <!-- <v-dialog v-model="newHomeworkDialog" fullscreen>
       <v-card>
         <v-card-title class="d-flex justify-space-between">
           <div class="d-flex align-center">
@@ -480,36 +466,6 @@ if (typeof route.query.course_id === "string") {
                 v-model="newHomework.hwText"
               ></v-textarea>
             </v-col>
-            <v-col cols="12">
-              <!-- <p class="text-2xl font-semibold">Материалы</p> -->
-
-              <!-- <v-row>
-                <v-col cols="12">
-                  <p class="text-1xl font-semibold mb-4">Загрузка кода</p>
-                  <div class="folder-input-container border rounded-lg cursor-pointer">
-                    <input
-                      type="file"
-                      multiple
-                      @change="onCodeFilesChange"
-                      accept=".cs,.cpp,.js,.ts,.java,.py,.rb,.php,.go,.swift,.kt,.html,.css,.xml,.json,.sql,.r,.pl,.sh,.bash,.vue,.asm,.dart,.csproj,.proj,.sln,.ipynb,.m,.lock"
-                      class="cursor-pointer"
-                    />
-                    <v-icon
-                      class="centered"
-                      icon="upload-icon mdi-code-block-braces"
-                      v-if="codeFilesLength == 0"
-                    ></v-icon>
-                    <div v-else class="centered">
-                      <b>
-                        {{ codeFilesNames }}
-                      </b>
-                    </div>
-                  </div>
-                </v-col>
-
-
-              </v-row> -->
-            </v-col>
           </v-row>
         </v-card-text>
 
@@ -517,7 +473,7 @@ if (typeof route.query.course_id === "string") {
           <v-btn class="mx-auto mb-5" @click="addNewHomework" size="x-large" variant="tonal">Добавить</v-btn>
         </v-card-actions>
       </v-card>
-    </v-dialog>
+    </v-dialog> -->
   </v-container>
 </template>
 <style lang="scss">

@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import type { Homework } from '~/types/homework.interface';
+import type { Homework } from "~/types/homework.interface"
 
 definePageMeta({
   middleware: ["auth"],
   // or middleware: 'auth'
 })
 
-const runtimeConfig = useRuntimeConfig()
 const courseStore = useCourse()
 const userStore = useAuth()
-const router = useRouter();
+const router = useRouter()
 const route = useRoute()
 const lessonId = route.query._id
 
@@ -26,14 +25,14 @@ let currentLesson = computed(() => {
 
 if (route.query.course_id) {
   let res = await courseStore.getHomeworksByCourses([String(route.query.course_id)])
-  if (res.status.value == 'success') {
-    homeworks.value = res.data.value;
+  if (res.status.value == "success") {
+    homeworks.value = res.data.value
   }
 }
 
 await courseStore.getCourseByIdWithLessons(String(route.query.course_id))
 
-let breadcrums = ref([
+let breadcrumbs = ref([
   {
     title: `${currentCourse.value?.name}`,
     disabled: false,
@@ -45,22 +44,18 @@ let breadcrums = ref([
     href: `${currentCourse.value?._id}`,
   },
 ])
-
 </script>
 <template>
   <v-container v-if="currentLesson?._id">
     <v-row>
       <v-col cols="12">
         <BackButton />
-        <v-breadcrumbs :items="breadcrums" class="text-xs md:text-base"
-        </v-breadcrumbs>
+        <v-breadcrumbs :items="breadcrumbs" class="text-xs md:text-base" />
       </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" md="6">
-        <M3U8Player
-          :src="currentLesson?.videos[0]"
-        />
+        <M3U8Player :src="currentLesson?.videos[0]" />
       </v-col>
       <v-col cols="12" md="3">
         <p class="text-4xl font-semibold mb-5">
@@ -71,27 +66,9 @@ let breadcrums = ref([
         </p>
       </v-col>
       <v-col cols="12" md="3">
-        <NuxtLink v-for="link of currentLesson.links" :to="link" target="blank">
-          <v-btn class="ma-1 w-100 border" variant="text" rounded="lg">{{ link }}</v-btn>
+        <NuxtLink v-for="link of currentLesson.links" :to="link.value" target="blank">
+          <v-btn class="ma-1 w-100 border" variant="text" rounded="lg">{{ link.name }}</v-btn>
         </NuxtLink>
-      </v-col>
-      <v-col cols="12" md="6">
-        <p class="text-4xl font-semibold mb-5">Домашнее задание</p>
-        <v-row>
-          <v-col cols="12" md="6" v-for="task in homeworks">
-            <div class="border rounded-lg cursor-pointer h-100"
-              @click="router.push(`/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`)">
-              <v-col cols="12" class="d-flex justify-space-between">
-                <p class="text-2xl font-semibold">{{ task.name }}</p>
-              </v-col>
-              <v-col cols="12" class="text-base">
-                <p>
-                  {{ task.hwText }}
-                </p>
-              </v-col>
-            </div>
-          </v-col>
-        </v-row>
       </v-col>
       <v-col cols="12" md="6" class="flex flex-row">
         <v-col>
@@ -100,6 +77,20 @@ let breadcrums = ref([
             <div v-for="i in 8" class="border h-24"></div>
           </div>
         </v-col>
+      </v-col>
+      <v-col cols="12">
+        <p class="text-4xl font-semibold mb-5">Домашнее задание</p>
+        <v-row>
+          <v-col
+            v-if="homeworks.length > 0"
+            cols="12"
+            v-for="task of homeworks"
+            class="border rounded-lg cursor-pointer h-100 mb-5"
+          >
+            <HomeworkCardLessonPage :link="`/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`" :hw="task" />
+          </v-col>
+          <v-col v-else cols="12">Пусто</v-col>
+        </v-row>
       </v-col>
     </v-row>
   </v-container>

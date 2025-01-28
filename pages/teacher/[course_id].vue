@@ -39,9 +39,7 @@ let breadcrums = ref([
     </v-row>
     <v-row>
       <v-col cols="12" sm="6" md="4" lg="3">
-        <div class="border rounded-lg cursor-pointer h-100 d-flex justify-center align-center"
-          @click="router.push(`add-lesson?course_id=${route.params.course_id}`)"
-          style="border-radius: 36px !important; padding: 12px 24px; font-size: 40px;">
+        <div style="border-radius: 36px !important; padding: 12px 24px; font-size: 40px;" class="border rounded-lg cursor-pointer h-100 d-flex justify-center align-center" @click="router.push(`add-lesson?course_id=${route.params.course_id}`)">
           <v-icon class="text-zinc-600 ma-8" icon="mdi-plus"></v-icon>
         </div>
       </v-col>

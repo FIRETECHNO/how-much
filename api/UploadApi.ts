@@ -27,4 +27,13 @@ export default {
       body: codeFD
     })
   },
+  lesson: {
+    uploadArchive(archivesFD: any, destination: string, homeworkId: string): Promise<any> {
+      return useApiFetch(`/lesson/upload/archives?destination=${destination}&homework_id=${homeworkId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body: archivesFD
+      })
+    },
+  }
 }
