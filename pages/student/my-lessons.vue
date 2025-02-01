@@ -25,7 +25,7 @@ function getRole(roles: string[]): string {
   <v-container>
     <v-row>
       <v-col cols="12">
-        <p class="text-4xl font-semibold">Доступные мне уроки</p>
+        <p class="text-4xl font-semibold my-4">Доступные мне уроки</p>
       </v-col>
       <v-col v-if="lessonByCourses.length > 0" cols="12" v-for="(course, index) of lessonByCourses" :key="index">
         <v-row>

@@ -56,7 +56,6 @@ if (authStore.user?._id) {
 
   if (res.status.value == 'success') {
     tasksGrouped.value = tasksArr.reduce(divideIntoGroups, {})
-    console.log(tasksGrouped.value)
   }
 }
 </script>

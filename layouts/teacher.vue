@@ -181,10 +181,10 @@ if (fullPath.endsWith('/teacher')) {
           }">
             Курсы
           </div>
-          <div class="select-item" @click="setActiveTab('/student/my-lessons')" :class="{
-            'active-item': activeTab == '/student/my-lessons',
-            'black-border': activeTab == '/student/my-lessons' && theme.global.name.value == 'light',
-            'white-border': activeTab == '/student/my-lessons' && theme.global.name.value == 'dark',
+          <div class="select-item" @click="setActiveTab('/teacher/my-lessons')" :class="{
+            'active-item': activeTab == '/teacher/my-lessons',
+            'black-border': activeTab == '/teacher/my-lessons' && theme.global.name.value == 'light',
+            'white-border': activeTab == '/teacher/my-lessons' && theme.global.name.value == 'dark',
           }">
             Уроки
           </div>
@@ -198,7 +198,7 @@ if (fullPath.endsWith('/teacher')) {
         </v-col>
         <v-divider></v-divider>
         <v-col class='flex justify-start' cols='12'>
-          <v-btn @click="router.push('/student/settings')" class="" rounded="xl" variant="outlined">
+          <v-btn @click="router.push('/teacher/settings')" class="" rounded="xl" variant="outlined">
             настройки
           </v-btn>
         </v-col>

@@ -11,7 +11,7 @@ const authStore = useAuth()
 let tasks = ref<Homework[]>([])
 
 if (authStore.user?._id) {
-  let res = await courseStore.getHomeworksByCourses(authStore.user.courses)
+  let res = await courseStore.getHomeworksByCourses(authStore.user.myCourses)
   if (res.status.value == 'success') {
     tasks.value = res.data.value;
   }
@@ -20,6 +20,9 @@ if (authStore.user?._id) {
 <template>
   <v-container>
     <v-row>
+      <v-col cols="12">
+        <p class="text-4xl font-semibold my-4">Мои задания</p>
+      </v-col>
       <v-col cols="12" sm="6" md="4" lg="3" v-for="(task, index) in tasks">
         <TaskCard :task="task" :key="index" />
       </v-col>
