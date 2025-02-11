@@ -17,6 +17,8 @@ let form = ref({
   links: "",
   notes: "",
 })
+/**
+ 
 let folderData: any = ref<any>()
 let folderDataLength = ref<number>(0)
 
@@ -32,6 +34,7 @@ async function handleFolderChange(event: any) {
   }
   folderDataLength.value = files.length
 }
+ */
 
 let archives = ref<any>()
 let archivesLength = ref<number>(0)
@@ -48,6 +51,8 @@ async function onZipChange(event: any) {
   archivesLength.value = files.length
 }
 
+/**
+ 
 let anyFiles = ref<any>()
 let anyFilesLength = ref<number>(0)
 async function onAnyFilesChange(event: any) {
@@ -62,7 +67,10 @@ async function onAnyFilesChange(event: any) {
   }
   anyFilesLength.value = files.length
 }
+ */
 
+
+/**
 let codeFiles = ref<any>()
 let codeFilesNames = ref<string>()
 let codeFilesLength = ref<number>(0)
@@ -83,7 +91,7 @@ async function onCodeFilesChange(event: any) {
   }
   codeFilesLength.value = files.length
 }
-
+ */
 
 
 let loading = ref<boolean>(false)
@@ -109,14 +117,16 @@ async function submit() {
       toast(msg, { type: "error" })
     }
     let solutionId = res.data.value._id
-    let folderFD = new FormData()
+    // let folderFD = new FormData()
     let archiveFD = new FormData()
-    let anyFilesFD = new FormData()
-    let codeFD = new FormData()
+    // let anyFilesFD = new FormData()
+    // let codeFD = new FormData()
 
     let destination = `solution_${solutionId}_${Date.now()}`
 
     // upload folder
+    /**
+     
     if (folderDataLength.value > 0) {
       for (let file of folderData.value) {
         let relativePath = file.webkitRelativePath
@@ -127,6 +137,7 @@ async function submit() {
       }
       res = await UploadApi.uploadFolder(folderFD, destination, solutionId)
     }
+     */
 
     // upload archives
     if (res?.status.value == "success") {
@@ -144,6 +155,8 @@ async function submit() {
     }
 
     // upload any files
+    /**
+    
     if (res?.status?.value == "success") {
       if (anyFilesLength.value > 0) {
         for (let f of anyFiles.value) {
@@ -155,8 +168,11 @@ async function submit() {
       displayError("Ошибка при загрузке файлов! 😭")
       return
     }
+     */
 
     // upload code
+    /**
+     
     if (res?.status?.value == "success") {
       if (codeFilesLength.value > 0) {
         for (let f of codeFiles.value) {
@@ -175,6 +191,7 @@ async function submit() {
       displayError("Ошибка при загрузке кода! 😭")
       return
     }
+     */
 
     if (res?.status?.value == "success") {
       toast("Решение добавлено!", {
@@ -206,7 +223,7 @@ async function submit() {
         <v-textarea label="Заметки" variant="outlined" v-model="form.notes"></v-textarea>
       </v-col>
 
-      <v-col cols="12">
+      <!-- <v-col cols="12">
         <p class="text-1xl font-semibold mb-4">Загрузка кода</p>
         <div class="folder-input-container border rounded-lg cursor-pointer">
           <input type="file" multiple @change="onCodeFilesChange" accept=".cs,.cpp,.js,.ts,.java,.json,.mvn,.xml,.pom,.sql,.sh,.bat,.env,.psd" class="cursor-pointer" />
@@ -217,9 +234,9 @@ async function submit() {
             </b>
           </div>
         </div>
-      </v-col>
+      </v-col> -->
 
-      <v-col cols="12" md="4">
+      <!-- <v-col cols="12" md="4">
         <p class="text-1xl font-semibold mb-4">Загрузка любых файлов</p>
         <div class="folder-input-container border rounded-lg cursor-pointer">
           <input
@@ -234,7 +251,7 @@ async function submit() {
             <b> {{ anyFilesLength }} файлов</b>
           </div>
         </div>
-      </v-col>
+      </v-col> -->
 
       <v-col cols="12" md="4">
         <p class="text-1xl font-semibold mb-4">Загрузка архивов</p>
@@ -256,7 +273,7 @@ async function submit() {
         </div>
       </v-col>
 
-      <v-col cols="12" md="4">
+      <!-- <v-col cols="12" md="4">
         <p class="text-1xl font-semibold mb-4">Загрузка папки</p>
         <div class="folder-input-container border rounded-lg cursor-pointer">
           <input type="file" webkitdirectory @change="handleFolderChange" class="cursor-pointer" />
@@ -269,7 +286,7 @@ async function submit() {
             <b> {{ folderDataLength }} файлов </b>
           </div>
         </div>
-      </v-col>
+      </v-col> -->
 
       <v-col cols="12" class="d-flex justify-center my-7">
         <v-btn size="x-large" @click="submit">отправить</v-btn>
