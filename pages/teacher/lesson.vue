@@ -70,14 +70,7 @@ let breadcrumbs = ref([
           <v-btn class="ma-1 w-100 border" variant="text" rounded="lg">{{ link.name }}</v-btn>
         </NuxtLink>
       </v-col>
-      <v-col cols="12" md="6" class="flex flex-row">
-        <v-col>
-          <p class="text-4xl font-semibold mb-5">Материалы</p>
-          <div class="grid grid-cols-4 gap-4 place-content-stretch">
-            <div v-for="i in 8" class="border h-24"></div>
-          </div>
-        </v-col>
-      </v-col>
+
       <v-col cols="12">
         <p class="text-4xl font-semibold mb-5">Домашнее задание</p>
         <v-row>
