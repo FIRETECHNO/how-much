@@ -80,7 +80,7 @@ let breadcrumbs = ref([
             v-for="task of homeworks"
             class="border rounded-lg cursor-pointer h-100 mb-5"
           >
-            <HomeworkCardLessonPage :link="`/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`" :hw="task" />
+            <HomeworkCardLessonPage :link="`/admin/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`" :hw="task" />
           </v-col>
           <v-col v-else cols="12">Пусто</v-col>
         </v-row>
