@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Lesson } from '~/types/lesson.interface';
-
 definePageMeta({
   middleware: ["teacher"],
 })

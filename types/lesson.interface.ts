@@ -11,6 +11,7 @@ export interface Lesson {
   videos: string[],
   homework: [],
   course: string,
+  telemostLink: string
   images: {
     logo: string
   },
