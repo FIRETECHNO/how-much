@@ -19,6 +19,7 @@ interface Form {
   shortDescription: string
   links: Link[]
   homework: any
+  telemostLink: string
 }
 
 import { toast } from "vue3-toastify"
@@ -38,6 +39,7 @@ let form = ref<Form>({
   shortDescription: "",
   links: [],
   homework: [],
+  telemostLink: ''
 })
 
 let newHomeworkDialog = ref<boolean>(false)
@@ -168,7 +170,6 @@ async function submit() {
   if (videoUploadedPath.value) {
     toSend.videos = [videoUploadedPath.value]
   }
-
   let res = await lessonStore.updateLesson(toSend, homeworksToSend)
   if (res.status.value == "success") {
     loading.value = false
@@ -222,6 +223,7 @@ watch(selectedLessonId, (newSelectedLessonId) => {
       form.value.shortDescription = lesson.shortDescription
       form.value.links = lesson.links
       form.value.homework = lesson.homework
+      form.value.telemostLink = lesson.telemostLink
 
       // Object.assign(form.value, lesson)
     }
@@ -268,6 +270,9 @@ if (typeof route.query.course_id === "string") {
         <v-textarea variant="outlined" label="Описание" v-model="form.shortDescription" hide-details></v-textarea>
       </v-col>
 
+      <v-col cols="12">
+        <v-text-field variant="outlined" label="ссылка на яндекс телемост" v-model="form.telemostLink" hide-details></v-text-field>
+      </v-col>
       <!-- <v-col cols="12">
         <p class="text-1xl font-semibold">Ссылки</p>
         <v-chip v-for="(link, index) of form.links" :key="index" class="ma-1">

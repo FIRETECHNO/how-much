@@ -5,6 +5,7 @@ import type { Lesson } from "~/types/lesson.interface"
 export const useLesson = defineStore('lesson', () => {
 
   async function updateLesson(lesson: Lesson, newHomeworks: any) {
+    console.log(lesson)
     return await LessonApi.updateLesson(lesson, newHomeworks)
   }
 
