@@ -1,6 +1,6 @@
-export default defineNuxtRouteMiddleware(async () => {
+export default defineNuxtRouteMiddleware(() => {
   let authStore = useAuth()
-  let isAuth = await authStore.checkAuth()
+  let isAuth = !!authStore.user
 
   if (isAuth && authStore.user?.roles[0] == 'admin') {
     return setPageLayout('admin')
