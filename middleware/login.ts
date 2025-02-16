@@ -1,6 +1,6 @@
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware((to, from) => {
   let authStore = useAuth()
-  let isAuth = await authStore.checkAuth()
+  let isAuth = !!authStore.user
 
   if (isAuth) {
     if (authStore.user?.roles.indexOf('admin') != -1) {
