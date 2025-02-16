@@ -67,7 +67,7 @@ let loading = ref(false)
 
 const submit = handleSubmit(async values => {
   loading.value = true
-  let toSend = { ...values, roles: ['admin'] }
+  let toSend = { ...values, roles: ['student'] }
   let res = await auth.registerStudent(toSend)
   if (res) {
     loading.value = false
