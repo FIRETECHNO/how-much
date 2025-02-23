@@ -23,6 +23,16 @@ let currentLesson = computed(() => {
   return null
 })
 
+let courseId = computed(() => {
+  if (currentCourse.value?._id) {
+    return currentCourse.value?._id;
+  } else if (route.query?.course_id) {
+    return route.query.course_id;
+  }
+  
+  return "";
+})
+
 if (route.query.course_id) {
   let res = await courseStore.getHomeworksByCourses([String(route.query.course_id)])
   if (res.status.value == "success") {
@@ -80,7 +90,7 @@ let breadcrumbs = ref([
             v-for="task of homeworks"
             class="border rounded-lg cursor-pointer h-100 mb-5"
           >
-            <HomeworkCardLessonPage :link="`/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${task.course}`" :hw="task" />
+            <HomeworkCardLessonPage :link="`/student/add-solution?homework_id=${task._id}&lesson_id=${task.lesson}&course_id=${courseId}`" :hw="task" />
           </v-col>
           <v-col v-else cols="12">Пусто</v-col>
         </v-row>
