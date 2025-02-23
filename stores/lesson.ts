@@ -9,6 +9,10 @@ export const useLesson = defineStore('lesson', () => {
     return await LessonApi.updateLesson(lesson, newHomeworks)
   }
 
+  async function addTelemostLink(lesson_id: string, link: string) {
+    return await LessonApi.addTelemostLink(lesson_id,link)
+  }
+
   async function uploadVideo(videoFormData: FormData, lessonId: string) {
     return await LessonApi.uploadVideo(videoFormData, lessonId)
   }
@@ -29,7 +33,7 @@ export const useLesson = defineStore('lesson', () => {
 
   return {
     // functions
-    updateLesson, uploadVideo, newSolution, uploadImages, addHomework, addVideo,
+    addTelemostLink, updateLesson, uploadVideo, newSolution, uploadImages, addHomework, addVideo,
     // variables
   }
 })

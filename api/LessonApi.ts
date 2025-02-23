@@ -10,6 +10,15 @@ export default {
       }
     })
   },
+  addTelemostLink(lesson_id: string, link: string): Promise<any> {
+    return useApiFetch('/lesson/add-telemostlink', {
+      method: 'POST',
+      body: {
+        lesson_id,
+        link
+      }
+    })
+  },
   uploadImages(formData: FormData, _id: string): Promise<any> {
     return useApiFetch(`/lesson/images?lesson_id=${_id}`, { method: 'POST', headers: { 'Content-Type': 'multipart/form-data' }, body: formData })
   },
