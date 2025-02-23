@@ -8,4 +8,5 @@ export interface User {
 	myCourses: string[]
 	createdCourses: string[]
 	avatars: string[]
+	sentSolutions: any
 }
