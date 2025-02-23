@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ["auth"]
+  middleware: ["auth"],
   // or middleware: 'auth'
 })
 import { toast } from "vue3-toastify"
@@ -16,6 +16,23 @@ let form = ref({
   links: "",
   notes: "",
 })
+
+let homeworkId = route.query?.homework_id
+
+let sentSolutions = computed(() => {
+  let result: any[] = []
+  const sentSolutions = auth.user?.sentSolutions
+
+  if (!sentSolutions) return result
+
+  for (let i = 0; i < sentSolutions.length; i++) {
+    if (sentSolutions[i].homework == homeworkId) {
+      result.push(sentSolutions[i])
+    }
+  }
+  return result
+})
+
 /**
 
 let folderData: any = ref<any>()
@@ -50,7 +67,7 @@ async function onZipChange(event: any) {
   archivesLength.value = files.length
 }
 /**
- 
+
 let anyFiles = ref<any>()
 let anyFilesLength = ref<number>(0)
 async function onAnyFilesChange(event: any) {
@@ -67,9 +84,8 @@ async function onAnyFilesChange(event: any) {
 }
  */
 
-
 /**
- 
+
 let codeFiles = ref<any>()
 let codeFilesNames = ref<string>()
 let codeFilesLength = ref<number>(0)
@@ -92,11 +108,9 @@ async function onCodeFilesChange(event: any) {
 }
  */
 
-
-
 let loading = ref<boolean>(false)
 async function submit() {
-  if (!auth?.user?._id) return;
+  if (!auth?.user?._id) return
   loading.value = true
   let toSend = {
     homework: route.query.homework_id,
@@ -105,11 +119,11 @@ async function submit() {
     links: form.value.links,
     notes: form.value.notes,
     date: new Date(),
-    status: 'not_checked',
+    status: "not_checked",
     student: auth.user?._id,
-    studentName: auth.user?.name + ' ' + auth.user?.surname
+    studentName: auth.user?.name + " " + auth.user?.surname,
   }
-  
+
   let res = await lessonStore.newSolution(toSend)
 
   if (res.status.value == "success") {
@@ -126,7 +140,7 @@ async function submit() {
 
     // upload folder
     /**
-     
+
     if (folderDataLength.value > 0) {
       for (let file of folderData.value) {
         let relativePath = file.webkitRelativePath
@@ -156,7 +170,7 @@ async function submit() {
 
     // upload any files
     /**
-     
+
     if (res?.status?.value == "success") {
       if (anyFilesLength.value > 0) {
         for (let f of anyFiles.value) {
@@ -172,7 +186,7 @@ async function submit() {
 
     // upload code
     /**
-     
+
     if (res?.status?.value == "success") {
       if (codeFilesLength.value > 0) {
         for (let f of codeFiles.value) {
@@ -208,14 +222,46 @@ async function submit() {
   }
   loading.value = false
 }
+function getPrettyDate(dateStr: string) {
+  let res = new Date(dateStr)
+
+  return (
+    res.toLocaleDateString("ru-RU", {
+      month: "long",
+      day: "numeric",
+    }) +
+    ", " +
+    res.toLocaleTimeString("ru-RU", {
+      minute: "2-digit",
+      hour: "2-digit",
+    })
+  )
+}
 </script>
 <template>
   <v-container>
+    <v-row v-if="sentSolutions.length > 0">
+      <v-col cols="12">
+        <p class="text-2xl font-semibold">Мои решения этого задания</p>
+      </v-col>
+      <v-col
+        cols="auto"
+        v-for="(solution, index) of sentSolutions"
+        :key="solution._id"
+        class="cursor-pointer border"
+        @click="router.push(`/student/solution?_id=${solution._id}`)"
+      >
+        {{ getPrettyDate(solution.date) }}
+        <p v-if="solution.status == 'checked'" class="primary">Принято</p>
+        <p v-if="solution.status == 'not_checked'">Не проверено</p>
+        <p v-if="solution.status == 'declined'" class="error">Отказано</p>
+      </v-col>
+    </v-row>
+
     <v-row>
       <v-col cols="12">
         <p class="text-2xl font-semibold">Добавить решение</p>
-        <BackButton class="mt-4"/>
-
+        <BackButton class="mt-4" />
       </v-col>
       <v-col cols="12">
         <v-text-field label="Ссылки" v-model="form.links" variant="outlined"></v-text-field>
@@ -319,5 +365,15 @@ async function submit() {
     justify-content: center;
     align-items: center;
   }
+}
+</style>
+<style scoped>
+.error {
+  color: red !important;
+  font-weight: 500;
+}
+.primary {
+  color: green !important;
+  font-weight: 500;
 }
 </style>
