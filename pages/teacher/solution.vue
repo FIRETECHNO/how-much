@@ -73,8 +73,10 @@ async function submit() {
 </script>
 <template>
   <v-container>
-    <BackButton></BackButton>
     <v-row class="mt-2" v-if="solution?._id">
+      <v-col cols="12">
+        <BackButton />
+      </v-col>
       <v-col cols="12">
         <p class="text-2xl font-semibold">{{ solution.lesson.name }} - {{ getPrettyDate(solution.date) }}</p>
       </v-col>
