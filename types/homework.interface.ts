@@ -3,7 +3,7 @@ export interface Homework {
   name: string
   hwText: string
   materials: any
-  course: string
+  course: any
   courseName: string
   lesson: string
   lessonName: string
