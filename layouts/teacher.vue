@@ -55,39 +55,17 @@ if (fullPath.endsWith('/teacher')) {
         <v-row>
           <v-col @click="router.push(`/${userStore.user?.roles[0]}`)" class="logo hidden mt-1 md:flex cursor-pointer"
             cols="3">
-            <img class="h-[35px]" src="/assets/images/factum-logo.svg" />
+            LOGO HERE
           </v-col>
 
           <v-col @click="router.push(`/${userStore.user?.roles[0]}`)" class="md:hidden flex mt-1 cursor-pointer"
             cols="6">
-            <img class="h-[35px]" src="/assets/images/factum-logo.svg" />
+            LOGO HERE
           </v-col>
 
-          <v-col cols="6" class="hidden md:flex justify-center align-center text-sm">
-            <div class="select-item" @click="setActiveTab('/courses')" :class="{
-              'active-item': activeTab == '/courses',
-              'black-border': activeTab == '' && theme.global.name.value == 'light',
-              'white-border': activeTab == '/courses' && theme.global.name.value == 'dark',
-            }">
-              Мои курсы
-            </div>
-            <div class="select-item" @click="setActiveTab('/teacher/my-lessons')" :class="{
-              'active-item': activeTab == '/teacher/my-lessons',
-              'black-border': activeTab == '/teacher/my-lessons' && theme.global.name.value == 'light',
-              'white-border': activeTab == '/teacher/my-lessons' && theme.global.name.value == 'dark',
-            }">
-              Мои уроки
-            </div>
-            <div class="select-item" @click="setActiveTab('/teacher/my-tasks')" :class="{
-              'active-item': activeTab == '/teacher/my-tasks',
-              'black-border': activeTab == '/teacher/my-tasks' && theme.global.name.value == 'light',
-              'white-border': activeTab == '/teacher/my-tasks' && theme.global.name.value == 'dark',
-            }">
-              Мои задания
-            </div>
-          </v-col>
           <v-spacer>
           </v-spacer>
+
           <v-col cols="3" lg="2" class="hidden md:flex px-0 md:px-10 align-center justify-between">
             <button @click="toggleTheme" type="button"
               class="text-zinc-700 border hover:bg-zinc-500 focus:outline-none font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mx-2">

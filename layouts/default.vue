@@ -55,37 +55,14 @@ if (fullPath.endsWith('/student')) {
         <v-row>
           <v-col @click="router.push(`/${userStore.user?.roles[0]}`)" class="logo hidden mt-1 md:flex cursor-pointer"
             cols="3">
-            <img class="h-[35px]" src="/assets/images/factum-logo.svg" />
+            LOGO HERE
           </v-col>
 
           <v-col @click="router.push(`/${userStore.user?.roles[0]}`)" class="md:hidden flex mt-1 cursor-pointer"
             cols="6">
-            <img class="h-[35px]" src="/assets/images/factum-logo.svg" />
+            LOGO HERE
           </v-col>
 
-          <v-col cols="6" class="hidden md:flex justify-center align-center text-sm">
-            <div class="select-item" @click="setActiveTab('/courses')" :class="{
-              'active-item': activeTab == '/courses',
-              'black-border': activeTab == '' && theme.global.name.value == 'light',
-              'white-border': activeTab == '/courses' && theme.global.name.value == 'dark',
-            }">
-              Курсы
-            </div>
-            <div class="select-item" @click="setActiveTab('/student/my-lessons')" :class="{
-              'active-item': activeTab == '/student/my-lessons',
-              'black-border': activeTab == '/student/my-lessons' && theme.global.name.value == 'light',
-              'white-border': activeTab == '/student/my-lessons' && theme.global.name.value == 'dark',
-            }">
-              Уроки
-            </div>
-            <div class="select-item" @click="setActiveTab('/tasks')" :class="{
-              'active-item': activeTab == '/tasks',
-              'black-border': activeTab == '/tasks' && theme.global.name.value == 'light',
-              'white-border': activeTab == '/tasks' && theme.global.name.value == 'dark',
-            }">
-              Задания
-            </div>
-          </v-col>
           <v-spacer>
           </v-spacer>
           <v-col cols="3" lg="2" class="hidden md:flex px-0 md:px-10 align-center justify-between">

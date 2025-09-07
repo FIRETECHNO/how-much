@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: ["admin"],
 })
 import { toast } from "vue3-toastify"
 
@@ -14,26 +13,30 @@ let loading = ref<boolean>(false)
 async function uploadFinished(uploadPath: string) {
   videoUploadedPath.value = "https://factum-videos.website.yandexcloud.net/" + uploadPath
   loading.value = false
-  if (route.query.lesson_id) {
-    let res = await lessonStore.addVideo(videoUploadedPath.value, String(route.query.lesson_id))
-    if (res?.status?.value == 'success') {
-      toast('Видео загружено!', {
-        type: "success",
-        autoClose: 500,
-        onClose: () => {
-          router.push('/')
-        }
-      })
-    } else {
-      toast('Ошибка при загрузке видео!', {
-        type: "error",
-        autoClose: 2000,
-        onClose: () => {
-          window?.location?.reload();
-        }
-      })
-    }
-  }
+
+  console.log(videoUploadedPath.value);
+
+  return;
+  // if (route.query.lesson_id) {
+  //   let res = await lessonStore.addVideo(videoUploadedPath.value, String(route.query.lesson_id))
+  //   if (res?.status?.value == 'success') {
+  //     toast('Видео загружено!', {
+  //       type: "success",
+  //       autoClose: 500,
+  //       onClose: () => {
+  //         router.push('/')
+  //       }
+  //     })
+  //   } else {
+  //     toast('Ошибка при загрузке видео!', {
+  //       type: "error",
+  //       autoClose: 2000,
+  //       onClose: () => {
+  //         window?.location?.reload();
+  //       }
+  //     })
+  //   }
+  // }
 }
 function startUpload() {
   loading.value = true

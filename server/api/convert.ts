@@ -36,29 +36,29 @@ export default defineEventHandler(async (event) => {
   const lessonId = body.lessonId.toString();
 
 
-  const inputPath = join(process.cwd(), 'public', 'lesson-videos', lessonId, mp4FileName) // Путь к входному MP4 файлу
-  const outputPath = join(process.cwd(), 'public', 'lesson-videos', lessonId) // Путь для HLS файлов
+  const inputPath = join(process.cwd(), 'public', 'job-video-form', lessonId, mp4FileName) // Путь к входному MP4 файлу
+  const outputPath = join(process.cwd(), 'public', 'job-video-form', lessonId) // Путь для HLS файлов
 
   try {
     // Убедитесь, что путь для выходных файлов существует
     await fs.mkdir(outputPath, { recursive: true });
     return new Promise((resolve, reject): void => {
       ffmpeg(inputPath)
-      .outputOptions([
-        '-f hls',
-        '-hls_time 30',
-        '-hls_list_size 0',
-        '-hls_segment_filename',
-        join(outputPath, 'segment_%03d.ts'),
-      ])
-      .output(join(outputPath, 'playlist.m3u8'))
-      .on('end', () => {
-        resolve('success');
-      })
-      .on('error', (err) => {
-        reject(err);
-      })
-      .run();    
+        .outputOptions([
+          '-f hls',
+          '-hls_time 30',
+          '-hls_list_size 0',
+          '-hls_segment_filename',
+          join(outputPath, 'segment_%03d.ts'),
+        ])
+        .output(join(outputPath, 'playlist.m3u8'))
+        .on('end', () => {
+          resolve('success');
+        })
+        .on('error', (err) => {
+          reject(err);
+        })
+        .run();
       // ffmpeg(input)
       //   .output(output)
       //   .on('end', () => {

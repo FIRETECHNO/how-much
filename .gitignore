@@ -24,4 +24,4 @@ logs
 !.env.example
 .vscode
 
-public/lesson-videos
+public/job-video*

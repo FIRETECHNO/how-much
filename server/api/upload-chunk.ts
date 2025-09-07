@@ -29,9 +29,9 @@ export default defineEventHandler(async (event) => {
       const totalChunks = parseInt(fields.totalChunks as string, 10);
 
       // Сохраняем чанки во временные файлы
-      const uploadDir = path.join(process.cwd().toString(), 'public', 'lesson-videos', String(lessonId));
+      const uploadDir = path.join(process.cwd().toString(), 'public', 'job-video-form', String(lessonId));
       const chunkPath = path.join(uploadDir, `chunk-${chunkIndex}`);
-      
+
       await fs.mkdir(uploadDir, { recursive: true })
 
       await fs.rename(chunk.filepath, chunkPath);

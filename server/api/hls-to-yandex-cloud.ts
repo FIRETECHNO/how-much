@@ -27,7 +27,7 @@ function getFilePathsFromLocalHLS(filePath: string): string[] {
 
 export default defineEventHandler(async (event) => {
     const { lessonId } = await readBody(event); // Ожидаем массив путей к файлам
-    const hlsPath = path.join(process.cwd(), 'public', 'lesson-videos', lessonId, 'playlist.m3u8')
+    const hlsPath = path.join(process.cwd(), 'public', 'job-video-form', lessonId, 'playlist.m3u8')
 
     let files: string[] = getFilePathsFromLocalHLS(hlsPath);
     files.push(hlsPath); // include playlist.m3u8
@@ -42,9 +42,9 @@ export default defineEventHandler(async (event) => {
                     return reject(`Ошибка чтения файла: ${err.message}`);
                 }
 
-                const uploadPath = path.join('lesson-videos', lessonId, path.basename(fullPath));
+                const uploadPath = path.join('job-video-form', lessonId, path.basename(fullPath));
                 const params = {
-                    Bucket: 'factum-videos',                 // Название вашего бакета
+                    Bucket: 'how-much-videos',               // Название вашего бакета
                     Key: uploadPath,                         // Имя файла
                     Body: data,                              // Содержимое файла
                     ContentType: 'application/octet-stream', // Тип контента
@@ -61,8 +61,8 @@ export default defineEventHandler(async (event) => {
     try {
         const results = await Promise.all(uploadPromises);
 
-        fs.rmSync(path.join(process.cwd(), 'public', 'lesson-videos', lessonId), { recursive: true, force: true });
-        
+        fs.rmSync(path.join(process.cwd(), 'public', 'job-video-form', lessonId), { recursive: true, force: true });
+
         return { success: true, results }; // Возвращаем успешные результаты
     } catch (error) {
         return { success: false, message: error }; // Обработка ошибок
