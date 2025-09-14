@@ -1,17 +1,22 @@
 <script setup lang="ts">
-const input = ref<HTMLInputElement | null>(null);
 const fileObj = ref<File | null>(null);
 const progress = ref(0);
 const uploading = ref(false);
 
-const PART_SIZE = 10 * 1024 * 1024; // 10 MB
+const PART_SIZE = 5 * 1024 * 1024; // 10 MB
 const CONCURRENCY = 3;
 
+const emit = defineEmits(["upload-finished"])
+
 function prettyBytes(bytes: number) {
+  if (bytes === 0) return '0 B';
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   let i = 0;
   let v = bytes;
-  while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
+  while (v >= 1024 && i < units.length - 1) {
+    v /= 1024;
+    i++;
+  }
   return `${v.toFixed(2)} ${units[i]}`;
 }
 
@@ -28,7 +33,6 @@ async function startUpload() {
   uploading.value = true;
   progress.value = 0;
 
-  // 1) init
   const initRes = await fetch('/api/upload/initiate', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -36,7 +40,7 @@ async function startUpload() {
   }).then(r => r.json());
 
   if (!initRes.UploadId) {
-    console.error('init failed', initRes);
+    console.error('Ошибка инициализации', initRes);
     uploading.value = false;
     return;
   }
@@ -44,7 +48,6 @@ async function startUpload() {
   const UploadId = initRes.UploadId as string;
   const Key = initRes.Key as string;
 
-  // 2) prepare parts
   const size = fileObj.value.size;
   const parts: { number: number; start: number; end: number; uploaded?: boolean; etag?: string }[] = [];
   let partNumber = 1;
@@ -54,11 +57,9 @@ async function startUpload() {
     partNumber++;
   }
 
-  // concurrency pool
   let uploadedBytes = 0;
 
   async function uploadPart(part: any) {
-    // get signed url
     const q = new URL('/api/upload/sign', location.origin);
     q.searchParams.set('Key', Key);
     q.searchParams.set('UploadId', UploadId);
@@ -66,20 +67,18 @@ async function startUpload() {
 
     const signRes = await fetch(q.toString()).then(r => r.json());
     const url = signRes.url;
-    if (!url) throw new Error('no presigned url');
+    if (!url) throw new Error('Не удалось получить presigned URL');
 
     const blob = fileObj.value!.slice(part.start, part.end);
 
-    // upload via PUT
     const r = await fetch(url, {
       method: 'PUT',
       body: blob,
       signal: controller.signal,
     });
 
-    if (!r.ok) throw new Error('upload part failed: ' + r.status);
+    if (!r.ok) throw new Error('Ошибка загрузки части: ' + r.status);
 
-    // ETag header should be present
     const etag = r.headers.get('ETag') || r.headers.get('etag');
     part.uploaded = true;
     part.etag = etag;
@@ -88,7 +87,6 @@ async function startUpload() {
     progress.value = (uploadedBytes / size) * 100;
   }
 
-  // run with limited concurrency
   const queue = parts.slice();
   const workers = new Array(CONCURRENCY).fill(null).map(async () => {
     while (queue.length) {
@@ -97,7 +95,7 @@ async function startUpload() {
       try {
         await uploadPart(p);
       } catch (err) {
-        console.error('part upload error', err);
+        console.error('Ошибка при загрузке части', err);
         throw err;
       }
     }
@@ -106,22 +104,21 @@ async function startUpload() {
   try {
     await Promise.all(workers);
   } catch (err) {
-    console.error('Upload failed, aborting');
+    console.error('Загрузка не удалась, отмена');
     uploading.value = false;
     return;
   }
 
-  // collect parts for completion (must be sorted by PartNumber)
   const completedParts = parts.map(p => ({ ETag: p.etag, PartNumber: p.number }));
 
-  // 3) complete
   const compRes = await fetch('/api/upload/complete', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ Key, UploadId, Parts: completedParts }),
   }).then(r => r.json());
 
-  console.log('complete result', compRes);
+  emit("upload-finished", compRes.Location)
+
   progress.value = 100;
   uploading.value = false;
 }
@@ -133,43 +130,31 @@ function abortUpload() {
 }
 </script>
 
-
 <template>
-  <div class="uploader">
-    <input ref="input" type="file" accept="video/*" @change="onFile" />
+  <div>
+    <v-file-input v-if="!fileObj" label="Выберите видеофайл" accept="video/*" variant="outlined" density="compact"
+      @change="onFile" hide-details></v-file-input>
 
     <div v-if="fileObj">
-      <p>{{ fileObj.name }} — {{ prettyBytes(fileObj.size) }}</p>
+      <p class="text-caption font-weight-medium">{{ fileObj.name }} — {{ prettyBytes(fileObj.size) }}</p>
 
-      <div class="progress">
-        <div class="bar" :style="`width: ${progress}%`">{{ Math.round(progress) }}%</div>
-      </div>
+      <v-progress-linear v-if="progress < 100" v-model="progress" :indeterminate="uploading"
+        :color="uploading && progress < 100 ? 'success' : 'grey'" height="20" rounded class="my-2">
+        <template v-slot:default="{ value }">
+          <strong>{{ Math.ceil(value) }}%</strong>
+        </template>
+      </v-progress-linear>
 
-      <button @click="startUpload" :disabled="uploading">Start upload</button>
-      <button @click="abortUpload" v-if="uploading">Abort</button>
+      <v-btn v-if="!uploading && progress < 100" @click="startUpload" :disabled="uploading" color="success"
+        variant="tonal" size="large" prepend-icon="mdi-upload-outline">
+        Начать загрузку
+      </v-btn>
+      <v-btn v-if="uploading" @click="abortUpload" color="error" variant="tonal" size="small">
+        Отменить
+      </v-btn>
+      <v-chip v-if="progress === 100" color="success" variant="flat" size="small">
+        Загрузка завершена
+      </v-chip>
     </div>
   </div>
 </template>
-<style scoped>
-.uploader {
-  max-width: 640px;
-  margin: 12px;
-}
-
-.progress {
-  background: #eee;
-  height: 20px;
-  border-radius: 6px;
-  overflow: hidden;
-  margin: 8px 0
-}
-
-.bar {
-  height: 100%;
-  background: linear-gradient(90deg, #4caf50, #81c784);
-  color: #fff;
-  padding-left: 8px;
-  display: flex;
-  align-items: center
-}
-</style>
