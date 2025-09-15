@@ -52,8 +52,9 @@ async function startUpload() {
   }
 }
 
-function handleVideoUploadFinished(location: string, tmpId: number) {
+async function handleVideoUploadFinished(location: string, tmpId: number) {
   jobsStore.setVideoForUpload(location, tmpId)
+  let res = await jobsStore.saveJob(tmpId);
 }
 </script>
 
@@ -68,7 +69,7 @@ function handleVideoUploadFinished(location: string, tmpId: number) {
       <v-card-subtitle>{{ upload.fullName }}</v-card-subtitle>
       <v-card-text v-if="upload.coverLetter">
         <strong>Сопроводительное письмо:</strong>
-        <p class="mt-2">{{ upload.coverLetter }}</p>
+        <p class="my-2">{{ upload.coverLetter }}</p>
 
         <div v-if="upload.video?.src">
           <strong>Визитка:&nbsp;</strong>
@@ -76,7 +77,7 @@ function handleVideoUploadFinished(location: string, tmpId: number) {
           <NuxtLink target="_blank" :to="upload.video?.src">{{ upload.video?.src }}</NuxtLink>
         </div>
       </v-card-text>
-      <v-divider class="mx-4"></v-divider>
+
       <v-card-text>
         <VideoUpload @upload-finished="handleVideoUploadFinished($event, upload.tmpId)" />
       </v-card-text>

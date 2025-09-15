@@ -1,4 +1,5 @@
 import type { JobForm_upload } from "~/types/job-form.interface.ts"
+import JobApi from "~/api/JobApi";
 
 export function useJobUploads() {
   let uploads = useState<JobForm_upload[]>(() => [])
@@ -16,11 +17,20 @@ export function useJobUploads() {
     }
   }
 
+  async function saveJob(tmpId: number): Promise<boolean> {
+    for (let upload of uploads.value) {
+      if (upload.tmpId == tmpId)
+        return await JobApi.saveJob(upload)
+    }
+    return false
+  }
+
   return {
     // vars
     uploads,
     // functions
     startUploading,
-    setVideoForUpload
+    setVideoForUpload,
+    saveJob,
   }
 }
