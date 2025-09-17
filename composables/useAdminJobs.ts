@@ -8,15 +8,15 @@ export function useAdminJobs() {
   }
 
 
-  async function getOrganizationJobs() {
+  async function getJobs() {
     try {
-      let res = await JobApi.getOrganizationJobs();
+      let res = await JobApi.getJobs();
 
       if (res?.length > 0) {
         jobForms.value = res
       }
     } catch (error) {
-      console.log("useAdminJobs/getOrganizationJobs", error);
+      console.log("error useAdminJobs/getOrganizationJobs", error);
     }
   }
 
@@ -25,6 +25,6 @@ export function useAdminJobs() {
     // vars
     jobForms,
     // functions
-    add, getOrganizationJobs
+    add, getJobs
   }
 }

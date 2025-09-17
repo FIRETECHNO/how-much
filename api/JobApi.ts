@@ -10,12 +10,21 @@ export default {
       }
     })
   },
-  async getOrganizationJobs(): Promise<JobForm[]> {
+  async getJobs(): Promise<JobForm[]> {
     const { $apiFetch } = useNuxtApp()
-    return $apiFetch<JobForm[]>("/job-form/organization/get-all", {
+    return $apiFetch<JobForm[]>("/job-form/admin/get-all", {
       method: "POST",
       // body: {
       // }
+    })
+  },
+  async getById(jobId: string): Promise<JobForm | null> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobForm | null>("/job-form/get-by-id", {
+      method: "POST",
+      body: {
+        jobId
+      }
     })
   }
 }
