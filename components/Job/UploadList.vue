@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { toast } from 'vue3-toastify';
 import type { VForm } from 'vuetify/components'
 
 const jobsStore = useJobUploads();
@@ -54,7 +54,17 @@ async function startUpload() {
 
 async function handleVideoUploadFinished(location: string, tmpId: number) {
   jobsStore.setVideoForUpload(location, tmpId)
-  let res = await jobsStore.saveJob(tmpId);
+  let boolRes = await jobsStore.saveJob(tmpId);
+
+  if (boolRes) {
+    toast("Вакансия добавлена!", {
+      type: "success",
+    })
+  } else {
+    toast("Ошибка при добавлении вакансии!", {
+      type: "error"
+    })
+  }
 }
 </script>
 

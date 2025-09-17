@@ -19,8 +19,17 @@ export function useJobUploads() {
 
   async function saveJob(tmpId: number): Promise<boolean> {
     for (let upload of uploads.value) {
-      if (upload.tmpId == tmpId)
-        return await JobApi.saveJob(upload)
+      if (upload.tmpId == tmpId) {
+        try {
+          let res = await JobApi.saveJob(upload)
+          if (res?._id) {
+            return true
+          }
+        } catch (error) {
+          console.error("useJobUploads/saveJob error:", error);
+          return false;
+        }
+      }
     }
     return false
   }

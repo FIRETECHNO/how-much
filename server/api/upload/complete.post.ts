@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { Key, UploadId, Parts } = body; // Parts = [{ ETag, PartNumber }, ...]
   if (!Key || !UploadId || !Parts) return { error: 'Key, UploadId, Parts required' };
-  console.log(Key, UploadId, Parts);
 
   const cmd = new CompleteMultipartUploadCommand({
     Bucket: config.ycBucket,
