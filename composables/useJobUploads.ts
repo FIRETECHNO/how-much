@@ -23,6 +23,7 @@ export function useJobUploads() {
         try {
           let res = await JobApi.saveJob(upload)
           if (res?._id) {
+            useAdminJobs().add(res)
             return true
           }
         } catch (error) {

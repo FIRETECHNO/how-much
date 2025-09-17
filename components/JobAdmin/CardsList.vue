@@ -1,0 +1,57 @@
+<script setup lang="ts">
+const jobsAdminStore = useAdminJobs();
+
+const { jobForms } = jobsAdminStore;
+
+await jobsAdminStore.getOrganizationJobs();
+</script>
+<template>
+  <v-row v-if="jobForms?.length > 0">
+    <v-col v-for="job in jobForms" :key="job._id" cols="12" md="6" lg="4">
+      <v-card class="d-flex flex-column" height="100%">
+        <v-responsive v-if="job.video && job.video.src" :aspect-ratio="16 / 9">
+          <video :src="job.video.src" style="width: 100%; height: 100%; object-fit: cover;" controls></video>
+        </v-responsive>
+
+        <v-divider></v-divider>
+
+        <div class="d-flex flex-column flex-grow-1 pa-4">
+          <h3 class="text-h5 font-weight-bold">{{ job.job }}</h3>
+          <p class="text-body-1 text-medium-emphasis mb-4">{{ job.fullName }}</p>
+
+          <div class="text-body-2 flex-grow-1">
+            <p class="font-weight-medium mb-1">Описание:</p>
+            <p style="white-space: pre-wrap;">{{ job.coverLetter }}</p>
+          </div>
+
+          <v-card-actions class="mt-4 pa-0">
+            <v-btn variant="text" prepend-icon="mdi-pencil-outline">
+              Редактировать
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" variant="flat" append-icon="mdi-arrow-right">
+              Посмотреть отклики
+            </v-btn>
+          </v-card-actions>
+        </div>
+      </v-card>
+    </v-col>
+  </v-row>
+
+  <v-row v-else class="d-flex justify-center align-center">
+    <v-col cols="auto">
+      <NuxtLink to="/admin/jobs/upload" class="text-decoration-none">
+        <v-sheet class="d-flex align-center justify-center flex-wrap text-center mx-auto pa-6" elevation="4"
+          rounded="lg" max-width="800" height="300">
+          <div>
+            <v-icon class="mb-4" color="grey-lighten-1" icon="mdi-briefcase-search-outline" size="64"></v-icon>
+            <div class="text-h4 font-weight-medium">Вакансии не найдены</div>
+            <p class="text-body-2 mt-2">
+              Вы еще не создали ни одной вакансии. <b>Нажмите, чтобы добавить первую.</b>
+            </p>
+          </div>
+        </v-sheet>
+      </NuxtLink>
+    </v-col>
+  </v-row>
+</template>
