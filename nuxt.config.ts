@@ -45,9 +45,6 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  nitro: {
-    preset: 'node-server',
-  },
   devServer: {
     port: 3011,
   },
