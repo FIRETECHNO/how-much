@@ -2,10 +2,10 @@
 const currentYear = new Date().getFullYear()
 
 const footerLinks = [
-  { text: 'Политика конфиденциальности', to: '/' },
-  { text: 'Инструкция', to: '/' },
-  { text: 'О системе', to: '/' },
-  { text: 'Техподдержка', to: '/' },
+  { text: 'Политика конфиденциальности', to: '/privacy-policy' },
+  { text: 'Инструкция', to: '/guide' },
+  { text: 'О системе', to: '/about' },
+  { text: 'Техподдержка', to: '/support' },
 ]
 
 const socialLinks = [
