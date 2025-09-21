@@ -101,7 +101,7 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
   <v-dialog v-model="dialog" max-width="600px">
     <v-card>
       <v-card-title>
-        <span class="text-h5">Отклик на вакансию</span>
+        <span class="text-h5">Описание вакансии</span>
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
@@ -109,7 +109,7 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
             <v-row>
               <v-col cols="12">
                 <v-select v-model="formData.job" variant="outlined" :items="jobItems" :rules="jobRules"
-                  label="Наименование вакансии" required></v-select>
+                  label="Наименование анкеты" required></v-select>
               </v-col>
               <v-col cols="12">
                 <v-text-field v-model="formData.fullName" variant="outlined" :rules="fullNameRules" label="ФИО"

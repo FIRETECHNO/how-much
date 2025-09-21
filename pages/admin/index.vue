@@ -12,10 +12,10 @@ definePageMeta({
             elevation="6" height="350">
             <v-icon icon="mdi-account-box-outline" color="primary" size="80" class="mb-4"></v-icon>
             <p class="text-h4 font-weight-bold text-grey-darken-3">
-              Вакансии
+              Анкеты
             </p>
             <p class="text-body-1 text-grey-darken-1 mt-2">
-              Загрузка визиток и вакансий
+              Загрузка визиток и поднятие их в поиске
             </p>
           </v-sheet>
         </NuxtLink>

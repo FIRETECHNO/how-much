@@ -16,7 +16,7 @@ definePageMeta({
               Загрузка + добавление
             </p>
             <p class="text-body-1 text-grey-darken-1 mt-2">
-              Загрузка визиток и описания вакансии
+              Загрузка визиток и описания анкеты
             </p>
           </v-sheet>
         </NuxtLink>
@@ -28,7 +28,7 @@ definePageMeta({
             elevation="6" height="350">
             <v-icon icon="mdi-account-box-multiple-outline" color="primary" size="80" class="mb-4"></v-icon>
             <p class="text-h4 font-weight-bold text-grey-darken-3">
-              Мои позиции
+              Мои анкеты
             </p>
             <p class="text-body-1 text-grey-darken-1 mt-2">
               Изменить, скрыть, поднять в поиске

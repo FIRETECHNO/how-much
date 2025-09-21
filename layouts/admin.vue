@@ -2,7 +2,7 @@
 const route = useRoute()
 
 const breadcrumbTranslations: { [key: string]: string } = {
-  "jobs": "Вакансии",
+  "jobs": "Анкеты",
   "upload": "Загрузка",
   "list": "Список",
   "admin": "Админка"
