@@ -56,11 +56,11 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
   let boolRes = await jobsStore.saveJob(tmpId);
 
   if (boolRes) {
-    toast("Вакансия добавлена!", {
+    toast("Анкета добавлена!", {
       type: "success",
     })
   } else {
-    toast("Ошибка при добавлении вакансии!", {
+    toast("Ошибка при добавлении анкеты!", {
       type: "error"
     })
   }
