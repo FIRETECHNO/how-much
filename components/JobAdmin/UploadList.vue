@@ -17,10 +17,9 @@ const formData = ref({
 })
 
 const jobItems = [
-  'Frontend-разработчик',
-  'Backend-разработчик',
-  'Fullstack-разработчик',
-  'DevOps-инженер',
+  'Продажи',
+  'Маркетинг',
+  'Ассистирование',
 ]
 
 const jobRules = [

@@ -1,8 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'short',
-  middleware: 'login'
-})
 import { useField, useForm } from 'vee-validate';
 
 // document.title = 'Авторизация — Ищу наставника'
@@ -36,7 +32,7 @@ const login = handleSubmit(async values => {
 
   loading.value = false
   if (res?.status?.value == "success") {
-    router.push(`/${auth.user?.roles[0]}`)
+    router.push(`/me`)
   }
 })
 

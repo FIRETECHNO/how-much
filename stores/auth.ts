@@ -5,26 +5,13 @@ import type { User } from "../types/user.interface"
 import { ref } from "vue"
 
 export const useAuth = defineStore('auth', () => {
-  let user = ref<User | null>()
+  let user = ref<User | null>(null)
 
   async function registration(data: any): Promise<boolean> {
     try {
       const response = await AuthAPI.registration(data)
       if (response.data.value) {
         user.value = response.data.value.user
-      }
-      return true
-    } catch {
-      return false
-    }
-  }
-
-
-  async function registerStudent(user: any): Promise<boolean> {
-    try {
-      const response = await AuthAPI.registerStudent(user)
-      if (response.data.value) {
-        console.log(response);
       }
       return true
     } catch {
@@ -50,7 +37,7 @@ export const useAuth = defineStore('auth', () => {
         return true
       }
       const response = await AuthAPI.refresh()
-      
+
       if (response.data.value?._id) {
         user.value = response.data.value
         return true
@@ -157,7 +144,7 @@ export const useAuth = defineStore('auth', () => {
     user,
     // functions
     registration, login, checkAuth, logout,
-    updateUser, sendResetLink, resetPassword, registerStudent,
+    updateUser, sendResetLink, resetPassword,
     getAllUsers, uploadAvatar,
   }
 })
