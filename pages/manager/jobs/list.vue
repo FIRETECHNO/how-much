@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "admin",
-  middleware: "admin"
+  middleware: "manager"
 })
 </script>
 <template>
@@ -11,7 +11,7 @@ definePageMeta({
         <BackButton :button-text="'Назад'" class="mt-4"></BackButton>
       </v-col>
 
-      <JobAdminUploadList />
+      <JobAdminCardsList />
     </v-row>
   </v-container>
 </template>

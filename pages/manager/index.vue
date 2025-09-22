@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "admin",
-  middleware: "admin"
+  middleware: "manager"
 })
 </script>
 <template>
@@ -26,14 +26,11 @@ definePageMeta({
 </template>
 <style scoped>
 .clickable-sheet {
-  /* Плавный переход для всех анимируемых свойств */
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 .clickable-sheet:hover {
-  /* Слегка приподнимаем карточку при наведении */
   transform: translateY(-10px);
-  /* Увеличиваем тень для эффекта "глубины" */
   box-shadow: 0px 12px 24px -6px rgba(0, 0, 0, 0.25) !important;
 }
 </style>
