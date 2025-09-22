@@ -22,7 +22,7 @@ const { meta, handleSubmit } = useForm<{
     name(value: string) {
       if (value?.length === 0) return 'введите фамилию, имя'
       if (value?.length < 4) return 'слишком короткое имя и фамилия'
-      if (value?.length > 22) return 'слишком длинное имя и фамилия'
+      if (value?.length > 200) return 'слишком длинное имя и фамилия'
       return true
     },
     email(value: string) {
