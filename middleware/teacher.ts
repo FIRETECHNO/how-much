@@ -3,9 +3,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
   let isAuth = !!authStore.user
 
   if (isAuth) {
-    if (authStore.user?.roles.indexOf('manager') != -1) {
+    if (authStore.user?.roles.indexOf('teacher') != -1) {
       return true;
     }
   }
-  return navigateTo("/login");
+  return abortNavigation();
 })

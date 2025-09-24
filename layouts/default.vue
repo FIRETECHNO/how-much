@@ -13,6 +13,11 @@ if (['light', 'dark'].includes(String(savedTheme.value))) {
   theme.global.name.value = String(savedTheme.value);
 }
 
+const navigationItems: any[] = [
+  // { title: 'Панель управления', path: '/admin', icon: 'mdi-view-dashboard-outline' },
+  // { title: 'Вакансии', path: '/admin/jobs', icon: 'mdi-briefcase-outline' },
+  // { title: 'Отклики', path: '/admin/responses', icon: 'mdi-file-account-outline' },
+]
 
 function toggleTheme() {
   theme.global.name.value = theme.global.current.value.dark ? "light" : "dark"
@@ -36,6 +41,10 @@ async function logOut() {
         <v-spacer></v-spacer>
 
         <div class="hidden-sm-and-down d-flex align-center">
+          <v-btn v-for="item in navigationItems" :key="item.path" :to="item.path" variant="text" class="mx-1">
+            {{ item.title }}
+          </v-btn>
+
           <v-btn icon @click="toggleTheme" title="Переключить тему">
             <v-icon icon="mdi-theme-light-dark"></v-icon>
           </v-btn>
@@ -51,8 +60,8 @@ async function logOut() {
               </v-btn>
             </template>
             <v-list>
-              <v-list-item to="/me" prepend-icon="mdi-home-outline">
-                <v-list-item-title>Личный кабинет</v-list-item-title>
+              <v-list-item to="/admin/settings" prepend-icon="mdi-cog-outline">
+                <v-list-item-title>Настройки</v-list-item-title>
               </v-list-item>
               <v-divider></v-divider>
               <v-list-item @click="dialog = true" prepend-icon="mdi-logout" base-color="error">
@@ -78,6 +87,11 @@ async function logOut() {
       </v-list>
 
       <v-divider></v-divider>
+
+      <v-list nav>
+        <v-list-item v-for="item in navigationItems" :key="item.path" :to="item.path" :prepend-icon="item.icon"
+          :title="item.title"></v-list-item>
+      </v-list>
 
       <template v-slot:append>
         <div class="pa-2">
