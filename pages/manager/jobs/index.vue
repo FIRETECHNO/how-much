@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "admin",
   middleware: "manager"
 })
 </script>
@@ -9,7 +8,7 @@ definePageMeta({
     <v-row>
       <v-col cols="12" md="6">
 
-        <NuxtLink to="/admin/jobs/upload" class="text-decoration-none">
+        <NuxtLink to="/manager/jobs/upload" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
             <v-icon icon="mdi-upload-box-outline" color="primary" size="80" class="mb-4"></v-icon>
@@ -24,7 +23,7 @@ definePageMeta({
       </v-col>
 
       <v-col cols="12" md="6">
-        <NuxtLink to="/admin/jobs/list" class="text-decoration-none">
+        <NuxtLink to="/manager/jobs/list" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
             <v-icon icon="mdi-account-box-multiple-outline" color="primary" size="80" class="mb-4"></v-icon>
