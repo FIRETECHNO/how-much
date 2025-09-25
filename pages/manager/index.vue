@@ -1,6 +1,5 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: "admin",
   middleware: "manager"
 })
 </script>
@@ -8,7 +7,7 @@ definePageMeta({
   <v-container>
     <v-row>
       <v-col cols="12">
-        <NuxtLink to="/admin/jobs/" class="text-decoration-none">
+        <NuxtLink to="/manager/jobs/" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
             <v-icon icon="mdi-account-box-outline" color="primary" size="80" class="mb-4"></v-icon>

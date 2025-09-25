@@ -1,12 +1,12 @@
-export default defineNuxtRouteMiddleware(() => {
-  let authStore = useAuth()
-  let isAuth = !!authStore.user
+export default defineNuxtRouteMiddleware((to, from) => {
+  const { isAdmin, isManager } = useRole();
 
-  // if (isAuth && authStore.user?.roles[0] == 'admin') {
-  //   return setPageLayout('admin')
-  // } else if (isAuth && authStore.user?.roles[0] == 'student') {
-  //   return setPageLayout('default')
-  // } else if (isAuth && authStore.user?.roles[0] == 'teacher') {
-  //   return setPageLayout('teacher')
-  // }
-})
+  if (isAdmin.value) {
+    return setPageLayout("admin")
+  }
+  if (isManager.value) {
+    return setPageLayout("manager")
+  }
+
+  return setPageLayout("default")
+});

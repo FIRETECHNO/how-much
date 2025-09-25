@@ -1,11 +1,10 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  let authStore = useAuth()
-  let isAuth = !!authStore.user
+  let { isManager } = useRole()
 
-  if (isAuth) {
-    if (authStore.user?.roles.indexOf('manager') != -1) {
-      return true;
-    }
+  if (isManager.value) {
+    return true
   }
+
+
   return navigateTo("/login");
 })

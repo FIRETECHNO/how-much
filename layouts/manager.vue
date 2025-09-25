@@ -2,7 +2,7 @@
 import { useTheme } from "vuetify"
 
 const theme = useTheme()
-const router = useRouter()
+const route = useRoute()
 const savedTheme = useCookie('theme')
 const userStore = useAuth();
 
@@ -12,7 +12,43 @@ let dialog = ref(false);
 if (['light', 'dark'].includes(String(savedTheme.value))) {
   theme.global.name.value = String(savedTheme.value);
 }
+const breadcrumbTranslations: { [key: string]: string } = {
+  "jobs": "Анкеты",
+  "upload": "Загрузка",
+  "list": "Список",
+  "admin": "Админка"
+};
 
+
+const getTitle = (segment: string): string => {
+  return breadcrumbTranslations[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
+};
+
+const breadcrumbs = computed(() => {
+  const pathSegments = route.path.split('/').filter(segment => segment);
+
+  const items = pathSegments.map((segment, index) => {
+    const to = '/' + pathSegments.slice(0, index + 1).join('/');
+    return {
+      title: getTitle(segment),
+      to: to,
+      disabled: index === pathSegments.length - 1,
+    };
+  });
+
+  return [
+    {
+      title: 'Home',
+      to: '/',
+      disabled: route.path === '/',
+    },
+    ...items,
+  ];
+});
+
+const navigationItems: any[] = [
+  { title: 'Анкеты', path: '/manager', icon: 'mdi-account-group-outline' },
+]
 
 function toggleTheme() {
   theme.global.name.value = theme.global.current.value.dark ? "light" : "dark"
@@ -36,6 +72,11 @@ async function logOut() {
         <v-spacer></v-spacer>
 
         <div class="hidden-sm-and-down d-flex align-center">
+          <v-btn v-for="item in navigationItems" :key="item.path" :to="item.path" variant="text" class="mx-1"
+            :prepend-icon="item.icon">
+            {{ item.title }}
+          </v-btn>
+
           <v-btn icon @click="toggleTheme" title="Переключить тему">
             <v-icon icon="mdi-theme-light-dark"></v-icon>
           </v-btn>
@@ -79,6 +120,11 @@ async function logOut() {
 
       <v-divider></v-divider>
 
+      <v-list nav>
+        <v-list-item v-for="item in navigationItems" :key="item.path" :to="item.path" :prepend-icon="item.icon"
+          :title="item.title"></v-list-item>
+      </v-list>
+
       <template v-slot:append>
         <div class="pa-2">
           <!-- <v-btn block variant="tonal" prepend-icon="mdi-cog-outline" to="/admin/settings" class="mb-2">
@@ -92,6 +138,24 @@ async function logOut() {
     </v-navigation-drawer>
 
     <v-main>
+      <v-container v-if="route.path.startsWith('/manager')">
+        <v-row>
+          <v-col cols="12">
+            <v-breadcrumbs :items="breadcrumbs" class="text-h4 font-weight-bold pa-0">
+              <template v-slot:divider>
+                <v-icon icon="mdi-chevron-right"></v-icon>
+              </template>
+              <template v-slot:item="{ item }">
+                <v-breadcrumbs-item :to="item.to" :disabled="item.disabled" class="text-decoration-none">
+                  {{ item.title }}
+                </v-breadcrumbs-item>
+              </template>
+            </v-breadcrumbs>
+          </v-col>
+        </v-row>
+      </v-container>
+
+
       <slot />
     </v-main>
 
