@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     ycBucket: process.env.YC_BUCKET,
     zoomToken: process.env.ZOOM_TOKEN,
     public: {
-      adminEmails: process.env.ADMIN_EMAILS,
+      adminEmails: process.env.NUXT_PUBLIC_ADMIN_EMAILS,
       apiBase: process.env.NUXT_PUBLIC_API_BASE,
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     },
