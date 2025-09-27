@@ -1,12 +1,10 @@
+import type { CompanyFromDadata } from "./company.interface"
+
 export interface User {
 	_id: string
 	name: string
-	surname: string
 	email: string
 	password: string
 	roles: string[]
-	myCourses: string[]
-	createdCourses: string[]
-	avatars: string[]
-	sentSolutions: any
+	company: CompanyFromDadata
 }

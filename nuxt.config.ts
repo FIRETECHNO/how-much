@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     ycSecretAccessKKey: process.env.YC_SECRET,
     ycBucket: process.env.YC_BUCKET,
     zoomToken: process.env.ZOOM_TOKEN,
+    dadataToken: process.env.DADATA_TOKEN,
     public: {
       adminEmails: process.env.NUXT_PUBLIC_ADMIN_EMAILS,
       apiBase: process.env.NUXT_PUBLIC_API_BASE,

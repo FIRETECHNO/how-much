@@ -1,6 +1,218 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useField, useForm } from 'vee-validate'
+import _ from 'lodash'
+import type { CompanyFromDadata } from '~/types/company.interface'
+import { toast } from 'vue3-toastify'
+
+let router = useRouter()
+const auth = useAuth()
+
+let targetCompany = ref<CompanyFromDadata>()
+
+async function checkCompanyAndDisplayIt(inn: string): Promise<boolean> {
+  let res = await $fetch<CompanyFromDadata[]>("/api/dadata/search-company", {
+    method: "GET",
+    query: {
+      q: inn
+    }
+  })
+  console.log(res);
+
+  let companies: CompanyFromDadata[] = res.map(suggestion => {
+    return {
+      value: suggestion.value,
+      data: {
+        name: {
+          full_with_opf: suggestion.data.name?.full_with_opf,
+          short_with_opf: suggestion.data.name?.short_with_opf,
+          full: suggestion.data.name?.full,
+        },
+        inn: suggestion.data.inn,
+        ogrn: suggestion.data.ogrn,
+        okved: suggestion.data.okved,
+        kpp: suggestion.data.kpp || null,
+        address: {
+          value: suggestion.data.address?.value,
+        }
+      }
+    };
+  });
+
+  if (companies.length > 0) {
+    targetCompany.value = companies[0]
+    return true;
+  }
+  targetCompany.value = undefined;
+  return false
+}
+
+const { meta, handleSubmit } = useForm<{
+  name: string,
+  inn: string,
+  email: string,
+  password: string,
+  agreement: boolean,
+}>({
+  initialValues: {
+    name: '',
+    inn: '',
+    email: '',
+    password: '',
+    agreement: false,
+  },
+  validationSchema: {
+    name(value: string) {
+      if (!value) return 'Введите ФИО контактного лица'
+      if (value.length < 4) return 'Слишком короткое ФИО'
+      if (value.length > 200) return 'Слишком длинное ФИО'
+      return true
+    },
+    async inn(value: string) {
+      if (!value) return 'Введите ИНН'
+      if (!/^(\d{10}|\d{12})$/.test(value)) {
+        return 'ИНН должен состоять из 10 или 12 цифр'
+      }
+      return true
+    },
+    email(value: string) {
+      if (!value) return 'Введите почту'
+      if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(value))
+        return 'Некорректный формат почты'
+      return true
+    },
+    password(value: string) {
+      if (!value) return 'Введите пароль'
+      if (value.length < 8) return 'Пароль должен быть не менее 8 символов'
+      if (value.length > 30) return 'Слишком длинный пароль'
+      return true
+    },
+    agreement(value: boolean) {
+      if (value !== true) return 'Необходимо ваше согласие на обработку данных'
+      return true
+    },
+  },
+})
+
+let name = useField<string>('name')
+let inn = useField<string>('inn')
+let email = useField<string>('email')
+let password = useField<string>('password')
+let agreement = useField<boolean>('agreement')
+
+watch(() => inn.value.value, async (newVal) => {
+  let isCompanyFound = await checkCompanyAndDisplayIt(newVal);
+  if (!isCompanyFound)
+    inn.setErrors("Компания с таким ИНН не найдена")
+})
+
+let show_password = ref(false)
+let loading = ref(false)
+
+const submit = handleSubmit(async values => {
+  if (!targetCompany.value) {
+    toast("Непредвиденная ошибка! Перезагрузите страницу", {
+      type: "error",
+      autoClose: 5000
+    })
+    return false;
+  }
+
+  loading.value = true
+
+  let toSend = {
+    name: values.name,
+    email: values.email,
+    password: values.password,
+    company: targetCompany.value,
+    roles: ["employer"],
+  }
+  console.log(toSend);
+
+  let res = await auth.registration(toSend)
+
+  if (res)
+    router.push(`/me`)
+
+  loading.value = false
+})
+</script>
 <template>
   <v-container>
     <BackButton />
+
+    <v-col cols="12" xs="12" sm="10" md="7" lg="5" class="mt-4 ma-auto">
+      <v-card class="d-flex flex-column 
+        justify-center align-center 
+        text-center w-100 pa-6 rounded-lg">
+        <div class="text-h6 font-weight-bold">
+          Регистрация работодателя
+        </div>
+
+        <v-form class="mt-6 w-100" @submit.prevent="submit">
+          <v-text-field label="ФИО контактного лица" placeholder="Иван Иванов Иванович" v-model="name.value.value"
+            :error-messages="name.errors.value" variant="outlined" density="compact" class="w-100" />
+
+          <v-text-field label="ИНН" placeholder="10 или 12 цифр без пробелов" v-model="inn.value.value"
+            :error-messages="inn.errors.value" variant="outlined" density="compact" class="w-100 mt-1" counter="12" />
+
+          <v-card variant="outlined" border v-if="targetCompany" class="mb-8">
+            <v-card-title class="text-h6 pb-1">
+              {{ targetCompany.data.name.short_with_opf }}
+            </v-card-title>
+
+            <v-card-subtitle>
+              {{ targetCompany.data.name.full }}
+            </v-card-subtitle>
+
+            <v-divider class="mx-4 my-2"></v-divider>
+
+            <v-list density="compact">
+              <v-list-item :title="targetCompany.data.inn" subtitle="ИНН" prepend-icon="mdi-identifier"></v-list-item>
+              <v-list-item :title="targetCompany.data.ogrn" subtitle="ОГРН" prepend-icon="mdi-identifier"></v-list-item>
+              <v-list-item v-if="targetCompany.data.kpp" :title="targetCompany.data.kpp" subtitle="КПП"
+                prepend-icon="mdi-identifier"></v-list-item>
+              <v-list-item :title="targetCompany.data.address.value" subtitle="Юридический адрес"
+                prepend-icon="mdi-map-marker-outline"></v-list-item>
+              <v-list-item :title="targetCompany.data.okved" subtitle="Основной вид деятельности (ОКВЭД)"
+                prepend-icon="mdi-briefcase-outline"></v-list-item>
+            </v-list>
+          </v-card>
+
+          <v-text-field label="Рабочий Email" type="email" placeholder="hr@company.com" v-model="email.value.value"
+            :error-messages="email.errors.value" variant="outlined" density="compact" class="w-100 mt-1" />
+
+          <v-text-field label="Пароль" v-model="password.value.value"
+            :append-inner-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append-inner="show_password = !show_password" :type="show_password ? 'text' : 'password'"
+            :error-messages="password.errorMessage.value" variant="outlined" density="compact" class="w-100 mt-1" />
+
+          <v-checkbox v-model="agreement.value.value" :error-messages="agreement.errorMessage.value" class="mt-2">
+            <template v-slot:label>
+              <div class="text-caption text-left">
+                Я согласен на
+                <NuxtLink to="/personal-data-policy" target="_blank" @click.stop class="text-primary">
+                  обработку персональных данных
+                </NuxtLink>
+                и принимаю условия
+                <NuxtLink to="/privacy-policy" target="_blank" @click.stop class="text-primary">
+                  политики конфиденциальности
+                </NuxtLink>
+              </div>
+            </template>
+          </v-checkbox>
+
+          <v-btn type="submit" :disabled="!meta.valid" :loading="loading" color="accent" class="mt-2" block>
+            Зарегистрироваться
+          </v-btn>
+        </v-form>
+
+        <div class="text-subtitle-1 w-100 mt-4">
+          Уже есть аккаунт?
+          <NuxtLink to="/login" class="font-weight-bold text-primary text-decoration-none">
+            Войти
+          </NuxtLink>
+        </div>
+      </v-card>
+    </v-col>
   </v-container>
 </template>
