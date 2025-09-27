@@ -1,6 +1,10 @@
+import type { User } from "~/types/user.interface"
+
 export default {
   registration(user: any): Promise<any> {
-    return useApiFetch('/auth/registration', { method: 'POST', body: user })
+    const { $apiFetch } = useNuxtApp()
+
+    return $apiFetch<any>('/auth/registration', { method: 'POST', body: user })
   },
   registerStudent(user: any): Promise<any> {
     return useApiFetch('/auth/register-student', { method: 'POST', body: user })
@@ -23,7 +27,7 @@ export default {
       body: { email }
     })
   },
-  resetPassword(password: string, userId: string, token: string) {    
+  resetPassword(password: string, userId: string, token: string) {
     return useApiFetch('/auth/reset-password', {
       method: 'POST',
       body: { password, userId, token }
