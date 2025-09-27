@@ -31,7 +31,7 @@ const fullNameRules = [
 ]
 
 const coverLetterRules = [
-  (value: string) => value?.length <= 1000 || 'Сопроводительное письмо не должно превышать 1000 символов.',
+  (value: string) => value?.length <= 1000 || 'Рекомендации рекрутера не должны превышать 1000 символов.',
 ]
 
 async function startUpload() {
@@ -77,7 +77,7 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
       <v-card-title>{{ upload.job }}</v-card-title>
       <v-card-subtitle>{{ upload.fullName }}</v-card-subtitle>
       <v-card-text v-if="upload.coverLetter">
-        <strong>Сопроводительное письмо:</strong>
+        <strong>Рекомендации рекрутера:</strong>
         <p class="my-2">{{ upload.coverLetter }}</p>
 
         <div v-if="upload.video?.src">
@@ -116,7 +116,7 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
               </v-col>
               <v-col cols="12">
                 <v-textarea v-model="formData.coverLetter" variant="outlined" :rules="coverLetterRules"
-                  label="Сопроводительное письмо" counter="1000"></v-textarea>
+                  label="Рекомендации рекрутера" counter="1000"></v-textarea>
               </v-col>
             </v-row>
           </v-container>

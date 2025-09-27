@@ -26,5 +26,11 @@ export default {
         jobId
       }
     })
+  },
+  async getAll(): Promise<JobForm[]> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobForm[]>("/job-form/get-all", {
+      method: "POST",
+    })
   }
 }

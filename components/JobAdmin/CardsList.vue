@@ -24,7 +24,7 @@ await jobsAdminStore.getJobs();
             <p class="text-body-1 text-medium-emphasis mb-4">{{ job.fullName }}</p>
 
             <div class="text-body-2 flex-grow-1">
-              <p class="font-weight-medium mb-1">Сопроводительное письмо:</p>
+              <p class="font-weight-medium mb-1">Рекомендации рекрутера:</p>
               <p style="white-space: pre-wrap;">{{ job.coverLetter }}</p>
             </div>
 
@@ -51,9 +51,9 @@ await jobsAdminStore.getJobs();
             rounded="lg" max-width="800" height="300">
             <div>
               <v-icon class="mb-4" color="grey-lighten-1" icon="mdi-briefcase-search-outline" size="64"></v-icon>
-              <div class="text-h4 font-weight-medium">Вакансии не найдены</div>
+              <div class="text-h4 font-weight-medium">Анкеты не найдены</div>
               <p class="text-body-2 mt-2">
-                Вы еще не создали ни одной вакансии. <b>Нажмите, чтобы добавить первую.</b>
+                Вы еще не создали ни одной анкеты. <b>Нажмите, чтобы добавить первую.</b>
               </p>
             </div>
           </v-sheet>

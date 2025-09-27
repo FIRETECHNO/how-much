@@ -35,18 +35,18 @@ onMounted(fetchJobDetails)
   <v-container>
     <div v-if="loading" class="text-center pa-10">
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-      <p class="mt-4 text-h6">Загрузка данных о вакансии...</p>
+      <p class="mt-4 text-h6">Загрузка данных об анкете...</p>
     </div>
 
     <v-sheet v-else-if="error || !job" class="d-flex align-center justify-center flex-wrap text-center mx-auto pa-6"
       elevation="4" rounded="lg" max-width="800" height="400">
       <div>
         <v-icon class="mb-4" color="error" icon="mdi-alert-circle-outline" size="64"></v-icon>
-        <div class="text-h5 font-weight-medium">Вакансия не найдена</div>
+        <div class="text-h5 font-weight-medium">Анкета не найдена</div>
         <p class="text-body-2 mt-2">
-          Не удалось загрузить информацию о вакансии. Возможно, она была удалена или ссылка неверна.
+          Не удалось загрузить информацию об анкете. Возможно, она была удалена или ссылка неверна.
         </p>
-        <v-btn to="/jobs" color="primary" class="mt-6">К списку вакансий</v-btn>
+        <v-btn to="/jobs" color="primary" class="mt-6">К списку анкет</v-btn>
       </div>
     </v-sheet>
 
@@ -59,7 +59,7 @@ onMounted(fetchJobDetails)
 
         <h1 class="text-h4 font-weight-bold mb-2">{{ job.job }}</h1>
         <v-divider class="my-4"></v-divider>
-        <h2 class="text-h6 mb-3">Сопроводительное письмо:</h2>
+        <h2 class="text-h6 mb-3">Рекомендации рекрутера:</h2>
         <p class="text-body-1" style="white-space: pre-wrap;">{{ job.coverLetter }}</p>
       </v-col>
 
