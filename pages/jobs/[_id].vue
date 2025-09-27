@@ -30,7 +30,6 @@ async function fetchJobDetails() {
 
 onMounted(fetchJobDetails)
 </script>
-
 <template>
   <v-container>
     <div v-if="loading" class="text-center pa-10">
@@ -65,15 +64,31 @@ onMounted(fetchJobDetails)
 
       <v-col cols="12" lg="4">
         <v-card variant="outlined">
-          <v-card-title>Информация</v-card-title>
+          <v-card-title>Информация о кандидате</v-card-title>
           <v-list>
-            <v-list-item :title="job.fullName" subtitle="Контактное лицо"
-              prepend-icon="mdi-account-tie-outline"></v-list-item>
+            <v-list-item :title="job.fullName" subtitle="ФИО" prepend-icon="mdi-account-outline"></v-list-item>
+
+            <v-list-item :href="`tel:${job.phone}`" :title="job.phone" subtitle="Телефон"
+              prepend-icon="mdi-phone-outline">
+              <template v-slot:append>
+                <v-icon icon="mdi-open-in-new" size="small"></v-icon>
+              </template>
+            </v-list-item>
+
+            <v-list-item :href="`https://t.me/${job.telegram}`" target="_blank" :title="`@${job.telegram}`"
+              subtitle="Telegram" prepend-icon="mdi-telegram">
+              <template v-slot:append>
+                <v-icon icon="mdi-open-in-new" size="small"></v-icon>
+              </template>
+            </v-list-item>
+
             <v-list-item title="Активна" subtitle="Статус" prepend-icon="mdi-check-circle-outline"></v-list-item>
           </v-list>
+
           <v-card-actions class="d-flex flex-column ga-2 pa-4">
             <v-btn color="primary" block size="large" variant="flat">Позвать на собеседование</v-btn>
-            <ShareButton :share-url="config.public.siteUrl + '/jobs/' + job._id" />
+            <ShareButton :share-url="`${config.public.siteUrl}/jobs/${job._id}`"
+              :share-title="`Анкета кандидата: ${job.fullName}`" />
           </v-card-actions>
         </v-card>
       </v-col>

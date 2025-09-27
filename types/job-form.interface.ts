@@ -6,6 +6,8 @@ export interface JobForm {
   job: string
   fullName: string
   coverLetter: string
+  phone: string
+  telegram: string
   _id: string
 }
 
@@ -17,6 +19,8 @@ export interface JobForm_upload {
   job: string
   fullName: string
   coverLetter: string
+  phone: string
+  telegram: string
 
   // for upload
   tmpId: number
