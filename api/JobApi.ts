@@ -1,4 +1,5 @@
 import type { JobForm } from "~/types/job-form.interface"
+import type { JobReservation } from "~/types/job-reservation.interface"
 
 export default {
   async saveJob(jobForm: any): Promise<JobForm> {
@@ -31,6 +32,26 @@ export default {
     const { $apiFetch } = useNuxtApp()
     return $apiFetch<JobForm[]>("/job-form/get-all", {
       method: "POST",
+    })
+  },
+  async reserveJob(jobFormId: string, startDate: string, employerId: string): Promise<JobReservation> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobReservation>("/job-form/reserve", {
+      method: "POST",
+      body: {
+        jobFormId,
+        startDate,
+        employerId
+      }
+    })
+  },
+  async getReservedJob(employerId: string): Promise<JobReservation | null> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobReservation | null>("/job-form/get-reserved", {
+      method: "POST",
+      body: {
+        employerId
+      }
     })
   }
 }

@@ -6,10 +6,26 @@ const route = useRoute()
 const jobId = route.params._id as string
 
 const jobsStore = useJobs()
+const rolesStore = useRole();
+
+let { isEmployer, isAdmin } = rolesStore;
+let { reservedJob } = jobsStore
 
 const job = ref<JobForm | null>(null)
 const loading = ref(true)
 const error = ref(false)
+
+const showReserveJobButton = computed<boolean>(() => {
+  if (!reservedJob.value?._id && (isEmployer.value || isAdmin.value)) return true;
+
+  return false;
+})
+
+const showRemainingReserveTime = computed<boolean>(() => {
+  if (reservedJob.value?.jobFormId == job.value?._id)
+    return true;
+  return false;
+})
 
 async function fetchJobDetails() {
   try {
@@ -21,14 +37,21 @@ async function fetchJobDetails() {
       error.value = true
     }
   } catch (e) {
-    console.error('Ошибка при загрузке вакансии:', e)
+    console.error('Ошибка при загрузке вакансии: ', e)
     error.value = true
   } finally {
     loading.value = false
   }
 }
 
-onMounted(fetchJobDetails)
+async function reserveJob() {
+  if (!job.value?._id)
+    return;
+  let res = await jobsStore.reserveJob(job.value?._id)
+}
+
+await jobsStore.getReservedJob()
+await fetchJobDetails()
 </script>
 <template>
   <v-container>
@@ -64,8 +87,8 @@ onMounted(fetchJobDetails)
 
       <v-col cols="12" lg="4">
         <v-card variant="outlined">
-          <v-card-title>Информация о кандидате</v-card-title>
-          <v-list>
+          <v-card-title>Кандидат</v-card-title>
+          <v-list v-if="reservedJob?.jobFormId == job._id">
             <v-list-item :title="job.fullName" subtitle="ФИО" prepend-icon="mdi-account-outline"></v-list-item>
 
             <v-list-item :href="`tel:${job.phone}`" :title="job.phone" subtitle="Телефон"
@@ -81,12 +104,22 @@ onMounted(fetchJobDetails)
                 <v-icon icon="mdi-open-in-new" size="small"></v-icon>
               </template>
             </v-list-item>
-
-            <v-list-item title="Активна" subtitle="Статус" prepend-icon="mdi-check-circle-outline"></v-list-item>
           </v-list>
 
           <v-card-actions class="d-flex flex-column ga-2 pa-4">
-            <v-btn color="primary" block size="large" variant="flat">Позвать на собеседование</v-btn>
+            <v-btn v-if="showReserveJobButton" @click="reserveJob" color="primary" block size="large"
+              variant="flat">Позвать на
+              собеседование</v-btn>
+            <v-btn v-if="showRemainingReserveTime" block size="large" variant="flat">
+              <ClientOnly>
+                <CountdownTimer :start-date="reservedJob?.startDate">
+                  <template v-slot="{ hours, minutes, seconds }">
+                    <span>Осталось {{ hours }}:{{ minutes }}:{{ seconds }}</span>
+                  </template>
+                </CountdownTimer>
+              </ClientOnly>
+            </v-btn>
+
             <ShareButton :share-url="`${config.public.siteUrl}/jobs/${job._id}`"
               :share-title="`Анкета кандидата: ${job.fullName}`" />
           </v-card-actions>

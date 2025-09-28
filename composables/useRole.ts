@@ -12,7 +12,6 @@ export const useRole = () => {
       return false;
     }
     const adminEmails = config.public.adminEmails ? config.public.adminEmails.split(',') : [];
-    console.log(authStore.user.email, adminEmails);
 
     for (let email of adminEmails) {
       if (email === authStore.user.email) {
@@ -35,7 +34,21 @@ export const useRole = () => {
     return true;
   })
 
+
+  const isEmployer = computed(() => {
+    if (!authStore.user) {
+      return false;
+    }
+
+    const hasEmployerRole = authStore.user.roles.includes('employer');
+    if (!hasEmployerRole) {
+      return false;
+    }
+
+    return true;
+  })
+
   return {
-    isAdmin, isManager
+    isAdmin, isManager, isEmployer
   };
 };
