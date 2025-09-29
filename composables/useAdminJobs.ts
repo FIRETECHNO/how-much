@@ -1,8 +1,12 @@
+import AdminApi from "~/api/AdminApi";
 import JobApi from "~/api/JobApi"
 import type { JobForm } from "~/types/job-form.interface"
+import type { User } from "~/types/user.interface";
 
 export function useAdminJobs() {
   let jobForms = useState<JobForm[]>(() => [])
+  let notModeratedEmployers = useState<User[]>(() => [])
+
   function add(data: JobForm) {
     jobForms.value.push(data)
   }
@@ -21,10 +25,21 @@ export function useAdminJobs() {
   }
 
 
+  async function getNotModeratedEmployers() {
+    try {
+      let res = await AdminApi.getNotModeratedEmployers()
+      console.log(res);
+      notModeratedEmployers.value = res
+    } catch (error) {
+      console.log("error useAdminJobs/getNotModeratedEmployers", error);
+    }
+  }
+
+
   return {
     // vars
-    jobForms,
+    jobForms, notModeratedEmployers,
     // functions
-    add, getJobs
+    add, getJobs, getNotModeratedEmployers
   }
 }

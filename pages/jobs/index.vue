@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: "can-view-jobs"
+})
+
 const jobsStore = useJobs()
 
 const { jobs } = jobsStore

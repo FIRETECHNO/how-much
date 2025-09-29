@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  middleware: "can-view-jobs"
+})
+
 import type { JobForm } from '~/types/job-form.interface'
 
 const config = useRuntimeConfig()

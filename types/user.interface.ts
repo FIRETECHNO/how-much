@@ -7,4 +7,5 @@ export interface User {
 	password: string
 	roles: string[]
 	company: CompanyFromDadata
+	isModerated: boolean
 }
