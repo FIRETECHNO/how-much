@@ -6,6 +6,6 @@ export interface User {
 	email: string
 	password: string
 	roles: string[]
-	company: CompanyFromDadata
+	company: CompanyFromDadata | null
 	isModerated: boolean
 }

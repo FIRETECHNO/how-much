@@ -23,7 +23,7 @@ const breadcrumbTranslations: { [key: string]: string } = {
 };
 
 const navigationItems: any[] = [
-  { title: 'Анкеты', path: '/admin', icon: 'mdi-account-group-outline' },
+  { title: 'Панель управления', path: '/admin', icon: 'mdi-account-tie' },
 ];
 
 const getTitle = (segment: string): string => {
@@ -44,7 +44,7 @@ const breadcrumbs = computed(() => {
 
   return [
     {
-      title: 'Home',
+      title: 'Главная',
       to: '/',
       disabled: route.path === '/',
     },

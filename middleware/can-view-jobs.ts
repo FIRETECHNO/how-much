@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  let { isEmployer, isAdmin } = useRole()
+  let { isEmployer, isAdmin, isModerated } = useRole()
 
-  if (isEmployer.value || isAdmin.value) {
+  if ((isEmployer.value && isModerated.value) || isAdmin.value) {
     return true
   }
 

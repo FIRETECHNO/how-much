@@ -38,7 +38,7 @@ const breadcrumbs = computed(() => {
 
   return [
     {
-      title: 'Home',
+      title: 'Главная',
       to: '/',
       disabled: route.path === '/',
     },
@@ -47,7 +47,7 @@ const breadcrumbs = computed(() => {
 });
 
 const navigationItems: any[] = [
-  { title: 'Анкеты', path: '/manager', icon: 'mdi-account-group-outline' },
+  { title: 'Панель управления', path: '/manager', icon: 'mdi-account-tie' },
 ]
 
 function toggleTheme() {

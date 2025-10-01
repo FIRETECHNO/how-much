@@ -6,4 +6,15 @@ export default {
 
     return $apiFetch<any>('/admin/employers/not-moderated', { method: 'POST' })
   },
+  moderateEmployer(userId: string, value: boolean): Promise<any> {
+    const { $apiFetch } = useNuxtApp()
+
+    return $apiFetch<any>('/admin/employers/moderate', {
+      method: 'POST',
+      body: {
+        userId,
+        value
+      }
+    })
+  }
 }

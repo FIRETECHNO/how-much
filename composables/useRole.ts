@@ -48,7 +48,15 @@ export const useRole = () => {
     return true;
   })
 
+  const isModerated = computed(() => {
+    if (!authStore.user) {
+      return false;
+    }
+
+    return authStore.user.isModerated
+  })
+
   return {
-    isAdmin, isManager, isEmployer
+    isAdmin, isManager, isEmployer, isModerated
   };
 };

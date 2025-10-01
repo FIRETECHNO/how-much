@@ -28,10 +28,20 @@ export function useAdminJobs() {
   async function getNotModeratedEmployers() {
     try {
       let res = await AdminApi.getNotModeratedEmployers()
-      console.log(res);
+
       notModeratedEmployers.value = res
     } catch (error) {
       console.log("error useAdminJobs/getNotModeratedEmployers", error);
+    }
+  }
+
+  async function moderateEmployer(userId: string, value: boolean) {
+    try {
+      let res = await AdminApi.moderateEmployer(userId, value)
+      console.log(res);
+
+    } catch (error) {
+      console.log("error useAdminJobs/moderateEmployer", error);
     }
   }
 
@@ -40,6 +50,6 @@ export function useAdminJobs() {
     // vars
     jobForms, notModeratedEmployers,
     // functions
-    add, getJobs, getNotModeratedEmployers
+    add, getJobs, getNotModeratedEmployers, moderateEmployer
   }
 }
