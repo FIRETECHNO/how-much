@@ -53,6 +53,7 @@ let show_password = ref(false)
 let loading = ref(false)
 
 const submit = handleSubmit(async values => {
+  return;
   loading.value = true
   let res = await auth.registration(Object.assign(values, {
     roles: ["manager"],

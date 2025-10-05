@@ -12,12 +12,12 @@ const roles = [
     description: 'Для HR-ов, которые нанимают (физ. лицо, ИП или ООО)',
     icon: 'mdi-account-group-outline'
   },
-  {
-    role: 'manager',
-    title: 'Менеджер',
-    description: 'Для HR-ов, которые выкладывают вакансии (ИП или ООО)',
-    icon: 'mdi-briefcase-account-outline'
-  }
+  // {
+  //   role: 'manager',
+  //   title: 'Менеджер',
+  //   description: 'Для HR-ов, которые выкладывают вакансии (ИП или ООО)',
+  //   icon: 'mdi-briefcase-account-outline'
+  // }
 ]
 </script>
 
