@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const roles = [
   {
-    role: 'applicant',
+    role: 'employee',
     title: 'Соискатель',
     description: 'Я хочу найти работу',
     icon: 'mdi-account-search-outline'

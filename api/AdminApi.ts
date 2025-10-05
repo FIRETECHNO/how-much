@@ -16,5 +16,15 @@ export default {
         value
       }
     })
+  },
+  findEmployee(email: string): Promise<User> {
+    const { $apiFetch } = useNuxtApp()
+
+    return $apiFetch<User>('/admin/employees/find', {
+      method: 'POST',
+      body: {
+        email
+      }
+    })
   }
 }

@@ -95,7 +95,10 @@ await fetchJobDetails()
           <v-list v-if="reservedJob?.jobFormId == job._id">
             <v-list-item :title="job.fullName" subtitle="ФИО" prepend-icon="mdi-account-outline"></v-list-item>
 
-            <v-list-item :href="`tel:${job.phone}`" :title="job.phone" subtitle="Телефон"
+            <v-list-item :title="job.email || 'не указан'" subtitle="Email"
+              prepend-icon="mdi-email-outline"></v-list-item>
+
+            <v-list-item :href="`tel:${job.phone}`" :title="job.phone || 'не указан'" subtitle="Телефон"
               prepend-icon="mdi-phone-outline">
               <template v-slot:append>
                 <v-icon icon="mdi-open-in-new" size="small"></v-icon>

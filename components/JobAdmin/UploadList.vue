@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { toast } from 'vue3-toastify';
 import type { VForm } from 'vuetify/components'
+import { debounce } from 'lodash';
+import AdminApi from '~/api/AdminApi';
 
 const jobsStore = useJobUploads();
 
@@ -9,54 +11,80 @@ const { uploads } = jobsStore;
 const dialog = ref(false)
 const loading = ref(false)
 const form = ref<VForm | null>(null)
+const isCheckingEmail = ref(false);
 
-const formData = ref({
+const formData = ref<{
+  job: string,
+  fullName: string,
+  email: string,
+  phone: string,
+  telegram: string,
+  employeeId: string | null,
+  coverLetter: string
+}>({
   job: '',
   fullName: '',
+  email: '',
   phone: '',
   telegram: '',
-  coverLetter: ''
+  employeeId: null,
+  coverLetter: '',
 })
 
 const jobItems = [
   'Продажи',
   'Маркетинг',
-  'Ассистирование',
+  'Ассистент',
 ]
 
 const jobRules = [
   (value: string) => !!value || 'Необходимо выбрать вакансию.',
 ]
-
 const fullNameRules = [
   (value: string) => !!value || 'ФИО обязательно для заполнения.',
 ]
-
+const emailRules = [
+  (value: string) => !!value || 'Email обязателен.',
+  (value: string) => /.+@.+\..+/.test(value) || 'Некорректный формат email.',
+]
 const phoneRules = [
   (value: string) => !!value || 'Номер телефона обязателен.',
-  // Простое правило, можно усложнить с помощью regex для формата +7...
-  (value: string) => value.length > 5 || 'Слишком короткий номер телефона.',
+  (value: string) => value?.length > 5 || 'Слишком короткий номер телефона.',
 ]
-
 const telegramRules = [
   (value: string) => !!value || 'Ник в Telegram обязателен.',
-  // Проверка, что ник не содержит пробелов и начинается с @ (опционально)
   (value: string) => !/\s/.test(value) || 'Ник не должен содержать пробелы.',
 ]
-
 const coverLetterRules = [
   (value: string) => (value?.length || 0) <= 1000 || 'Рекомендации рекрутера не должны превышать 1000 символов.',
 ]
+
+watch(() => formData.value.email, debounce(async (newEmail) => {
+  if (/.+@.+\..+/.test(newEmail)) {
+    isCheckingEmail.value = true;
+    formData.value.fullName = "";
+
+    const foundUser = await AdminApi.findEmployee(newEmail);
+
+    if (foundUser) {
+      formData.value.fullName = foundUser.name;
+      formData.value.employeeId = foundUser._id;
+      toast.success(`Найден пользователь: ${foundUser.name}`);
+    } else {
+      toast.warn("Соискатель не найден")
+    }
+
+    isCheckingEmail.value = false;
+  }
+}, 800));
 
 async function startUpload() {
   if (!form.value) return
 
   const { valid } = await form.value.validate()
-
   if (valid) {
     loading.value = true
     jobsStore.startUploading(formData.value)
-
     setTimeout(() => {
       dialog.value = false
       loading.value = false
@@ -69,15 +97,10 @@ async function startUpload() {
 async function handleVideoUploadFinished(location: string, tmpId: number) {
   jobsStore.setVideoForUpload(location, tmpId)
   let boolRes = await jobsStore.saveJob(tmpId);
-
   if (boolRes) {
-    toast("Анкета добавлена!", {
-      type: "success",
-    })
+    toast.success("Анкета добавлена!");
   } else {
-    toast("Ошибка при добавлении анкеты!", {
-      type: "error"
-    })
+    toast.error("Ошибка при добавлении анкеты!");
   }
 }
 </script>
@@ -88,28 +111,22 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
         <v-btn prepend-icon="mdi-plus" variant="tonal" @click="dialog = true">начать новую загрузку</v-btn>
       </v-col>
 
-      <!-- Отображение карточек -->
       <v-col v-if="uploads.length > 0" cols="12" md="6" lg="4" v-for="upload in uploads" :key="upload.tmpId">
         <v-card>
           <v-card-title>{{ upload.job }}</v-card-title>
-          <v-card-subtitle>{{ upload.fullName }}</v-card-subtitle>
-
-          <!-- 3. Отображаем новые данные в карточке -->
+          <v-card-subtitle>{{ upload.fullName }} ({{ upload.email }})</v-card-subtitle>
           <v-list density="compact">
-            <v-list-item :title="upload.phone" subtitle="Телефон"></v-list-item>
-            <v-list-item :title="`@${upload.telegram}`" subtitle="Telegram"></v-list-item>
+            <v-list-item :title="upload.phone" subtitle="Телефон" prepend-icon="mdi-phone-outline"></v-list-item>
+            <v-list-item :title="`@${upload.telegram}`" subtitle="Telegram" prepend-icon="mdi-telegram"></v-list-item>
           </v-list>
-
           <v-card-text v-if="upload.coverLetter">
             <strong>Рекомендации рекрутера:</strong>
             <p class="my-2">{{ upload.coverLetter }}</p>
-
             <div v-if="upload.video?.src">
               <strong>Визитка:&nbsp;</strong>
               <NuxtLink target="_blank" :to="upload.video?.src" class="text-primary">{{ upload.video?.src }}</NuxtLink>
             </div>
           </v-card-text>
-
           <v-card-text>
             <VideoUpload @upload-finished="handleVideoUploadFinished($event, upload.tmpId)" />
           </v-card-text>
@@ -122,7 +139,6 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
     </v-row>
   </v-container>
 
-  <!-- Диалоговое окно для ввода данных -->
   <v-dialog v-model="dialog" max-width="600px" persistent>
     <v-card>
       <v-card-title>
@@ -136,6 +152,12 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
                 <v-select v-model="formData.job" variant="outlined" :items="jobItems" :rules="jobRules"
                   label="Направление" required></v-select>
               </v-col>
+
+              <v-col cols="12">
+                <v-text-field v-model="formData.email" variant="outlined" :rules="emailRules" label="Email кандидата"
+                  prepend-inner-icon="mdi-email-outline" :loading="isCheckingEmail" required></v-text-field>
+              </v-col>
+
               <v-col cols="12">
                 <v-text-field v-model="formData.fullName" variant="outlined" :rules="fullNameRules" label="ФИО"
                   required></v-text-field>

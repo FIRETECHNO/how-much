@@ -4,7 +4,7 @@ import JobApi from "~/api/JobApi";
 export function useJobUploads() {
   let uploads = useState<JobForm_upload[]>(() => [])
 
-  function startUploading(jobForm: { job: string, fullName: string, coverLetter: string }) {
+  function startUploading(jobForm: { job: string, fullName: string, email: string, phone: string, telegram: string, employeeId: string | null, coverLetter: string }) {
     uploads.value.push({ ...jobForm, startDate: new Date(), tmpId: Date.now(), video: { src: "" } })
   }
 
