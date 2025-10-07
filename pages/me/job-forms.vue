@@ -83,9 +83,8 @@ onMounted(async () => {
             <v-icon icon="mdi-text-box-search-outline" size="64" color="grey"></v-icon>
             <div class="text-h5 mt-4">У вас пока нет анкет</div>
             <p class="text-medium-emphasis">
-              Создайте свою первую анкету, чтобы начать поиск работы.
+              Обратитесь к нам, чтобы создать анкету!
             </p>
-            <v-btn color="primary" to="/jobs/create" class="mt-6">Создать анкету</v-btn>
           </div>
         </v-sheet>
       </v-col>
