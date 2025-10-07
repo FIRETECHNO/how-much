@@ -2,8 +2,12 @@
 import { useField, useForm } from 'vee-validate'
 import _ from 'lodash'
 
-let router = useRouter()
+const router = useRouter()
+const route = useRoute()
 const auth = useAuth()
+
+const emailFromQuery = ref(route.query.email as string || '');
+const isEmailDisabled = computed(() => !!emailFromQuery.value);
 
 const { meta, handleSubmit } = useForm<{
   name: string,
@@ -13,7 +17,7 @@ const { meta, handleSubmit } = useForm<{
 }>({
   initialValues: {
     name: '',
-    email: '',
+    email: emailFromQuery.value,
     password: '',
     agreement: false,
   },
@@ -53,7 +57,9 @@ let loading = ref(false)
 
 const submit = handleSubmit(async values => {
   loading.value = true
-  let res = await auth.registration(Object.assign(values, {
+  const finalValues = { ...values, email: email.value.value };
+
+  let res = await auth.registration(Object.assign(finalValues, {
     roles: ["employee"],
   }))
 
@@ -62,8 +68,13 @@ const submit = handleSubmit(async values => {
 
   loading.value = false
 })
-</script>
 
+onMounted(() => {
+  if (emailFromQuery.value) {
+    email.setValue(emailFromQuery.value);
+  }
+})
+</script>
 <template>
   <v-container>
     <BackButton />
@@ -81,7 +92,8 @@ const submit = handleSubmit(async values => {
             :error-messages="name.errors.value" variant="outlined" density="compact" class="w-100" />
 
           <v-text-field label="Email" type="email" placeholder="ivan@mail.com" v-model="email.value.value"
-            :error-messages="email.errors.value" variant="outlined" density="compact" class="w-100 mt-1" />
+            :error-messages="email.errors.value" variant="outlined" density="compact" class="w-100 mt-1"
+            :disabled="isEmailDisabled" :readonly="isEmailDisabled" />
 
           <v-text-field label="Пароль" v-model="password.value.value"
             :append-inner-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
