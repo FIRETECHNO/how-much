@@ -189,14 +189,11 @@ const submit = handleSubmit(async values => {
           <v-checkbox v-model="agreement.value.value" :error-messages="agreement.errorMessage.value" class="mt-2">
             <template v-slot:label>
               <div class="text-caption text-left">
-                Я согласен на
-                <NuxtLink to="/personal-data-policy" target="_blank" @click.stop class="text-primary">
-                  обработку персональных данных
-                </NuxtLink>
-                и принимаю условия
-                <NuxtLink to="/privacy-policy" target="_blank" @click.stop class="text-primary">
-                  политики конфиденциальности
-                </NuxtLink>
+                Я согласен с
+                <a href="/documents/Пользовательское_соглашение_для_цифровой_платформы_по_поиску_сотрудников.pdf"
+                  target="_blank" @click.stop class="text-primary">
+                  с политикой конфиденциальности и обработки персональных данных
+                </a>
               </div>
             </template>
           </v-checkbox>

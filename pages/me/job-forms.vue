@@ -4,8 +4,30 @@ const employeeJobFormsStore = useEmployeeJobForms();
 const { myJobForms } = employeeJobFormsStore
 const loading = ref(true);
 
-async function approveJobForm(jobFormId: string) {
-  await employeeJobFormsStore.approveJobForm(jobFormId);
+
+
+const dialog = ref(false); // Управляет видимостью диалога
+const selectedJobFormId = ref<string | null>(null); // Хранит ID анкеты, которую подтверждают
+const agreementChecked = ref(false); // Состояние чекбокса в диалоге
+const isApproving = ref(false); // Состояние загрузки для кнопки в диалоге
+
+function openApproveDialog(jobFormId: string) {
+  selectedJobFormId.value = jobFormId;
+  agreementChecked.value = false;
+  dialog.value = true;
+}
+
+
+async function confirmAndApprove() {
+  if (!selectedJobFormId.value) return;
+
+  isApproving.value = true;
+  try {
+    await employeeJobFormsStore.approveJobForm(selectedJobFormId.value);
+  } finally {
+    isApproving.value = false;
+    dialog.value = false;
+  }
 }
 async function disapproveJobForm(jobFormId: string) {
   await employeeJobFormsStore.disapproveJobForm(jobFormId);
@@ -62,13 +84,13 @@ onMounted(async () => {
 
             <v-card-actions class="pa-3">
               <v-spacer></v-spacer>
-              <v-btn color="success" variant="tonal" size="large" append-icon="mdi-check"
-                @click="approveJobForm(form._id)" v-if="!form.isApproved">
-                Я согласен. Опубликовать!
+              <v-btn v-if="!form.isApproved" color="success" variant="tonal" size="large" append-icon="mdi-check"
+                @click="openApproveDialog(form._id)">
+                Опубликовать анкету
               </v-btn>
-              <v-btn color="error" variant="tonal" size="large" append-icon="mdi-eye-off"
-                @click="disapproveJobForm(form._id)" v-else>
-                Скрыть эту анкету
+              <v-btn v-else color="error" variant="tonal" size="large" append-icon="mdi-eye-off"
+                @click="disapproveJobForm(form._id)">
+                Скрыть анкету
               </v-btn>
             </v-card-actions>
           </div>
@@ -89,5 +111,51 @@ onMounted(async () => {
         </v-sheet>
       </v-col>
     </v-row>
+
+
+
+    <v-dialog v-model="dialog" max-width="650" persistent>
+      <v-card>
+        <v-card-title class="text-h5 font-weight-bold">
+          Подтверждение публикации анкеты
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text class="text-body-1">
+          <p class="mb-4">
+            Перед публикацией вашей анкеты, пожалуйста, внимательно ознакомьтесь с условиями.
+            Нажимая "Подтвердить", вы даете свое согласие на то, что ваши персональные данные,
+            включая ФИО, контакты и видео-визитку, будут доступны для просмотра
+            зарегистрированным работодателям на платформе "Сколько".
+          </p>
+          <p>
+            Вы можете в любой момент скрыть свою анкету из общего доступа в личном кабинете.
+            Подробные условия описаны в
+            <a href="/documents/Согласие_на_использование_видео_и_аудио_Соискатель.docx" target="_blank"
+              class="text-primary">
+              Пользовательском соглашении.
+            </a>
+          </p>
+
+          <v-checkbox v-model="agreementChecked" class="mt-4">
+            <template v-slot:label>
+              <div class="font-weight-medium">
+                Я прочитал(а) и принимаю условия публикации
+              </div>
+            </template>
+          </v-checkbox>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions class="pa-4">
+          <v-spacer></v-spacer>
+          <v-btn variant="text" @click="dialog = false">
+            Отмена
+          </v-btn>
+          <v-btn color="success" variant="flat" :disabled="!agreementChecked" :loading="isApproving"
+            @click="confirmAndApprove">
+            Подтвердить и опубликовать
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
