@@ -48,6 +48,19 @@ export const useRole = () => {
     return true;
   })
 
+  const isEmployee = computed(() => {
+    if (!authStore.user) {
+      return false;
+    }
+
+    const hasEmployeeRole = authStore.user.roles.includes('employee');
+    if (!hasEmployeeRole) {
+      return false;
+    }
+
+    return true;
+  })
+
   const isModerated = computed(() => {
     if (!authStore.user) {
       return false;
@@ -57,6 +70,6 @@ export const useRole = () => {
   })
 
   return {
-    isAdmin, isManager, isEmployer, isModerated
+    isAdmin, isManager, isEmployer, isEmployee, isModerated
   };
 };

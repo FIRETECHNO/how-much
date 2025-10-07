@@ -53,5 +53,32 @@ export default {
         employerId
       }
     })
-  }
+  },
+  async getMyJobForms(employeeId: string): Promise<JobForm[]> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobForm[]>("/job-form/get-by-employee-id", {
+      method: "POST",
+      body: {
+        employeeId
+      }
+    })
+  },
+  async approveJobForm(jobFormId: string): Promise<JobForm> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobForm>("/job-form/approve", {
+      method: "POST",
+      body: {
+        jobFormId
+      }
+    })
+  },
+  async disapproveJobForm(jobFormId: string): Promise<JobForm> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobForm>("/job-form/disapprove", {
+      method: "POST",
+      body: {
+        jobFormId
+      }
+    })
+  },
 }

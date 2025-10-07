@@ -10,6 +10,7 @@ export interface JobForm {
   telegram: string
   email: string
   employeeId: string | null,
+  isApproved: boolean
   _id: string
 }
 
