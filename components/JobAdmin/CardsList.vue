@@ -18,22 +18,30 @@ await jobsAdminStore.getJobs();
           </v-responsive>
 
           <v-divider></v-divider>
-
           <div class="d-flex flex-column flex-grow-1 pa-4">
-            <h3 class="text-h5 font-weight-bold">{{ job.job }}</h3>
-            <p class="text-body-1 text-medium-emphasis mb-4">{{ job.fullName }}</p>
+            <div class="d-flex justify-space-between align-start">
+              <div>
+                <h3 class="text-h5 font-weight-bold">{{ job.job }}</h3>
+                <p class="text-body-1 text-medium-emphasis">{{ job.fullName }}</p>
+              </div>
+              <v-chip :color="job.isApproved ? 'success' : 'warning'"
+                :prepend-icon="job.isApproved ? 'mdi-check-circle' : 'mdi-clock-outline'" variant="flat" size="small"
+                class="mt-1">
+                {{ job.isApproved ? 'Одобрена' : 'На модерации' }}
+              </v-chip>
+            </div>
 
-            <div class="text-body-2 flex-grow-1">
+            <div class="text-body-2 flex-grow-1 mt-4">
               <p class="font-weight-medium mb-1">Рекомендации рекрутера:</p>
-              <p style="white-space: pre-wrap;">{{ job.coverLetter }}</p>
+              <p style="white-space: pre-wrap;">{{ job.coverLetter || "-" }}</p>
             </div>
 
             <v-card-actions class="mt-4 pa-0">
-              <ShareButton :share-url="config.public.siteUrl + '/jobs/' + job._id" />
+              <ShareButton :share-url="`${config.public.siteUrl}/jobs/${job._id}`" />
 
-              <v-btn variant="text" prepend-icon="mdi-pencil-outline">
+              <!-- <v-btn variant="text" prepend-icon="mdi-pencil-outline">
                 Редактировать
-              </v-btn>
+              </v-btn> -->
               <v-spacer></v-spacer>
               <v-btn :to="`/jobs/${job._id}`" color="primary" variant="flat" append-icon="mdi-arrow-right">
                 Посмотреть
