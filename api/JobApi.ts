@@ -81,4 +81,13 @@ export default {
       }
     })
   },
+  async boostJobForm(jobFormId: string, raiseDate: string): Promise<JobForm> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobForm>("/job-form/boost", {
+      method: "POST",
+      body: {
+        jobFormId, raiseDate
+      }
+    })
+  },
 }

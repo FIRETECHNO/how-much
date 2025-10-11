@@ -11,6 +11,8 @@ export interface JobForm {
   email: string
   employeeId: string | null,
   isApproved: boolean
+  lastReservationDate: string
+  lastRaiseDate: string
   _id: string
 }
 

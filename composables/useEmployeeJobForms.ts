@@ -4,7 +4,7 @@ import type { JobForm } from "~/types/job-form.interface";
 
 export function useEmployeeJobForms() {
   let myJobForms = useState<JobForm[]>(() => [])
-
+  const BOOST_DELTA = 2 * 24 * 60 * 60 * 1000;
 
   async function getMyJobForms() {
     const authStore = useAuth()
@@ -67,12 +67,32 @@ export function useEmployeeJobForms() {
     }
   }
 
+  async function boostJobForm(jobFormId: string) {
+    try {
+      let date = new Date()
 
+      let res = await JobApi.boostJobForm(jobFormId, date.toISOString())
+      if (res._id) {
+        for (let i = 0; i < myJobForms.value.length; i++) {
+          if (myJobForms.value[i]._id == res._id) {
+            myJobForms.value[i].isApproved = true;
+            toast("Анкета поднята в поиске!", {
+              type: "success"
+            })
+            break;
+          }
+        }
+      }
+
+    } catch (error: any) {
+      console.log("error approveJobForm/getMyJobForms", error);
+    }
+  }
 
   return {
     // vars
-    myJobForms,
+    myJobForms, BOOST_DELTA,
     // functions
-    getMyJobForms, approveJobForm, disapproveJobForm
+    getMyJobForms, approveJobForm, disapproveJobForm, boostJobForm
   }
 }

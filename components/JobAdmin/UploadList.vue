@@ -52,7 +52,6 @@ const phoneRules = [
   (value: string) => value?.length > 5 || 'Слишком короткий номер телефона.',
 ]
 const telegramRules = [
-  (value: string) => !!value || 'Ник в Telegram обязателен.',
   (value: string) => !/\s/.test(value) || 'Ник не должен содержать пробелы.',
 ]
 const coverLetterRules = [
@@ -169,7 +168,7 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field v-model="formData.telegram" variant="outlined" :rules="telegramRules"
-                  label="Ник в Telegram" prepend-inner-icon="mdi-telegram" prefix="@" required></v-text-field>
+                  label="Ник в Telegram" prepend-inner-icon="mdi-telegram" prefix="@"></v-text-field>
               </v-col>
 
               <v-col cols="12">
