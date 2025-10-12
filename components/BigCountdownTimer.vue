@@ -10,7 +10,7 @@ const now = ref(new Date());
 let intervalId: ReturnType<typeof setInterval> | null = null;
 
 const timeLeft = computed(() => {
-  const target = new Date(props.startDate).getTime() + props.duration;
+  const target = new Date(props.startDate || "").getTime() + props.duration;
   return Math.max(0, target - now.value.getTime());
 });
 

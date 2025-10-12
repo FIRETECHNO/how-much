@@ -3,7 +3,7 @@ import JobApi from "~/api/JobApi"
 import type { JobForm } from "~/types/job-form.interface";
 
 export function useEmployeeJobForms() {
-  let myJobForms = useState<JobForm[]>(() => [])
+  let myJobForms = useState<JobForm[]>("myJobForms", () => [])
   const BOOST_DELTA = 2 * 24 * 60 * 60 * 1000;
 
   async function getMyJobForms() {
@@ -20,8 +20,9 @@ export function useEmployeeJobForms() {
     }
     try {
       let res = await JobApi.getMyJobForms(authStore.user._id)
-      myJobForms.value = res;
-      console.log(res);
+      myJobForms.value = res.reverse();
+      console.log();
+
 
     } catch (error: any) {
       console.log("error useEmployeeJobForms/getMyJobForms", error);
@@ -76,6 +77,7 @@ export function useEmployeeJobForms() {
         for (let i = 0; i < myJobForms.value.length; i++) {
           if (myJobForms.value[i]._id == res._id) {
             myJobForms.value[i].isApproved = true;
+            myJobForms.value[i].lastRaiseDate = res.lastRaiseDate;
             toast("Анкета поднята в поиске!", {
               type: "success"
             })

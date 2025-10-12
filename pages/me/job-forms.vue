@@ -33,8 +33,8 @@ onMounted(async () => {
     </v-row>
 
     <v-row v-else-if="myJobForms && myJobForms.length > 0">
-      <v-col v-for="form in myJobForms" :key="form._id" cols="12" md="6">
-        <EmployeeJobFormCard :form="form" />
+      <v-col v-for="form in myJobForms" cols="12" md="6">
+        <EmployeeJobFormCard :form="form._id" :key="form._id" />
       </v-col>
     </v-row>
 

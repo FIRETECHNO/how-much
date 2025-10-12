@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import type { JobForm } from '~/types/job-form.interface';
-
 const employeeJobFormsStore = useEmployeeJobForms();
 
 const { myJobForms, BOOST_DELTA } = employeeJobFormsStore
 
-let { form } = defineProps<{
-  form: JobForm
+let props = defineProps<{
+  form: string
 }>()
+
+const form = computed(() => {
+  return myJobForms.value.find(f => f._id === props.form) || null
+})
 
 const dialog = ref(false); // Управляет видимостью диалога
 const selectedJobFormId = ref<string | null>(null); // Хранит ID анкеты, которую подтверждают
@@ -17,7 +19,7 @@ const isApproving = ref(false); // Состояние загрузки для к
 
 function isMustBeBoosted(jobFormId: string): boolean {
   for (let i = 0; i < myJobForms.value.length; i++) {
-    if (!myJobForms.value[i].lastRaiseDate) return true;
+    if (!myJobForms.value[i]?.lastRaiseDate) return true;
 
     if (myJobForms.value[i]._id == jobFormId) {
       let lastRaise = new Date(myJobForms.value[i].lastRaiseDate);
@@ -48,7 +50,8 @@ async function confirmAndApprove() {
   isApproving.value = true;
   try {
     await employeeJobFormsStore.approveJobForm(selectedJobFormId.value);
-  } finally {
+  }
+  finally {
     isApproving.value = false;
     dialog.value = false;
   }
@@ -61,14 +64,14 @@ async function boostJobForm(jobFormId: string) {
 }
 </script>
 <template>
-  <v-card border flat class="d-flex flex-column status-card" height="100%">
+  <v-card border flat class="d-flex flex-column status-card" height="100%" v-if="form">
 
     <div class="status-chip-container">
       <div v-if="form.isApproved">
-        <v-chip variant="elevated" prepend-icon="mdi-clock-outline" class="mr-2">
+        <v-chip variant="elevated" prepend-icon="mdi-clock-outline" class="mr-2" v-if="form.lastRaiseDate">
           <b>
             <ClientOnly>
-              <BigCountdownTimer :start-date="form.lastRaiseDate" :duration="BOOST_DELTA" @finished="" />
+              <BigCountdownTimer :start-date="form.lastRaiseDate" :duration="BOOST_DELTA" />
             </ClientOnly>
           </b>
         </v-chip>
@@ -83,7 +86,7 @@ async function boostJobForm(jobFormId: string) {
       </v-chip>
     </div>
 
-    <v-responsive v-if="form.video && form.video.src" :aspect-ratio="16 / 9">
+    <v-responsive v-if="form.video && form.video?.src" :aspect-ratio="16 / 9">
       <video :src="form.video.src" style="width: 100%; height: 100%; object-fit: cover;" controls></video>
     </v-responsive>
 
@@ -105,18 +108,18 @@ async function boostJobForm(jobFormId: string) {
       </v-list>
 
       <v-card-actions class="pa-3">
-        <v-btn v-if="form.isApproved" variant="tonal" size="small" append-icon="mdi-eye-off"
+        <v-btn v-if="form?.isApproved" variant="tonal" size="small" append-icon="mdi-eye-off"
           @click="disapproveJobForm(form._id)">
           Скрыть
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="!form.isApproved" color="success" variant="tonal" size="large" append-icon="mdi-check"
+        <v-btn v-if="!form?.isApproved" color="success" variant="tonal" size="large" append-icon="mdi-check"
           @click="openApproveDialog(form._id)">
           Опубликовать анкету
         </v-btn>
-        <template v-if="form.isApproved && isMustBeBoosted(form._id)">
+        <template v-if="form?.isApproved && isMustBeBoosted(form._id)">
           <v-btn class="pulsing-button" color="success" variant="tonal" size="large"
-            append-icon="mdi-arrow-up-bold-box-outline" 5 @click="boostJobForm(form._id)">
+            append-icon="mdi-arrow-up-bold-box-outline" @click="boostJobForm(form._id)">
             Поднять в поиске
           </v-btn>
         </template>
