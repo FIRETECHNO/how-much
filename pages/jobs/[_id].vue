@@ -49,9 +49,9 @@ async function fetchJobDetails() {
 }
 
 async function reserveJob() {
-  if (!job.value?._id)
+  if (!job.value?._id || !job.value.employeeId)
     return;
-  let res = await jobsStore.reserveJob(job.value?._id)
+  let res = await jobsStore.reserveJob(job.value._id, job.value.employeeId)
 }
 
 await jobsStore.getReservedJob()

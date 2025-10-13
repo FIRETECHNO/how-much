@@ -7,8 +7,11 @@ const savedTheme = useCookie('theme')
 const userStore = useAuth();
 const employeeJobFormsStore = useEmployeeJobForms()
 
+let { myReservations } = employeeJobFormsStore;
+
 let drawer = ref(false);
 let dialog = ref(false);
+let reservationNotificationDialog = ref(true)
 
 if (['light', 'dark'].includes(String(savedTheme.value))) {
   theme.global.name.value = String(savedTheme.value);
@@ -58,12 +61,12 @@ async function logOut() {
 }
 
 await employeeJobFormsStore.getMyJobForms()
+await employeeJobFormsStore.getReservations()
 
 
 const navigationItems: any[] = [
   { title: 'Мои анкеты', path: '/me/job-forms', icon: 'mdi-briefcase-outline', count: employeeJobFormsStore.myJobForms.value.length },
 ]
-
 </script>
 
 <template>
@@ -174,6 +177,27 @@ const navigationItems: any[] = [
           <v-btn text="Отмена" @click="dialog = false"></v-btn>
           <v-btn text="Да, выйти" color="primary" @click="logOut"></v-btn>
         </template>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="reservationNotificationDialog" fullscreen>
+      <v-card>
+        <template #title>
+          <div class="d-flex justify-space-between align-center">
+            <p class="text-h4 font-weight-medium"><span class="text-primary">На этой неделе</span> вами заинтересовались
+            </p>
+            <v-btn icon="mdi-close" variant="text" @click="reservationNotificationDialog = false">
+            </v-btn>
+          </div>
+        </template>
+
+
+        <EmployeeJobFormReservations :my-reservations="myReservations" />
+
+        <v-container class="mt-8 mb-6">
+          <v-btn color="primary" variant="outlined" block size="x-large"
+            @click="reservationNotificationDialog = false">отлично</v-btn>
+        </v-container>
       </v-card>
     </v-dialog>
 

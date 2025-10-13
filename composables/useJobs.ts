@@ -28,7 +28,7 @@ export function useJobs() {
     }
   }
 
-  async function reserveJob(jobId: string) {
+  async function reserveJob(jobId: string, employeeId: string) {
     try {
       const authStore = useAuth()
       const { isEmployer } = useRole();
@@ -44,7 +44,7 @@ export function useJobs() {
       }
 
       let date = new Date()
-      let res = await JobApi.reserveJob(jobId, date.toISOString(), authStore.user._id)
+      let res = await JobApi.reserveJob(jobId, date.toISOString(), authStore.user._id, employeeId)
 
       reservedJob.value = res;
     } catch (error: any) {

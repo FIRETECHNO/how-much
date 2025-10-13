@@ -1,9 +1,12 @@
 import { toast } from "vue3-toastify";
 import JobApi from "~/api/JobApi"
 import type { JobForm } from "~/types/job-form.interface";
+import type { JobReservationDbWithEmployer } from "~/types/job-reservation.interface";
 
 export function useEmployeeJobForms() {
   let myJobForms = useState<JobForm[]>("myJobForms", () => [])
+  let myReservations = useState<JobReservationDbWithEmployer[]>('myReservations', () => [])
+
   const BOOST_DELTA = 2 * 24 * 60 * 60 * 1000;
 
   async function getMyJobForms() {
@@ -88,10 +91,27 @@ export function useEmployeeJobForms() {
     }
   }
 
+  async function getReservations() {
+    let authStore = useAuth()
+
+    if (!authStore.user?._id) {
+      toast.error("Необходима авторизация")
+      return;
+    }
+
+    try {
+      let res = await JobApi.getReservations(authStore.user._id)
+
+      myReservations.value = res;
+    } catch (error) {
+      console.log("error approveJobForm/getReservations", error);
+    }
+  }
+
   return {
     // vars
-    myJobForms, BOOST_DELTA,
+    myJobForms, BOOST_DELTA, myReservations,
     // functions
-    getMyJobForms, approveJobForm, disapproveJobForm, boostJobForm
+    getMyJobForms, approveJobForm, disapproveJobForm, boostJobForm, getReservations
   }
 }
