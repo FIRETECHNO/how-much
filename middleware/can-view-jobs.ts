@@ -1,3 +1,5 @@
+import { toast } from "vue3-toastify";
+
 export default defineNuxtRouteMiddleware((to, from) => {
   let { isEmployer, isAdmin, isModerated } = useRole()
 
@@ -5,6 +7,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return true
   }
 
-
-  return false;
+  if (process.client) {
+    toast.warn("Вы ещё не можете просматривать анкеты")
+  }
+  return navigateTo("/me");
 })

@@ -4,7 +4,33 @@ definePageMeta({
 })
 
 const auth = useAuth()
+let { isEmployer } = useRole()
 const { user } = storeToRefs(auth)
+const { companyEmail } = useAppConst()
+
+const showNotification = ref(true);
+interface Notification {
+  title: string,
+  description: string,
+  color: string
+}
+
+let notifications = computed<Notification[]>(() => {
+  let res: Notification[] = []
+
+  if (isEmployer.value) {
+    if (!user.value?.isModerated) {
+      res.push({
+        title: "Ваш аккаунт находится на рассмотрении",
+        description: `Наш администратор рассмотрит вашу компанию и одобрит в течение 2 дней. <b>До этого времени возможности платформы будут ограничены</b>.<br/>Рабочая почта для обращений: <a href="mailto:${companyEmail}">${companyEmail}</a>`,
+        color: "warning"
+      })
+    }
+  }
+
+
+  return res
+})
 
 function formatUserRoles(roles: string[] | undefined): string {
   if (!roles || roles.length === 0) {
@@ -19,6 +45,16 @@ function formatUserRoles(roles: string[] | undefined): string {
 
 <template>
   <v-container>
+    <v-row v-if="notifications.length > 0">
+      <v-col cols="12" v-for="(n, index) of notifications" :key="index">
+        <v-alert v-model="showNotification" type="info" :title="n.title" variant="tonal" :color="n.color" prominent
+          icon="mdi-information-outline" class="mb-6">
+          <p class="mt-4" v-html="n.description">
+          </p>
+        </v-alert>
+      </v-col>
+    </v-row>
+
     <h1 class="text-h4 font-weight-bold mb-6">Личный кабинет</h1>
 
     <v-row>
