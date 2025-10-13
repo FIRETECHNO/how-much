@@ -45,17 +45,36 @@ function formatUserRoles(roles: string[] | undefined): string {
 
 <template>
   <v-container>
+    <v-row v-if="isEmployer && user?.isModerated">
+      <v-col cols="12" md="4">
+        <v-card to="/" class="mb-6">
+          <v-card-text class="d-flex align-center">
+            <v-avatar color="primary" variant="tonal" size="56" class="mr-4">
+              <v-icon size="32">mdi-text-box-search-outline</v-icon>
+            </v-avatar>
+            <div>
+              <h3 class="text-h6 font-weight-bold">Поиск анкет</h3>
+              <p class="text-body-2 text-medium-emphasis">Перейти на главную страницу</p>
+            </div>
+            <v-spacer></v-spacer>
+            <v-icon size="24">mdi-chevron-right</v-icon>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
     <v-row v-if="notifications.length > 0">
       <v-col cols="12" v-for="(n, index) of notifications" :key="index">
         <v-alert v-model="showNotification" type="info" :title="n.title" variant="tonal" :color="n.color" prominent
-          icon="mdi-information-outline" class="mb-6">
+          icon="mdi-information-outline">
           <p class="mt-4" v-html="n.description">
           </p>
         </v-alert>
       </v-col>
     </v-row>
 
-    <h1 class="text-h4 font-weight-bold mb-6">Личный кабинет</h1>
+
+    <h1 class="text-h4 font-weight-bold my-6">Личный кабинет</h1>
 
     <v-row>
       <v-col cols="12" md="4">
