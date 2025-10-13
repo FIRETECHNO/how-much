@@ -54,7 +54,7 @@ await jobsStore.getAll()
         <v-sheet rounded="lg" border class="d-flex align-center justify-center text-center pa-10" min-height="400">
           <div>
             <v-icon icon="mdi-briefcase-search-outline" size="64" color="grey"></v-icon>
-            <div class="text-h5 font-weight-medium mt-4">Вакансий пока нет</div>
+            <div class="text-h5 font-weight-medium mt-4">Анкет пока нет</div>
             <p class="text-body-1 text-medium-emphasis mt-2">
               Как только появятся новые предложения, они будут отображены здесь.
             </p>

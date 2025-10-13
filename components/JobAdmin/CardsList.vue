@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const jobsAdminStore = useAdminJobs();
-const { jobForms } = jobsAdminStore;
+import type { JobForm } from '~/types/job-form.interface';
 
 const config = useRuntimeConfig();
 
-
-await jobsAdminStore.getJobs();
+defineProps<{
+  jobForms: JobForm[]
+}>()
 </script>
 
 <template>
@@ -30,6 +30,17 @@ await jobsAdminStore.getJobs();
                 {{ job.isApproved ? 'Одобрена' : 'На модерации' }}
               </v-chip>
             </div>
+
+            <v-divider class="my-3"></v-divider>
+
+            <v-list density="compact">
+              <v-list-item v-if="job.email" :title="job.email" subtitle="Email" prepend-icon="mdi-email-outline"
+                class="px-0"></v-list-item>
+              <v-list-item v-if="job.phone" :title="job.phone" subtitle="Телефон" prepend-icon="mdi-phone-outline"
+                class="px-0"></v-list-item>
+              <v-list-item v-if="job.telegram" :title="`@${job.telegram}`" subtitle="Telegram"
+                prepend-icon="mdi-telegram" class="px-0"></v-list-item>
+            </v-list>
 
             <div class="text-body-2 flex-grow-1 mt-4">
               <p class="font-weight-medium mb-1">Рекомендации рекрутера:</p>
