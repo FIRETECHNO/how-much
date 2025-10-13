@@ -85,7 +85,7 @@ await fetchJobDetails()
 
         <h1 class="text-h4 font-weight-bold mb-2">{{ job.job }}</h1>
         <v-divider class="my-4"></v-divider>
-        <h2 class="text-h6 mb-3" v-if="job.coverLetter.length > 0">Рекомендации рекрутера:</h2>
+        <h2 class="text-h6 mb-3" v-if="job.coverLetter?.length > 0">Рекомендации рекрутера:</h2>
         <p class="text-body-1" style="white-space: pre-wrap;">{{ job.coverLetter }}</p>
       </v-col>
 

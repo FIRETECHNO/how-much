@@ -3,7 +3,7 @@ const props = defineProps<{
   startDate: string
 }>();
 
-const RESERVATION_DURATION = 6 * 60 * 60 * 1000;
+const { RESERVATION_DURATION } = useEmployer();
 
 const emit = defineEmits(['finished']);
 

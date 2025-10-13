@@ -1,5 +1,5 @@
 import type { JobForm } from "~/types/job-form.interface"
-import type { JobReservation } from "~/types/job-reservation.interface"
+import type { JobReservation, JobReservationDb } from "~/types/job-reservation.interface"
 
 export default {
   async saveJob(jobForm: any): Promise<JobForm> {
@@ -87,6 +87,15 @@ export default {
       method: "POST",
       body: {
         jobFormId, raiseDate
+      }
+    })
+  },
+  async getEmployerJobFormsHistory(employerId: string): Promise<JobReservationDb[]> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobReservationDb[]>("/job-form/job-reservation/by-employer", {
+      method: "POST",
+      body: {
+        employerId
       }
     })
   },
