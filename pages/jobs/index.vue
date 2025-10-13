@@ -14,7 +14,7 @@ await jobsStore.getAll()
   <v-container>
     <v-row>
       <v-col cols="12" class="text-center mb-8">
-        <h1 class="text-h3 font-weight-bold">Кандидаты</h1>
+        <h1 class="text-h3 font-weight-bold">Анкеты</h1>
         <p class="text-h6 text-medium-emphasis mt-2">
           Найдите соискателя мечты среди лучших предложений.
         </p>

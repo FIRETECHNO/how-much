@@ -78,7 +78,7 @@ const navigationItems: any[] = [
 
         <div class="hidden-sm-and-down d-flex align-center">
           <template v-for="item in navigationItems" :key="item.path">
-            <v-badge :model-value="item.count && item.count > 0" :content="item.count" color="">
+            <v-badge :model-value="item.count > 0" :content="item.count" color="">
               <v-btn :to="item.path" variant="text" class="mx-1" :prepend-icon="item.icon">
                 {{ item.title }}
               </v-btn>

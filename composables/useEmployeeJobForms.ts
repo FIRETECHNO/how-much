@@ -21,9 +21,6 @@ export function useEmployeeJobForms() {
     try {
       let res = await JobApi.getMyJobForms(authStore.user._id)
       myJobForms.value = res.reverse();
-      console.log();
-
-
     } catch (error: any) {
       console.log("error useEmployeeJobForms/getMyJobForms", error);
     }
