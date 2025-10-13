@@ -6,7 +6,7 @@ definePageMeta({
 <template>
   <v-container>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" md="4">
         <NuxtLink to="/admin/jobs/" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
@@ -20,7 +20,7 @@ definePageMeta({
           </v-sheet>
         </NuxtLink>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="12" md="4">
         <NuxtLink to="/admin/employers/" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
@@ -30,6 +30,20 @@ definePageMeta({
             </p>
             <p class="text-body-1 text-grey-darken-1 mt-2">
               Модерация и присвоение прав работодателю
+            </p>
+          </v-sheet>
+        </NuxtLink>
+      </v-col>
+      <v-col cols="12" md="4">
+        <NuxtLink to="/admin/job-reservations/" class="text-decoration-none">
+          <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6 text-center" rounded="lg"
+            elevation="6" height="350">
+            <v-icon icon="mdi-chart-timeline-variant" color="primary" size="80" class="mb-4"></v-icon>
+            <p class="text-h4 font-weight-bold text-grey-darken-3">
+              Активность
+            </p>
+            <p class="text-body-1 text-grey-darken-1 mt-2">
+              Просмотр истории бронирований анкет
             </p>
           </v-sheet>
         </NuxtLink>

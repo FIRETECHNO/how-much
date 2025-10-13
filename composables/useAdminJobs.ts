@@ -1,11 +1,13 @@
 import AdminApi from "~/api/AdminApi";
 import JobApi from "~/api/JobApi"
 import type { JobForm } from "~/types/job-form.interface"
+import type { JobReservationDbWithEmployer } from "~/types/job-reservation.interface";
 import type { User } from "~/types/user.interface";
 
 export function useAdminJobs() {
-  let jobForms = useState<JobForm[]>(() => [])
-  let notModeratedEmployers = useState<User[]>(() => [])
+  let jobForms = useState<JobForm[]>("jobForms", () => [])
+  let notModeratedEmployers = useState<User[]>("notModeratedEmployers", () => [])
+  let jobReservations = useState<JobReservationDbWithEmployer[]>("jobReservations", () => [])
 
   function add(data: JobForm) {
     jobForms.value.push(data)
@@ -45,11 +47,20 @@ export function useAdminJobs() {
     }
   }
 
+  async function getAllReservations() {
+    try {
+      let res = await AdminApi.getAllReservations()
+      jobReservations.value = res;
+    } catch (error) {
+      console.log("error useAdminJobs/getAllReservations", error);
+    }
+  }
+
 
   return {
     // vars
-    jobForms, notModeratedEmployers,
+    jobForms, notModeratedEmployers, jobReservations,
     // functions
-    add, getJobs, getNotModeratedEmployers, moderateEmployer
+    add, getJobs, getNotModeratedEmployers, moderateEmployer, getAllReservations
   }
 }

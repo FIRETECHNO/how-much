@@ -1,4 +1,5 @@
 import type { User } from "~/types/user.interface"
+import type { JobReservationDbWithEmployer } from "~/types/job-reservation.interface"
 
 export default {
   getNotModeratedEmployers(): Promise<User[]> {
@@ -24,6 +25,15 @@ export default {
       method: 'POST',
       body: {
         email
+      }
+    })
+  },
+  getAllReservations(): Promise<JobReservationDbWithEmployer[]> {
+    const { $apiFetch } = useNuxtApp()
+
+    return $apiFetch<JobReservationDbWithEmployer[]>('/admin/job-reservations/get-all', {
+      method: 'POST',
+      body: {
       }
     })
   }
