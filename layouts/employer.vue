@@ -28,6 +28,7 @@ await employerStore.getJobFormsHistory()
 
 
 const navigationItems: any[] = [
+  { title: 'Поиск анкет', path: '/jobs', icon: 'mdi-text-box-search-outline' },
   { title: 'Избранные анкеты', path: '/employer/job-form-history', icon: 'mdi-star-outline', count: employerStore.jobFormsHistory.value.length },
 ]
 </script>
@@ -42,9 +43,9 @@ const navigationItems: any[] = [
 
         <v-spacer></v-spacer>
 
-        <div class="hidden-sm-and-down d-flex align-center">
+        <div class="d-md-flex d-none align-center">
           <template v-for="item in navigationItems" :key="item.path">
-            <v-badge :model-value="item.count > 0" :content="item.count" color="">
+            <v-badge :model-value="item.count > 0" :content="item.count" color="primary">
               <v-btn :to="item.path" variant="text" class="mx-1" :prepend-icon="item.icon">
                 {{ item.title }}
               </v-btn>
@@ -66,7 +67,7 @@ const navigationItems: any[] = [
               </v-btn>
             </template>
             <v-list>
-              <v-list-item to="/me" prepend-icon="mdi-home-outline">
+              <v-list-item to="/me" prepend-icon="mdi-account-outline">
                 <v-list-item-title>Личный кабинет</v-list-item-title>
               </v-list-item>
               <v-divider></v-divider>
@@ -83,7 +84,7 @@ const navigationItems: any[] = [
 
     <v-navigation-drawer v-model="drawer" location="right" temporary>
       <v-list>
-        <v-list-item :title="userStore.user?.name" :subtitle="userStore.user?.email">
+        <v-list-item :title="userStore.user?.name" :subtitle="userStore.user?.email" to="/me">
           <template v-slot:prepend>
             <v-avatar class="border">
               <span v-if="userStore.user?.name">{{ userStore.user.name[0] }}</span>
@@ -95,15 +96,23 @@ const navigationItems: any[] = [
       <v-divider></v-divider>
 
       <v-list nav>
+        <v-list-item to="/me" prepend-icon="mdi-account-outline" title="Личный кабинет"></v-list-item>
         <v-list-item v-for="item in navigationItems" :key="item.path" :to="item.path" :prepend-icon="item.icon"
-          :title="item.title"></v-list-item>
+          :title="item.title">
+          <template #append v-if="item.count > 0">
+            <v-badge :content="item.count" color="primary" inline></v-badge>
+          </template>
+        </v-list-item>
+      </v-list>
+
+      <v-divider></v-divider>
+
+      <v-list nav>
+        <v-list-item @click="toggleTheme" prepend-icon="mdi-theme-light-dark" title="Сменить тему"></v-list-item>
       </v-list>
 
       <template v-slot:append>
         <div class="pa-2">
-          <!-- <v-btn block variant="tonal" prepend-icon="mdi-cog-outline" to="/admin/settings" class="mb-2">
-            Настройки
-          </v-btn> -->
           <v-btn block color="red" variant="tonal" prepend-icon="mdi-logout" @click="dialog = true">
             Выйти
           </v-btn>

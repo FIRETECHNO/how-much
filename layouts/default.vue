@@ -35,75 +35,17 @@ async function logOut() {
 
         <v-spacer></v-spacer>
 
-        <div class="hidden-sm-and-down d-flex align-center">
+        <div class="d-flex align-center">
           <v-btn icon @click="toggleTheme" title="Переключить тему">
             <v-icon icon="mdi-theme-light-dark"></v-icon>
           </v-btn>
-
-          <v-menu location="bottom end">
-            <template v-slot:activator="{ props }">
-              <v-btn v-bind="props" class="ml-2">
-                <v-avatar size="32" class="mr-2 border">
-                  <span v-if="userStore.user?.name">{{ userStore.user.name[0] }}</span>
-                </v-avatar>
-                {{ userStore.user?.name }}
-                <v-icon icon="mdi-chevron-down"></v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item to="/me" prepend-icon="mdi-home-outline">
-                <v-list-item-title>Личный кабинет</v-list-item-title>
-              </v-list-item>
-              <v-divider></v-divider>
-              <v-list-item @click="dialog = true" prepend-icon="mdi-logout" base-color="error">
-                <v-list-item-title>Выйти</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
         </div>
-
-        <v-app-bar-nav-icon class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       </v-container>
     </v-app-bar>
-
-    <v-navigation-drawer v-model="drawer" location="right" temporary>
-      <v-list>
-        <v-list-item :title="userStore.user?.name" :subtitle="userStore.user?.email">
-          <template v-slot:prepend>
-            <v-avatar class="border">
-              <span v-if="userStore.user?.name">{{ userStore.user.name[0] }}</span>
-            </v-avatar>
-          </template>
-        </v-list-item>
-      </v-list>
-
-      <v-divider></v-divider>
-
-      <template v-slot:append>
-        <div class="pa-2">
-          <!-- <v-btn block variant="tonal" prepend-icon="mdi-cog-outline" to="/admin/settings" class="mb-2">
-            Настройки
-          </v-btn> -->
-          <v-btn block color="red" variant="tonal" prepend-icon="mdi-logout" @click="dialog = true">
-            Выйти
-          </v-btn>
-        </div>
-      </template>
-    </v-navigation-drawer>
 
     <v-main>
       <slot />
     </v-main>
-
-    <v-dialog v-model="dialog" max-width="400">
-      <v-card title="Выйти из аккаунта?" text="Вы уверены, что хотите завершить текущую сессию?">
-        <template v-slot:actions>
-          <v-spacer></v-spacer>
-          <v-btn text="Отмена" @click="dialog = false"></v-btn>
-          <v-btn text="Да, выйти" color="primary" @click="logOut"></v-btn>
-        </template>
-      </v-card>
-    </v-dialog>
 
     <Footer />
   </v-app>
