@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # 7. Порт внутри контейнера (совпадает с твоим PORT)
-ENV PORT=3011
+ENV PORT=3000
 
 # 8. Дополнительные переменные окружения
 ENV NUXT_PUBLIC_ADMIN_EMAILS="grishadzyin@gmail.com,innokentiy.online@ya.ru,glazyrina@anna-glazyrina.ru,rukovich.arina@yandex.ru"
