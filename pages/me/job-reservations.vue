@@ -7,13 +7,13 @@ const employeeJobFormsStore = useEmployeeJobForms();
 
 const loading = ref(true);
 
-const { myJobForms, BOOST_DELTA } = employeeJobFormsStore
+const { myReservations } = employeeJobFormsStore
 
 
 
 onMounted(async () => {
-  if (myJobForms.value.length == 0)
-    await employeeJobFormsStore.getMyJobForms();
+  if (myReservations.value.length == 0)
+    await employeeJobFormsStore.getReservations();
   loading.value = false;
 });
 </script>
@@ -22,9 +22,9 @@ onMounted(async () => {
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-h4 font-weight-bold">Мои анкеты</h1>
+        <h1 class="text-h4 font-weight-bold">Вами заинтересовались</h1>
         <p class="text-medium-emphasis">
-          Здесь отображаются все ваши анкеты и их статусы.
+
         </p>
       </v-col>
     </v-row>
@@ -32,14 +32,12 @@ onMounted(async () => {
     <v-row v-if="loading" class="mt-10">
       <v-col class="text-center">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
-        <p class="mt-4">Загрузка анкет...</p>
+        <p class="mt-4">Загрузка откликов...</p>
       </v-col>
     </v-row>
 
-    <v-row v-else-if="myJobForms && myJobForms.length > 0">
-      <v-col v-for="form in myJobForms" cols="12" md="6">
-        <EmployeeJobFormCard :form="form._id" :key="form._id" />
-      </v-col>
+    <v-row v-else-if="myReservations && myReservations.length > 0">
+      <EmployeeJobFormReservations :my-reservations="myReservations" />
     </v-row>
 
     <v-row v-else>
@@ -47,9 +45,9 @@ onMounted(async () => {
         <v-sheet min-height="400" class="d-flex align-center justify-center text-center" rounded="lg" border>
           <div>
             <v-icon icon="mdi-text-box-search-outline" size="64" color="grey"></v-icon>
-            <div class="text-h5 mt-4">У вас пока нет анкет</div>
+            <div class="text-h5 mt-4">Вас пока не позвали на собеседование</div>
             <p class="text-medium-emphasis">
-              Обратитесь к нам, чтобы создать анкету!
+
             </p>
           </div>
         </v-sheet>

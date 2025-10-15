@@ -11,7 +11,7 @@ let { myReservations } = employeeJobFormsStore;
 
 let drawer = ref(false);
 let dialog = ref(false);
-let reservationNotificationDialog = ref(true)
+let reservationNotificationDialog = ref(false)
 
 if (['light', 'dark'].includes(String(savedTheme.value))) {
   theme.global.name.value = String(savedTheme.value);
@@ -63,9 +63,13 @@ async function logOut() {
 await employeeJobFormsStore.getMyJobForms()
 await employeeJobFormsStore.getReservations()
 
+if (myReservations.value.length > 0) {
+  reservationNotificationDialog.value = true;
+}
 
 const navigationItems: any[] = [
   { title: 'Мои анкеты', path: '/me/job-forms', icon: 'mdi-briefcase-outline', count: employeeJobFormsStore.myJobForms.value.length },
+  { title: 'Работодатели', path: '/me/job-reservations', icon: 'mdi-office-building-outline', count: employeeJobFormsStore.myReservations.value.length },
 ]
 </script>
 
@@ -190,15 +194,13 @@ const navigationItems: any[] = [
 
     <v-dialog v-model="reservationNotificationDialog" fullscreen>
       <v-card>
-        <template #title>
-          <div class="d-flex justify-space-between align-center">
-            <p class="text-h4 font-weight-medium"><span class="text-primary">На этой неделе</span> вами заинтересовались
-            </p>
-            <v-btn icon="mdi-close" variant="text" @click="reservationNotificationDialog = false">
-            </v-btn>
-          </div>
-        </template>
-
+        <div class="d-flex justify-space-between align-center ma-3">
+          <p class="text-h4 font-weight-medium break-normal"><span class="text-primary">На этой неделе</span> вами
+            заинтересовались
+          </p>
+          <v-btn icon="mdi-close" variant="text" @click="reservationNotificationDialog = false">
+          </v-btn>
+        </div>
 
         <EmployeeJobFormReservations :my-reservations="myReservations" />
 
