@@ -17,6 +17,24 @@ const showRemainingReserveTime = computed<boolean>(() => {
   return false
 })
 
+const formattedSalary = computed(() => {
+  const jobForm = props.jobReservation.jobFormId;
+  if (!jobForm) return null;
+
+  const { salaryFrom, salaryTo } = jobForm;
+
+  if (salaryFrom && salaryTo) {
+    return `от ${salaryFrom.toLocaleString('ru-RU')} до ${salaryTo.toLocaleString('ru-RU')} ₽`;
+  }
+  if (salaryFrom) {
+    return `от ${salaryFrom.toLocaleString('ru-RU')} ₽`;
+  }
+  if (salaryTo) {
+    return `до ${salaryTo.toLocaleString('ru-RU')} ₽`;
+  }
+  return null; // Не отображаем, если зарплата не указана
+});
+
 function formatDate(dateString: string) {
   if (!dateString) return 'N/A';
   return new Date(dateString).toLocaleString('ru-RU', {
@@ -55,12 +73,19 @@ function formatDate(dateString: string) {
       </template>
     </v-list-item>
 
-    <v-divider></v-divider>
-
     <div class="d-flex flex-column flex-grow-1 pa-4">
       <v-list-item :title="formatDate(jobReservation.startDate)" subtitle="Дата бронирования"
         prepend-icon="mdi-calendar-clock" density="compact" class="px-0"></v-list-item>
+      <v-divider class="my-3"></v-divider>
 
+      <v-list density="compact" class="flex-grow-1">
+        <v-list-item v-if="formattedSalary" :title="formattedSalary" subtitle="Зарплатные ожидания"
+          prepend-icon="mdi-cash" class="px-0"></v-list-item>
+        <v-list-item v-if="jobReservation.jobFormId?.experience" :title="jobReservation.jobFormId.experience"
+          subtitle="Опыт работы" prepend-icon="mdi-briefcase-clock-outline" class="px-0"></v-list-item>
+        <v-list-item v-if="jobReservation.jobFormId?.workFormat" :title="jobReservation.jobFormId.workFormat"
+          subtitle="Формат работы" prepend-icon="mdi-laptop" class="px-0"></v-list-item>
+      </v-list>
       <v-spacer></v-spacer>
       <v-card-actions class="pa-0 mt-4">
         <v-btn :to="`/jobs/${jobReservation.jobFormId?._id}`" :color="showRemainingReserveTime ? 'primary' : ''"

@@ -13,6 +13,10 @@ export interface JobForm {
   isApproved: boolean
   lastReservationDate: string
   lastRaiseDate: string
+  salaryFrom: number | null,
+  salaryTo: number | null,
+  experience: string,
+  workFormat: string,
   _id: string
 }
 
@@ -29,6 +33,10 @@ export interface JobForm_upload {
   telegram: string
 
   employeeId: string | null,
+  salaryFrom: number | null,
+  salaryTo: number | null,
+  experience: string,
+  workFormat: string,
 
   // for upload
   tmpId: number

@@ -17,7 +17,7 @@ onMounted(async () => {
 </script>
 <template>
   <v-container>
-    <h1 class="text-h4 font-weight-bold mb-6">История просмотров анкет</h1>
+    <h1 class="text-h4 font-weight-bold mb-6">История бронирования анкет</h1>
 
     <v-row v-if="loading" class="mt-10">
       <v-col class="text-center">

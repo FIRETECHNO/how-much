@@ -20,7 +20,11 @@ const formData = ref<{
   phone: string,
   telegram: string,
   employeeId: string | null,
-  coverLetter: string
+  coverLetter: string,
+  salaryFrom: number | null,
+  salaryTo: number | null,
+  experience: string | null,
+  workFormat: string | null,
 }>({
   job: '',
   fullName: '',
@@ -29,13 +33,13 @@ const formData = ref<{
   telegram: '',
   employeeId: null,
   coverLetter: '',
+  salaryFrom: null,
+  salaryTo: null,
+  experience: null,
+  workFormat: null,
 })
 
-const jobItems = [
-  'Продажи',
-  'Маркетинг',
-  'Ассистент',
-]
+const { jobItems, experienceOptions, workFormatOptions } = useAppConst()
 
 const jobRules = [
   (value: string) => !!value || 'Необходимо выбрать вакансию.',
@@ -57,6 +61,12 @@ const telegramRules = [
 const coverLetterRules = [
   (value: string) => (value?.length || 0) <= 1000 || 'Рекомендации рекрутера не должны превышать 1000 символов.',
 ]
+
+const salaryRules = [
+  (v: number | null) => v === null || v >= 0 || 'Зарплата не может быть отрицательной.',
+];
+const experienceRules = [(v: string) => !!v || 'Необходимо указать опыт работы.'];
+const workFormatRules = [(v: string) => !!v || 'Необходимо указать формат работы.'];
 
 watch(() => formData.value.email, debounce(async (newEmail) => {
   if (/.+@.+\..+/.test(newEmail)) {
@@ -148,8 +158,34 @@ async function handleVideoUploadFinished(location: string, tmpId: number) {
           <v-container>
             <v-row>
               <v-col cols="12">
+                <p class="text-h6">Анкета</p>
+              </v-col>
+
+              <v-col cols="12">
                 <v-select v-model="formData.job" variant="outlined" :items="jobItems" :rules="jobRules"
                   label="Направление" required></v-select>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field v-model.number="formData.salaryFrom" label="Зарплата от" variant="outlined" type="number"
+                  prefix="₽" :rules="salaryRules"></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-text-field v-model.number="formData.salaryTo" label="Зарплата до" variant="outlined" type="number"
+                  prefix="₽" :rules="salaryRules"></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-select v-model="formData.experience" :items="experienceOptions" label="Опыт работы"
+                  variant="outlined" :rules="experienceRules" required></v-select>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-select v-model="formData.workFormat" :items="workFormatOptions" label="Формат работы"
+                  variant="outlined" :rules="workFormatRules" required></v-select>
+              </v-col>
+
+              <v-col cols="12">
+                <p class="text-h6">Личная информация</p>
               </v-col>
 
               <v-col cols="12">

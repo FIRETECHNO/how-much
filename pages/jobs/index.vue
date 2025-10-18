@@ -34,6 +34,24 @@ await jobsStore.getAll()
             <v-card-title class="font-weight-bold">{{ job.job }}</v-card-title>
             <v-card-subtitle>{{ job.fullName }}</v-card-subtitle>
 
+            <v-card-text class="py-2">
+              <div class="d-flex flex-wrap ga-2">
+                <v-chip v-if="job.salaryFrom || job.salaryTo" color="green" size="large" variant="tonal"
+                  prepend-icon="mdi-cash">
+                  <span v-if="job.salaryFrom">от {{ job.salaryFrom.toLocaleString('ru-RU') }}₽</span>
+                  <span v-if="job.salaryTo">до {{ job.salaryTo.toLocaleString('ru-RU') }}₽</span>
+                </v-chip>
+                <v-chip v-if="job.experience && job.experience != 'не указан'" color="blue" size="large" variant="tonal"
+                  prepend-icon="mdi-briefcase-clock-outline">
+                  {{ job.experience }}
+                </v-chip>
+                <v-chip v-if="job.workFormat && job.workFormat != 'не указан'" color="purple" size="large"
+                  variant="tonal" prepend-icon="mdi-laptop">
+                  {{ job.workFormat }}
+                </v-chip>
+              </div>
+            </v-card-text>
+
             <v-card-text class="flex-grow-1">
               <p class="job-description">{{ job.coverLetter }}</p>
             </v-card-text>

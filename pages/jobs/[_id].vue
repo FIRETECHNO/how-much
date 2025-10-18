@@ -31,6 +31,23 @@ const showRemainingReserveTime = computed<boolean>(() => {
   return false;
 })
 
+const formattedSalary = computed(() => {
+  if (!job.value) return null;
+
+  const { salaryFrom, salaryTo } = job.value;
+
+  if (salaryFrom && salaryTo) {
+    return `от ${salaryFrom.toLocaleString('ru-RU')} до ${salaryTo.toLocaleString('ru-RU')} ₽`;
+  }
+  if (salaryFrom) {
+    return `от ${salaryFrom.toLocaleString('ru-RU')} ₽`;
+  }
+  if (salaryTo) {
+    return `до ${salaryTo.toLocaleString('ru-RU')} ₽`;
+  }
+  return null; // Не отображаем, если зарплата не указана
+});
+
 async function fetchJobDetails() {
   try {
     let data = await jobsStore.getById(jobId)
@@ -84,6 +101,19 @@ await fetchJobDetails()
         </v-responsive>
 
         <h1 class="text-h4 font-weight-bold mb-2">{{ job.job }}</h1>
+
+        <div class="d-flex flex-wrap align-center ga-4 my-4">
+          <v-chip v-if="formattedSalary" color="green" variant="tonal" size="x-large" prepend-icon="mdi-cash">
+            {{ formattedSalary }}
+          </v-chip>
+          <v-chip v-if="job.experience" color="blue" variant="tonal" size="x-large"
+            prepend-icon="mdi-briefcase-clock-outline">
+            Опыт: {{ job.experience }}
+          </v-chip>
+          <v-chip v-if="job.workFormat" color="purple" variant="tonal" size="x-large" prepend-icon="mdi-laptop">
+            Формат: {{ job.workFormat }}
+          </v-chip>
+        </div>
         <v-divider class="my-4"></v-divider>
         <h2 class="text-h6 mb-3" v-if="job.coverLetter?.length > 0">Рекомендации рекрутера:</h2>
         <p class="text-body-1" style="white-space: pre-wrap;">{{ job.coverLetter }}</p>
