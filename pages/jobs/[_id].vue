@@ -76,6 +76,12 @@ await fetchJobDetails()
 </script>
 <template>
   <v-container>
+    <v-row>
+      <v-col cols="12">
+        <BackButton />
+      </v-col>
+    </v-row>
+
     <div v-if="loading" class="text-center pa-10">
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
       <p class="mt-4 text-h6">Загрузка данных об анкете...</p>

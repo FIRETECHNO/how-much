@@ -72,11 +72,11 @@ await jobsStore.getAll()
               <v-col cols="12">
                 <p class="text-h6">Зарплата</p>
               </v-col>
-              <v-col cols="6">
+              <!-- <v-col cols="6">
                 <v-text-field v-model.number="salaryFrom" label="От" :step="1000" variant="outlined" type="number"
                   prefix="₽"></v-text-field>
-              </v-col>
-              <v-col cols="6">
+              </v-col> -->
+              <v-col cols="12">
                 <v-text-field v-model.number="salaryTo" label="До" :step="1000" variant="outlined" type="number"
                   prefix="₽"></v-text-field>
               </v-col>
