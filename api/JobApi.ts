@@ -28,10 +28,24 @@ export default {
       }
     })
   },
-  async getAll(): Promise<JobForm[]> {
+  async getAll(
+    selectedJob: string | null,
+    selectedExperience: string | null,
+    selectedWorkFormat: string | null,
+    salaryFrom: number | null,
+    salaryTo: number | null
+  ): Promise<JobForm[]> {
     const { $apiFetch } = useNuxtApp()
+
     return $apiFetch<JobForm[]>("/job-form/get-all", {
       method: "POST",
+      body: {
+        selectedJob,
+        selectedExperience,
+        selectedWorkFormat,
+        salaryFrom,
+        salaryTo
+      }
     })
   },
   async reserveJob(jobFormId: string, startDate: string, employerId: string, employeeId: string): Promise<JobReservation> {

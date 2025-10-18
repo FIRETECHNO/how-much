@@ -1,11 +1,42 @@
 <script setup lang="ts">
+import { useIntersectionObserver } from '@vueuse/core';
+
 definePageMeta({
   middleware: "can-view-jobs"
 })
 
 const jobsStore = useJobs()
+const filtersStore = useJobFormsFilters()
+const {
+  selectedJob,
+  selectedExperience,
+  selectedWorkFormat,
+  salaryFrom,
+  salaryTo,
+  clearFilters, applyFilters } = filtersStore;
 
 const { jobs } = jobsStore
+
+const { jobItems, experienceOptions, workFormatOptions } = useAppConst()
+
+const dialog = ref(false);
+const showFab = ref(false);
+const initialFiltersRef = ref<HTMLElement | null>(null);
+
+function applyAndClose() {
+  dialog.value = false;
+  applyFilters()
+}
+
+
+useIntersectionObserver(
+  initialFiltersRef,
+  ([{ isIntersecting }]) => {
+    // Показываем кнопку, когда элемент НЕ виден на экране
+    showFab.value = !isIntersecting;
+  },
+  { threshold: 0 }
+);
 
 await jobsStore.getAll()
 </script>
@@ -18,6 +49,45 @@ await jobsStore.getAll()
         <p class="text-h6 text-medium-emphasis mt-2">
           Найдите соискателя мечты среди лучших предложений.
         </p>
+      </v-col>
+    </v-row>
+
+    <v-row class="d-flex justify-center">
+      <v-col cols="12" md="8" lg="6" xl="5">
+        <v-card ref="initialFiltersRef" class="mb-8">
+          <v-card-text>
+            <v-row align="center">
+              <v-col cols="12" md="12">
+                <v-autocomplete v-model="selectedJob" :items="jobItems" label="Должность" variant="outlined"
+                  density="comfortable" clearable hide-details></v-autocomplete>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-select v-model="selectedExperience" :items="experienceOptions" label="Опыт работы" variant="outlined"
+                  density="comfortable" clearable hide-details></v-select>
+              </v-col>
+              <v-col cols="12" md="6">
+                <v-select v-model="selectedWorkFormat" :items="workFormatOptions" label="Формат работы"
+                  variant="outlined" density="comfortable" clearable hide-details></v-select>
+              </v-col>
+              <v-col cols="12">
+                <p class="text-h6">Зарплата</p>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model.number="salaryFrom" label="От" :step="1000" variant="outlined" type="number"
+                  prefix="₽"></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field v-model.number="salaryTo" label="До" :step="1000" variant="outlined" type="number"
+                  prefix="₽"></v-text-field>
+              </v-col>
+              <v-col cols="12" class="d-flex">
+                <v-btn @click="clearFilters" variant="tonal" prepend-icon="mdi-close">Сбросить фильтры</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn @click="applyFilters" color="primary" variant="flat">Применить</v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
 
@@ -80,6 +150,42 @@ await jobsStore.getAll()
         </v-sheet>
       </v-col>
     </v-row>
+
+    <v-fab-transition>
+      <v-btn v-if="showFab" @click="dialog = true" icon="mdi-filter-variant" color="primary" position="fixed"
+        size="large" class="fab-header-offset" elevation="8" title="Открыть фильтры"></v-btn>
+    </v-fab-transition>
+
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          <v-icon start>mdi-filter-variant</v-icon>
+          Фильтры
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-autocomplete v-model="selectedJob" :items="jobItems" label="Должность" variant="outlined" clearable
+            class="mb-4"></v-autocomplete>
+          <v-select v-model="selectedExperience" :items="experienceOptions" label="Опыт работы" variant="outlined"
+            clearable class="mb-4"></v-select>
+          <v-select v-model="selectedWorkFormat" :items="workFormatOptions" label="Формат работы" variant="outlined"
+            clearable class="mb-4"></v-select>
+          <p class="text-subtitle-1 font-weight-medium">Зарплата</p>
+          <div class="d-flex ga-2">
+            <v-text-field v-model.number="salaryFrom" :step="1000" label="От" variant="outlined" type="number"
+              prefix="₽"></v-text-field>
+            <v-text-field v-model.number="salaryTo" :step="1000" label="До" variant="outlined" type="number"
+              prefix="₽"></v-text-field>
+          </div>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn @click="clearFilters" variant="text">Сбросить</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn @click="applyAndClose" color="primary" variant="flat">Применить</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -92,5 +198,11 @@ await jobsStore.getAll()
   text-overflow: ellipsis;
   line-height: 1.5em;
   max-height: 6em;
+}
+
+.fab-header-offset {
+  top: 80px;
+  right: 20px;
+  margin: 12px;
 }
 </style>

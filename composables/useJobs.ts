@@ -21,7 +21,21 @@ export function useJobs() {
 
   async function getAll() {
     try {
-      let res = await JobApi.getAll()
+      let {
+        selectedJob,
+        selectedExperience,
+        selectedWorkFormat,
+        salaryFrom,
+        salaryTo
+      } = useJobFormsFilters();
+
+      let res = await JobApi.getAll(
+        selectedJob.value,
+        selectedExperience.value,
+        selectedWorkFormat.value,
+        salaryFrom.value,
+        salaryTo.value
+      )
       jobs.value = res;
     } catch (error) {
       console.log("error useJobs/getAll", error);
