@@ -38,7 +38,7 @@ const navigationItems: any[] = [
     <v-app-bar flat border>
       <v-container class="d-flex align-center">
         <NuxtLink to="/" class="text-decoration-none text-high-emphasis">
-          <div class="font-weight-bold text-h6">Сколько?</div>
+          <div class="font-weight-bold text-h6">Сколько</div>
         </NuxtLink>
 
         <v-spacer></v-spacer>

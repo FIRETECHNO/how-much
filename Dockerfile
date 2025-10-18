@@ -1,29 +1,30 @@
-# 1. Базовый образ Node.js
-FROM node:20-alpine
-
-# 2. Рабочая директория
+# ---------- Этап сборки ----------
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# 3. Копируем package.json и package-lock.json
 COPY package*.json ./
-
-# 4. Устанавливаем зависимости
 RUN npm ci
 
-# 5. Копируем весь проект
 COPY . .
 
-# 6. Сборка Nuxt
+ENV NUXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3011
+
+# Сборка Nuxt
 RUN npm run build
 
-# 7. Порт внутри контейнера (совпадает с твоим PORT)
-ENV PORT=3000
+# ---------- Этап продакшена ----------
+FROM node:20-alpine AS production
+WORKDIR /app
 
-# 8. Дополнительные переменные окружения
-ENV NUXT_PUBLIC_ADMIN_EMAILS="grishadzyin@gmail.com,innokentiy.online@ya.ru,glazyrina@anna-glazyrina.ru,rukovich.arina@yandex.ru"
+COPY --from=builder /app/.output ./.output
+COPY package*.json ./
 
-# 9. Экспонируем порт
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3011
 EXPOSE 3000
 
-# 10. Команда запуска Nuxt production
 CMD ["node", ".output/server/index.mjs"]

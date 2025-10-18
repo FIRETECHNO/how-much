@@ -21,7 +21,7 @@ const socialLinks = [
       <v-row align="center" class="py-4">
         <v-col cols="12" md="4" class="text-center text-md-left">
           <NuxtLink to="/" class="text-h5 font-weight-bold text-decoration-none text-grey-darken-1">
-            Сколько?
+            Сколько
           </NuxtLink>
         </v-col>
 
