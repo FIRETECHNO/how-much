@@ -64,9 +64,7 @@ await jobsStore.getAll()
 
     <v-row class="d-flex justify-center">
       <v-col cols="12" md="8" lg="6" xl="5">
-        <v-card ref="initialFiltersRef" class="mb-8" hover :style="getJobColor(selectedJob) ? {
-          'box-shadow': `0 2px 10px ${getJobColor(selectedJob)}40, 0 0 0 1px ${getJobColor(selectedJob)}40`
-        } : {}">
+        <v-card ref="initialFiltersRef" class="mb-8">
           <v-card-text>
             <v-row align="center">
               <v-col cols="12" md="12">
