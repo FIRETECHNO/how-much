@@ -17,7 +17,7 @@ const {
 
 const { jobs } = jobsStore
 
-const { jobItems, experienceOptions, workFormatOptions } = useAppConst()
+const { jobItems, experienceOptions, workFormatOptions, jobColors } = useAppConst()
 
 const dialog = ref(false);
 const showFab = ref(false);
@@ -28,6 +28,16 @@ function applyAndClose() {
   applyFilters()
 }
 
+// Function to get the actual color value based on job type
+const getJobColor = (jobType: string | null) => {
+  if (!jobType)
+    return undefined;
+
+  const colorKey = jobColors[jobType] || '';
+  if (colorKey === 'primary') return '#1e8d99';
+  if (colorKey === 'secondary') return '#894eff';
+  return colorKey || undefined;
+};
 
 useIntersectionObserver(
   initialFiltersRef,
@@ -54,7 +64,9 @@ await jobsStore.getAll()
 
     <v-row class="d-flex justify-center">
       <v-col cols="12" md="8" lg="6" xl="5">
-        <v-card ref="initialFiltersRef" class="mb-8">
+        <v-card ref="initialFiltersRef" class="mb-8" hover :style="getJobColor(selectedJob) ? {
+          'box-shadow': `0 2px 10px ${getJobColor(selectedJob)}40, 0 0 0 1px ${getJobColor(selectedJob)}40`
+        } : {}">
           <v-card-text>
             <v-row align="center">
               <v-col cols="12" md="12">
@@ -81,9 +93,10 @@ await jobsStore.getAll()
                   prefix="₽"></v-text-field>
               </v-col>
               <v-col cols="12" class="d-flex">
-                <v-btn @click="clearFilters" variant="tonal" prepend-icon="mdi-close">Сбросить фильтры</v-btn>
+                <v-btn @click="clearFilters" variant="tonal" :color="getJobColor(selectedJob)"
+                  prepend-icon="mdi-close">Сбросить фильтры</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn @click="applyFilters" color="primary" variant="flat">Применить</v-btn>
+                <v-btn @click="applyFilters" :color="getJobColor(selectedJob)" variant="flat">Применить</v-btn>
               </v-col>
             </v-row>
           </v-card-text>
@@ -93,7 +106,9 @@ await jobsStore.getAll()
 
     <v-row v-if="jobs && jobs.length > 0" class="d-flex flex-column align-center justify-center">
       <v-col v-for="job in jobs" :key="job._id" cols="12" md="8" lg="6" xl="5">
-        <v-card class="d-flex flex-column" height="100%" hover>
+        <v-card class="d-flex flex-column" height="100%" hover :style="getJobColor(job.job) ? {
+          'box-shadow': `0 4px 20px ${getJobColor(job.job)}40, 0 0 0 2px ${getJobColor(job.job)}40`
+        } : {}">
           <v-responsive v-if="job.video && job.video.src" :aspect-ratio="16 / 9">
             <video :src="job.video.src" style="width: 100%; height: 100%; object-fit: cover;" controls></video>
           </v-responsive>
@@ -101,9 +116,8 @@ await jobsStore.getAll()
           <v-divider v-if="job.video && job.video.src"></v-divider>
 
           <div class="d-flex flex-column flex-grow-1">
-            <v-card-title class="font-weight-bold">{{ job.job }}</v-card-title>
+            <v-card-title class="font-weight-medium text-h4">{{ job.job }}</v-card-title>
             <v-card-subtitle>{{ job.fullName }}</v-card-subtitle>
-
             <v-card-text class="py-2">
               <div class="d-flex flex-wrap ga-2">
                 <v-chip v-if="job.salaryFrom || job.salaryTo" color="green" size="large" variant="tonal"
@@ -128,7 +142,7 @@ await jobsStore.getAll()
 
             <v-card-actions class="pa-4">
               <v-spacer></v-spacer>
-              <v-btn :to="`/jobs/${job._id}`" color="primary" variant="flat">
+              <v-btn :to="`/jobs/${job._id}`" :color="getJobColor(job.job)" variant="flat">
                 Подробнее
               </v-btn>
             </v-card-actions>
@@ -152,8 +166,8 @@ await jobsStore.getAll()
     </v-row>
 
     <v-fab-transition>
-      <v-btn v-if="showFab" @click="dialog = true" icon="mdi-filter-variant" color="primary" position="fixed"
-        size="large" class="fab-header-offset" elevation="8" title="Открыть фильтры"></v-btn>
+      <v-btn v-if="showFab" @click="dialog = true" icon="mdi-filter-variant" :color="getJobColor(selectedJob)"
+        position="fixed" size="large" class="fab-header-offset" elevation="8" title="Открыть фильтры"></v-btn>
     </v-fab-transition>
 
     <v-dialog v-model="dialog" max-width="600px">
@@ -180,9 +194,9 @@ await jobsStore.getAll()
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
-          <v-btn @click="clearFilters" variant="text">Сбросить</v-btn>
+          <v-btn @click="clearFilters" size="large" :color="getJobColor(selectedJob)" variant="tonal">Сбросить</v-btn>
           <v-spacer></v-spacer>
-          <v-btn @click="applyAndClose" color="primary" variant="flat">Применить</v-btn>
+          <v-btn @click="applyAndClose" size="large" :color="getJobColor(selectedJob)" variant="flat">Применить</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
