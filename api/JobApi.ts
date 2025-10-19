@@ -122,5 +122,17 @@ export default {
         employeeId
       }
     })
+  },
+  async submitJobReservationFeedback(reservationId: string, feedback: string, role: "employee" | "employer"): Promise<JobReservation> {
+    const { $apiFetch } = useNuxtApp()
+    let body = {
+      reservationId,
+      employerFeedback: role == "employer" ? feedback : null,
+      employeeFeedback: role == "employee" ? feedback : null,
+    }
+    return $apiFetch<JobReservation>("/job-form/job-reservation/submit-feedback", {
+      method: "POST",
+      body
+    })
   }
 }

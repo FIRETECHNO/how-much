@@ -88,10 +88,20 @@ export function useEmployerJobs() {
     }
   }
 
+  async function submitJobReservationFeedback(reservationId: string, feedback: string) {
+    try {
+      let res = await JobApi.submitJobReservationFeedback(reservationId, feedback, "employer")
+
+      reservedJob.value = res
+    } catch (error) {
+      console.log("error useEmployerJobs/submitJobReservationFeedback", error);
+    }
+  }
+
   return {
     // vars
     jobs, reservedJob,
     // functions
-    getById, getAll, reserveJob, getReservedJob, removeCurrentReservedJob
+    getById, getAll, reserveJob, getReservedJob, removeCurrentReservedJob, submitJobReservationFeedback
   }
 }

@@ -28,7 +28,7 @@ onMounted(async () => {
 
     <v-row v-else-if="jobFormsHistory.length > 0">
       <v-col v-for="item in jobFormsHistory" :key="item._id" cols="12" md="6" lg="4">
-        <EmployerJobReservationCard :job-reservation="item" />
+        <EmployerJobReservationHistoryCard :job-reservation="item" />
       </v-col>
     </v-row>
 

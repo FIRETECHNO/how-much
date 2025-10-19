@@ -86,10 +86,11 @@ function formatDate(dateString: string) {
         <v-list-item v-if="jobReservation.jobFormId?.workFormat" :title="jobReservation.jobFormId.workFormat"
           subtitle="Формат работы" prepend-icon="mdi-laptop" class="px-0"></v-list-item>
       </v-list>
-      <v-spacer></v-spacer>
+      <v-divider class="my-1"></v-divider>
+
       <v-card-actions class="pa-0 mt-4">
         <v-btn :to="`/jobs/${jobReservation.jobFormId?._id}`" :color="showRemainingReserveTime ? 'primary' : ''"
-          variant="flat" block>
+          variant="flat" prepend-icon="mdi-eye">
           Посмотреть анкету
         </v-btn>
       </v-card-actions>
