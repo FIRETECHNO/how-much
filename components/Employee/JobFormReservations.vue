@@ -58,10 +58,16 @@ function formatDate(dateString: string | undefined): string {
             <v-spacer></v-spacer>
 
             <v-card-actions class="pa-0 mt-4">
-              <v-btn v-if="item.employerId?.email" :href="`mailto:${item.employerId.email}`" color="primary"
-                variant="flat" prepend-icon="mdi-email-fast-outline" block>
+              <v-btn v-if="item.employerId?.email" :href="`mailto:${item.employerId.email}`"
+                prepend-icon="mdi-email-fast-outline">
                 Написать на почту
               </v-btn>
+
+              <v-btn color="primary" variant="flat" prepend-icon="mdi-comment-quote-outline" class="fab-pulse"
+                v-if="!item.employeeFeedback?.textContent"
+                :to="`/employee/reservation-feedback-chat/${item._id}`">Обозначить
+                результат
+                встречи</v-btn>
             </v-card-actions>
           </div>
         </v-card>
@@ -83,3 +89,25 @@ function formatDate(dateString: string | undefined): string {
     </v-row>
   </v-container>
 </template>
+<style scoped>
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0.5);
+    transform: scale(1);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--v-theme-primary), 0);
+    transform: scale(1.05);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0);
+    transform: scale(1);
+  }
+}
+
+.fab-pulse {
+  animation: pulse 1.8s infinite;
+}
+</style>

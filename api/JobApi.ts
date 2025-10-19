@@ -123,16 +123,25 @@ export default {
       }
     })
   },
-  async submitJobReservationFeedback(reservationId: string, feedback: string, role: "employee" | "employer"): Promise<JobReservation> {
+  async submitJobReservationFeedback(reservationId: string, feedback: string, role: "employee" | "employer"): Promise<JobReservationDbWithEmployer> {
     const { $apiFetch } = useNuxtApp()
     let body = {
       reservationId,
       employerFeedback: role == "employer" ? feedback : null,
       employeeFeedback: role == "employee" ? feedback : null,
     }
-    return $apiFetch<JobReservation>("/job-form/job-reservation/submit-feedback", {
+    return $apiFetch<JobReservationDbWithEmployer>("/job-form/job-reservation/submit-feedback", {
       method: "POST",
       body
+    })
+  },
+  async getEmployeeReservationById(reservationId: string): Promise<JobReservationDbWithEmployer> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobReservationDbWithEmployer>("/job-form/job-reservation/get-by-id", {
+      method: "POST",
+      body: {
+        reservationId
+      }
     })
   }
 }

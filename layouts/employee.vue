@@ -62,14 +62,18 @@ async function logOut() {
 
 await employeeJobFormsStore.getMyJobForms()
 await employeeJobFormsStore.getReservations()
-
+let excludePaths = ["/employee/job-reservations"]
 if (myReservations.value.length > 0) {
   reservationNotificationDialog.value = true;
 }
 
+if (excludePaths.indexOf(route.path) != -1) {
+  reservationNotificationDialog.value = false
+}
+
 const navigationItems: any[] = [
-  { title: 'Мои анкеты', path: '/me/job-forms', icon: 'mdi-briefcase-outline', count: employeeJobFormsStore.myJobForms.value.length },
-  { title: 'Работодатели', path: '/me/job-reservations', icon: 'mdi-office-building-outline', count: employeeJobFormsStore.myReservations.value.length },
+  { title: 'Мои анкеты', path: '/employee/job-forms', icon: 'mdi-briefcase-outline', count: employeeJobFormsStore.myJobForms.value.length },
+  { title: 'Работодатели', path: '/employee/job-reservations', icon: 'mdi-office-building-outline', count: employeeJobFormsStore.myReservations.value.length },
 ]
 </script>
 

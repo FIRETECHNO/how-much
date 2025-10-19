@@ -1,11 +1,13 @@
 import { toast } from "vue3-toastify";
 import JobApi from "~/api/JobApi"
 import type { JobForm } from "~/types/job-form.interface";
-import type { JobReservationDbWithEmployer } from "~/types/job-reservation.interface";
+import type { JobReservationDbWithEmployer, JobReservation } from "~/types/job-reservation.interface";
 
 export function useEmployeeJobForms() {
   let myJobForms = useState<JobForm[]>("myJobForms", () => [])
   let myReservations = useState<JobReservationDbWithEmployer[]>('myReservations', () => [])
+
+  let actualJobReservation = useState<JobReservationDbWithEmployer>()
 
   const BOOST_DELTA = 2 * 24 * 60 * 60 * 1000;
 
@@ -108,10 +110,36 @@ export function useEmployeeJobForms() {
     }
   }
 
+  async function getActualReservedJob(jobReservation: string) {
+    const authStore = useAuth()
+
+    if (!authStore.user?._id) {
+      console.log("error useEmployeeJobForms/reserveJob: no user presented");
+      return
+    }
+    try {
+      let res = await JobApi.getEmployeeReservationById(jobReservation)
+      if (res != null)
+        actualJobReservation.value = res;
+    } catch (error: any) {
+      console.log("error useEmployeeJobForms/getActualReservedJob", error);
+    }
+  }
+
+  async function submitJobReservationFeedback(reservationId: string, feedback: string) {
+    try {
+      let res = await JobApi.submitJobReservationFeedback(reservationId, feedback, "employee")
+
+      actualJobReservation.value = res
+    } catch (error) {
+      console.log("error useEmployerJobs/submitJobReservationFeedback", error);
+    }
+  }
+
   return {
     // vars
-    myJobForms, BOOST_DELTA, myReservations,
+    myJobForms, BOOST_DELTA, myReservations, actualJobReservation,
     // functions
-    getMyJobForms, approveJobForm, disapproveJobForm, boostJobForm, getReservations
+    getMyJobForms, approveJobForm, disapproveJobForm, boostJobForm, getReservations, getActualReservedJob, submitJobReservationFeedback
   }
 }
