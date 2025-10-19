@@ -3,9 +3,23 @@ import { useTheme } from "vuetify"
 
 const theme = useTheme()
 const route = useRoute()
+const router = useRouter()
 const savedTheme = useCookie('theme')
 const userStore = useAuth();
 const employerStore = useEmployer()
+const employerJobsStore = useEmployerJobs()
+
+let { reservedJob } = employerJobsStore;
+
+let excludedRoutes = ["/employer/reservation-feedback-chat", "/employer/job-form-history"]
+let isReservedFormAlertOpen = ref(true)
+let reservedFormAlertVisible = computed(() => {
+  if (excludedRoutes.indexOf(route.path) != -1) {
+    return false;
+  }
+  if (isReservedFormAlertOpen.value && reservedJob.value?._id) return true
+  return false;
+})
 
 let drawer = ref(false);
 let dialog = ref(false);
@@ -25,7 +39,7 @@ async function logOut() {
 }
 
 await employerStore.getJobFormsHistory()
-
+await employerJobsStore.getReservedJob()
 
 const navigationItems: any[] = [
   { title: 'Поиск анкет', path: '/jobs', icon: 'mdi-text-box-search-outline' },
@@ -134,6 +148,59 @@ const navigationItems: any[] = [
       </v-card>
     </v-dialog>
 
+    <v-card class="fab-pulse" hover size="large" max-width="400px"
+      style="position: fixed; left: 40px; top: 100px; z-index: 9999;" v-if="reservedFormAlertVisible"
+      @click="router.push('/employer/reservation-feedback-chat')">
+      <v-list-item class="py-2" prepend-icon="mdi-account-star-outline" subtitle="Забронированная анкета">
+        <template #title>
+          {{ reservedJob.jobFormId.job }} / {{ reservedJob.jobFormId?.fullName }}
+        </template>
+        <template #append>
+          <v-btn icon="mdi-close" variant="text" size="small" @click.stop="isReservedFormAlertOpen = false"
+            title="Закрыть уведомление"></v-btn>
+        </template>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
+      <v-card-text class="d-flex justify-space-between align-center">
+        <div class="d-flex align-center">
+          <v-icon size="small">mdi-phone-outline</v-icon>
+          <span class="ml-2 font-weight-medium">{{ reservedJob.jobFormId?.phone }}</span>
+        </div>
+
+        <ClientOnly>
+          <CountdownTimer :start-date="reservedJob.startDate" @finished="employerJobsStore.removeCurrentReservedJob">
+            <template v-slot="{ hours, minutes, seconds }">
+              <span style="line-height: 1;" class="d-flex align-center">
+                <v-icon size="small" class="mr-1">mdi-clock-outline</v-icon>
+                {{ hours }}:{{ minutes }}:{{ seconds }}
+              </span>
+            </template>
+          </CountdownTimer>
+        </ClientOnly>
+      </v-card-text>
+    </v-card>
+
     <Footer />
   </v-app>
 </template>
+<style scoped>
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0.5);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--v-theme-primary), 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--v-theme-primary), 0);
+  }
+}
+
+.fab-pulse {
+  animation: pulse 1.8s infinite;
+}
+</style>

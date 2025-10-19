@@ -1,19 +1,22 @@
 import { toast } from "vue3-toastify"
 import JobApi from "~/api/JobApi"
 import type { JobForm } from "~/types/job-form.interface"
-import type { JobReservation } from "~/types/job-reservation.interface"
+import type { JobReservation, JobReservationDbWithEmployer } from "~/types/job-reservation.interface"
 
-export function useJobs() {
+export function useEmployerJobs() {
   let jobs = useState<JobForm[]>(() => [])
-  let reservedJob = useState<JobReservation>()
+  let reservedJob = useState<JobReservation | any>()
 
+  function removeCurrentReservedJob() {
+    reservedJob.value = null
+  }
 
   async function getById(jobId: string): Promise<JobForm | null> {
     try {
       let res = await JobApi.getById(jobId);
       return res
     } catch (error) {
-      console.log("error useJobs/getOrganizationJobs", error);
+      console.log("error useEmployerJobs/getOrganizationJobs", error);
     }
 
     return null
@@ -38,7 +41,7 @@ export function useJobs() {
       )
       jobs.value = res;
     } catch (error) {
-      console.log("error useJobs/getAll", error);
+      console.log("error useEmployerJobs/getAll", error);
     }
   }
 
@@ -53,7 +56,7 @@ export function useJobs() {
       }
 
       if (!authStore.user?._id) {
-        console.log("error useJobs/reserveJob: no user presented");
+        console.log("error useEmployerJobs/reserveJob: no user presented");
         return
       }
 
@@ -62,15 +65,18 @@ export function useJobs() {
 
       reservedJob.value = res;
     } catch (error: any) {
-      console.log("error useJobs/reserveJob", error);
+      console.log("error useEmployerJobs/reserveJob", error);
     }
   }
 
   async function getReservedJob() {
     const authStore = useAuth()
 
+    if (reservedJob.value?._id)
+      return
+
     if (!authStore.user?._id) {
-      console.log("error useJobs/reserveJob: no user presented");
+      console.log("error useEmployerJobs/reserveJob: no user presented");
       return
     }
     try {
@@ -78,7 +84,7 @@ export function useJobs() {
       if (res != null)
         reservedJob.value = res;
     } catch (error: any) {
-      console.log("error useJobs/getReservedJob", error);
+      console.log("error useEmployerJobs/getReservedJob", error);
     }
   }
 
@@ -86,6 +92,6 @@ export function useJobs() {
     // vars
     jobs, reservedJob,
     // functions
-    getById, getAll, reserveJob, getReservedJob
+    getById, getAll, reserveJob, getReservedJob, removeCurrentReservedJob
   }
 }

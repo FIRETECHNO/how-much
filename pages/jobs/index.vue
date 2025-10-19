@@ -2,10 +2,10 @@
 import { useIntersectionObserver } from '@vueuse/core';
 
 definePageMeta({
-  middleware: "can-view-jobs"
+  middleware: ["can-view-jobs"]
 })
 
-const jobsStore = useJobs()
+const jobsStore = useEmployerJobs()
 const filtersStore = useJobFormsFilters()
 const {
   selectedJob,

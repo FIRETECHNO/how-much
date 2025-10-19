@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  middleware: "can-view-jobs"
+  middleware: ["can-view-jobs"]
 })
 
 import type { JobForm } from '~/types/job-form.interface'
@@ -9,7 +9,7 @@ const config = useRuntimeConfig()
 const route = useRoute()
 const jobId = route.params._id as string
 
-const jobsStore = useJobs()
+const jobsStore = useEmployerJobs()
 const rolesStore = useRole();
 
 let { isEmployer, isAdmin } = rolesStore;

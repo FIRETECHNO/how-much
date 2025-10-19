@@ -8,7 +8,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   }
 
   if (process.client) {
-    toast.warn("Вы ещё не можете просматривать анкеты")
+    toast.warn("Вы не можете просматривать анкеты")
   }
   return navigateTo("/me");
 })

@@ -28,7 +28,7 @@ export function useJobFormsFilters() {
   async function applyFilters() {
     // save filters
     savedFilters.value = { job: selectedJob.value, experience: selectedExperience.value, workFormat: selectedWorkFormat.value, salaryFrom: salaryFrom.value, salaryTo: salaryTo.value }
-    await useJobs().getAll()
+    await useEmployerJobs().getAll()
   }
 
 
