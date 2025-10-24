@@ -1,0 +1,142 @@
+openapi: 3.0.3
+info:
+  title: How-Much API
+  version: 0.1.0
+  description: |
+    Draft OpenAPI spec for Nuxt server routes. Update as endpoints evolve.
+servers:
+  - url: http://localhost:3011
+    description: Local dev
+paths:
+  /api/upload/initiate:
+    post:
+      summary: Initiate multipart upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fileName]
+              properties:
+                fileName:
+                  type: string
+                contentType:
+                  type: string
+                keyPrefix:
+                  type: string
+      responses:
+        '200':
+          description: Upload initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  UploadId:
+                    type: string
+                  Key:
+                    type: string
+  /api/upload/sign:
+    get:
+      summary: Get presigned URL for upload part
+      parameters:
+        - in: query
+          name: Key
+          schema: { type: string }
+          required: true
+        - in: query
+          name: UploadId
+          schema: { type: string }
+          required: true
+        - in: query
+          name: PartNumber
+          schema: { type: integer, minimum: 1 }
+          required: true
+      responses:
+        '200':
+          description: Presigned URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+  /api/upload/complete:
+    post:
+      summary: Complete multipart upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [Key, UploadId, Parts]
+              properties:
+                Key: { type: string }
+                UploadId: { type: string }
+                Parts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ETag: { type: string }
+                      PartNumber: { type: integer }
+      responses:
+        '200':
+          description: Completed
+  /api/dadata/search-company:
+    get:
+      summary: DaData company suggestions by INN/OGRN
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+      responses:
+        '200':
+          description: Suggestions array
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: object }
+  /api/zoom/user-meetings:
+    get:
+      summary: List previous Zoom meetings for user
+      parameters:
+        - in: query
+          name: userId
+          schema: { type: string }
+      responses:
+        '200':
+          description: Meetings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meetings:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                  created_at: { type: string }
+  /api/zoom/archive-meeting-token:
+    get:
+      summary: Get Zoom local archiving token for meeting
+      parameters:
+        - in: query
+          name: meetingId
+          schema: { type: string }
+      responses:
+        '200':
+          description: Token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+                  expire_in: { type: integer }

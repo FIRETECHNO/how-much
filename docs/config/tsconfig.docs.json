@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "~/*": ["../../*"],
+      "#internal/nitro": ["../../.nuxt/../.nitro/types/internal"],
+      "#app": ["../../.nuxt/types/app"],
+      "#imports": ["../../.nuxt/types/imports"]
+    }
+  },
+  "include": [
+    "../../api/**/*.ts",
+    "../../composables/**/*.ts",
+    "../../stores/**/*.ts",
+    "../../types/**/*.ts",
+    "../../server/utils/**/*.ts"
+  ]
+}
