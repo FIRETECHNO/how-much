@@ -1,0 +1,26 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "../../api/**/*.ts",
+    "../../composables/**/*.ts",
+    "../../stores/**/*.ts",
+    "../../types/**/*.ts",
+    "../../server/utils/**/*.ts"
+  ],
+  "out": "../../public/docs/typedoc",
+  "tsconfig": "./tsconfig.docs.json",
+  "exclude": [
+    "**/*.d.ts",
+    "**/*.spec.ts",
+    "**/node_modules/**",
+    "**/.nuxt/**"
+  ],
+  "excludeExternals": false,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "hideGenerator": true,
+  "categorizeByGroup": true,
+  "sort": ["source-order", "kind"],
+  "cleanOutputDir": true,
+  "skipErrorChecking": true
+}

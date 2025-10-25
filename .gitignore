@@ -25,3 +25,7 @@ logs
 .vscode
 
 public/job-video*
+
+# Generated documentation artifacts (reproducible via `npm run docs`)
+/public/docs/
+/public/api-docs.html

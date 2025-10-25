@@ -7,7 +7,12 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+
+    "docs:types": "rimraf public/docs/typedoc && typedoc --options docs/config/typedoc.json",
+    "docs:components": "rimraf public/docs/components && vue-docgen -c docs/config/docgen.config.cjs && node ./docs/scripts/build-components-index.mjs",
+    "docs:api": "node ./docs/scripts/build-docs-assets.mjs",
+    "docs": "concurrently \"npm:docs:types\" \"npm:docs:components\" \"npm:docs:api\""
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.883.0",
@@ -34,9 +39,15 @@
     "@types/formidable": "^3.4.5",
     "@types/lodash": "^4.17.12",
     "autoprefixer": "^10.4.20",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.2.1",
     "postcss": "^8.4.47",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.14",
+    "typedoc": "^0.28.14",
+    "typedoc-plugin-markdown": "^4.9.0",
     "vite-plugin-vuetify": "^2.0.3",
+    "vue-docgen-cli": "^4.79.0",
     "vuetify": "^3.6.6"
   }
 }
