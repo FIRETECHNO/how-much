@@ -19,10 +19,14 @@ export const useSubscription = () => {
     }
 
     let res = await PaymentApi.createEmployerPaymentOrder(user._id, amount)
-    if (res == null) {
+
+    if (!res?._id) {
       toast.warn("Не получилось создать ссылку для оплаты")
     } else {
+      console.log("createEmployerPaymentOrder---- ");
+      console.log(JSON.stringify(res));
       console.log(res);
+      console.log("createEmployerPaymentOrder---- ");
     }
   }
 
