@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "how-much",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,6 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-
     "docs:types": "rimraf public/docs/typedoc && typedoc --options docs/config/typedoc.json",
     "docs:components": "rimraf public/docs/components && vue-docgen -c docs/config/docgen.config.cjs && node ./docs/scripts/build-components-index.mjs",
     "docs:api": "node ./docs/scripts/build-docs-assets.mjs",

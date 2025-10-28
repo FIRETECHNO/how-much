@@ -5,6 +5,7 @@ definePageMeta({
 
 const auth = useAuth()
 let { isEmployer } = useRole()
+let { isEmployerSubscriptionActive } = useSubscription()
 const { user } = storeToRefs(auth)
 const { companyEmail } = useAppConst()
 
@@ -46,7 +47,7 @@ function formatUserRoles(roles: string[] | undefined): string {
 <template>
   <v-container>
     <v-row v-if="isEmployer && user?.isModerated">
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" v-if="isEmployerSubscriptionActive">
         <v-card to="/" class="mb-6">
           <v-card-text class="d-flex align-center">
             <v-avatar color="primary" variant="tonal" size="56" class="mr-4">
@@ -59,6 +60,25 @@ function formatUserRoles(roles: string[] | undefined): string {
             <v-spacer></v-spacer>
             <v-icon size="24">mdi-chevron-right</v-icon>
           </v-card-text>
+        </v-card>
+      </v-col>
+
+      <v-col cols="8" v-else>
+        <v-card to="/pricing/employer" class="premium-card fill-height">
+          <div class="d-flex flex-no-wrap justify-space-between align-center fill-height pa-4">
+            <div class="mr-4">
+              <h3 class="text-h5 font-weight-bold">Доступ к анкетам</h3>
+              <p class="text-body-1 mt-1">
+                Разблокируйте все возможности платформы!
+              </p>
+              <v-btn variant="outlined" class="mt-4" append-icon="mdi-arrow-right">
+                Выбрать тариф
+              </v-btn>
+            </div>
+            <v-avatar size="80" rounded="0">
+              <v-icon size="64">mdi-rocket-launch-outline</v-icon>
+            </v-avatar>
+          </div>
         </v-card>
       </v-col>
     </v-row>

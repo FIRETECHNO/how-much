@@ -69,6 +69,9 @@ export const useRole = () => {
     return authStore.user.isModerated
   })
 
+
+
+
   return {
     isAdmin, isManager, isEmployer, isEmployee, isModerated
   };
