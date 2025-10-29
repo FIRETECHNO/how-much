@@ -14,7 +14,7 @@ export const useSubscription = () => {
 
   async function createEmployerPaymentOrder(amount: number) {
     let { user } = useAuth()
-    if (!user?._id) {
+    if (!user?._id || !user.email) {
       return toast.error("Пользователь не авторизован!")
     }
 
