@@ -18,7 +18,7 @@ export const useSubscription = () => {
       return toast.error("Пользователь не авторизован!")
     }
 
-    let res = await PaymentApi.createEmployerPaymentOrder(user._id, amount)
+    let res = await PaymentApi.createEmployerPaymentOrder(user._id, amount, user.email)
 
     if (!res?._id) {
       toast.warn("Не получилось создать ссылку для оплаты")
