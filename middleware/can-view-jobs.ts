@@ -1,8 +1,10 @@
 import { toast } from "vue3-toastify";
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   let { isEmployer, isAdmin, isModerated } = useRole()
-  let { isEmployerSubscriptionActive } = useSubscription()
+  let { isEmployerSubscriptionActive, checkSubscriptionStatus } = useSubscription()
+
+  await checkSubscriptionStatus()
 
   if ((isEmployer.value && isModerated.value && isEmployerSubscriptionActive.value) || isAdmin.value) {
     return true

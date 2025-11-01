@@ -10,4 +10,14 @@ export default {
       }
     })
   },
+
+  async getLastUserPayment(userId: string): Promise<EmployerPaymentOrder | null> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<EmployerPaymentOrder | null>("/t-payments/get-last-user-payment", {
+      method: "POST",
+      body: {
+        userId
+      }
+    })
+  }
 }

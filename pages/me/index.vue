@@ -5,7 +5,7 @@ definePageMeta({
 
 const auth = useAuth()
 let { isEmployer } = useRole()
-let { isEmployerSubscriptionActive } = useSubscription()
+let { isEmployerSubscriptionActive, checkSubscriptionStatus } = useSubscription()
 const { user } = storeToRefs(auth)
 const { companyEmail } = useAppConst()
 
@@ -42,6 +42,8 @@ function formatUserRoles(roles: string[] | undefined): string {
     .map(role => role.charAt(0).toUpperCase() + role.slice(1))
     .join(', ')
 }
+
+await checkSubscriptionStatus()
 </script>
 
 <template>
