@@ -25,6 +25,9 @@ export const useSubscription = () => {
     } else {
       console.log("createEmployerPaymentOrder---- ");
       console.log(JSON.stringify(res));
+      if (res.payment?.PaymentURL && process.client) {
+        window.open(res.payment?.PaymentURL, "_blank");
+      }
       console.log(res);
       console.log("createEmployerPaymentOrder---- ");
     }
