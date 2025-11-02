@@ -41,6 +41,26 @@ export const useSubscription = () => {
     return false;
   }
 
+  async function manuallyCheckSubscriptionStatus() {
+    if (currentSubscription.value?._id && currentSubscription.value?.status != "CONFIRMED") {
+      let { user } = useAuth()
+      if (user?._id) {
+
+        let res = await PaymentApi.getLastUserPayment(user._id);
+
+        if (!res) {
+          return false;
+        }
+
+        currentSubscription.value = res;
+        let isSub = await checkSubscriptionStatus()
+        if (!isSub) {
+          toast.warn("Подписка ещё не активна")
+        }
+      }
+    }
+  }
+
   async function createEmployerPaymentOrder(amount: number) {
     let { user } = useAuth()
     if (!user?._id || !user.email) {
@@ -65,8 +85,10 @@ export const useSubscription = () => {
   return {
     // vars
     isEmployerSubscriptionActive,
+    currentSubscription,
     // functions
     createEmployerPaymentOrder,
     checkSubscriptionStatus,
+    manuallyCheckSubscriptionStatus
   }
 }

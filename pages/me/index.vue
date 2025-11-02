@@ -5,7 +5,7 @@ definePageMeta({
 
 const auth = useAuth()
 let { isEmployer } = useRole()
-let { isEmployerSubscriptionActive, checkSubscriptionStatus } = useSubscription()
+let { isEmployerSubscriptionActive, checkSubscriptionStatus, currentSubscription, manuallyCheckSubscriptionStatus } = useSubscription()
 const { user } = storeToRefs(auth)
 const { companyEmail } = useAppConst()
 
@@ -42,15 +42,14 @@ function formatUserRoles(roles: string[] | undefined): string {
     .map(role => role.charAt(0).toUpperCase() + role.slice(1))
     .join(', ')
 }
-
 await checkSubscriptionStatus()
 </script>
 
 <template>
   <v-container>
     <v-row v-if="isEmployer && user?.isModerated">
-      <v-col cols="12" md="4" v-if="isEmployerSubscriptionActive">
-        <v-card to="/" class="mb-6">
+      <v-col cols="12" md="4" v-if="currentSubscription?._id">
+        <v-card to="/" class="mb-6" v-if="isEmployerSubscriptionActive">
           <v-card-text class="d-flex align-center">
             <v-avatar color="primary" variant="tonal" size="56" class="mr-4">
               <v-icon size="32">mdi-text-box-search-outline</v-icon>
@@ -61,6 +60,19 @@ await checkSubscriptionStatus()
             </div>
             <v-spacer></v-spacer>
             <v-icon size="24">mdi-chevron-right</v-icon>
+          </v-card-text>
+        </v-card>
+        <v-card class="mb-6 fill-height" variant="tonal" v-else>
+          <v-card-text class="d-flex flex-column justify-center align-center text-center fill-height">
+            <v-icon size="56" class="mb-4" color="grey-lighten-1">mdi-timer-sand</v-icon>
+
+            <h3 class="text-h6 font-weight-bold">Оплата в обработке</h3>
+            <p class="text-body-2 text-medium-emphasis mt-1">
+              Обычно это занимает не более минуты.
+            </p>
+            <v-btn @click="manuallyCheckSubscriptionStatus" variant="outlined" class="mt-4" size="small">
+              Проверить статус
+            </v-btn>
           </v-card-text>
         </v-card>
       </v-col>
