@@ -63,38 +63,40 @@ await jobsStore.getAll()
     </v-row>
 
     <v-row class="d-flex justify-center">
-      <v-col cols="12" md="8" lg="6" xl="5">
-        <v-card ref="initialFiltersRef" class="mb-8">
+      <v-col cols="12">
+        <v-card ref="initialFiltersRef" class="mb-8" variant="flat">
           <v-card-text>
-            <v-row align="center">
-              <v-col cols="12" md="12">
-                <v-autocomplete v-model="selectedJob" :items="jobItems" label="Должность" variant="outlined"
-                  density="comfortable" clearable hide-details></v-autocomplete>
+            <v-row class="d-flex align-end">
+              <v-col sm="6" md="3">
+                <p class="text-body-2 font-weight-medium mb-1">Должность</p>
+                <v-autocomplete v-model="selectedJob" :items="jobItems" variant="outlined" density="compact" clearable
+                  hide-details></v-autocomplete>
               </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="selectedExperience" :items="experienceOptions" label="Опыт работы" variant="outlined"
-                  density="comfortable" clearable hide-details></v-select>
+              <v-col sm="6" md="3">
+                <p class="text-body-2 font-weight-medium mb-1">Опыт работы</p>
+                <v-select v-model="selectedExperience" :items="experienceOptions" variant="outlined" density="compact"
+                  clearable hide-details></v-select>
               </v-col>
-              <v-col cols="12" md="6">
-                <v-select v-model="selectedWorkFormat" :items="workFormatOptions" label="Формат работы"
-                  variant="outlined" density="comfortable" clearable hide-details></v-select>
-              </v-col>
-              <v-col cols="12">
-                <p class="text-h6">Зарплата</p>
+              <v-col sm="6" md="3">
+                <p class="text-body-2 font-weight-medium mb-1">Формат работы</p>
+                <v-select v-model="selectedWorkFormat" :items="workFormatOptions" variant="outlined" density="compact"
+                  clearable hide-details></v-select>
               </v-col>
               <!-- <v-col cols="6">
                 <v-text-field v-model.number="salaryFrom" label="От" :step="1000" variant="outlined" type="number"
-                  prefix="₽"></v-text-field>
+                prefix="₽"></v-text-field>
               </v-col> -->
-              <v-col cols="12">
-                <v-text-field v-model.number="salaryTo" label="До" :step="1000" variant="outlined" type="number"
-                  prefix="₽"></v-text-field>
+              <v-col sm="6" md="3">
+                <p class="text-body-2 font-weight-medium mb-1">Зарплата, до</p>
+                <v-text-field v-model.number="salaryTo" :step="1000" variant="outlined" type="number" prefix="₽"
+                  density="compact" hide-details>
+                </v-text-field>
               </v-col>
-              <v-col cols="12" class="d-flex">
-                <v-btn @click="clearFilters" variant="tonal" :color="getJobColor(selectedJob)"
-                  prepend-icon="mdi-close">Сбросить фильтры</v-btn>
-                <v-spacer></v-spacer>
-                <v-btn @click="applyFilters" :color="getJobColor(selectedJob)" variant="flat">Применить</v-btn>
+              <v-col cols="12" class="d-flex justify-end">
+                <v-btn @click="clearFilters" variant="tonal" :color="getJobColor(selectedJob)" prepend-icon="mdi-close"
+                  class="mr-3">Сбросить
+                  фильтры</v-btn>
+                <v-btn @click="applyFilters" :color="getJobColor(selectedJob)" variant="flat">Найти</v-btn>
               </v-col>
             </v-row>
           </v-card-text>

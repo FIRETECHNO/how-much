@@ -12,7 +12,7 @@ definePageMeta({
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
             <v-icon icon="mdi-upload-box-outline" color="primary" size="80" class="mb-4"></v-icon>
-            <p class="text-h4 font-weight-bold text-grey-darken-3">
+            <p class="text-h5 text-md-h4 font-weight-bold text-grey-darken-3">
               Загрузка + добавление
             </p>
             <p class="text-body-1 text-grey-darken-1 mt-2">
@@ -27,7 +27,7 @@ definePageMeta({
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
             <v-icon icon="mdi-account-box-multiple-outline" color="primary" size="80" class="mb-4"></v-icon>
-            <p class="text-h4 font-weight-bold text-grey-darken-3">
+            <p class="text-h5 text-md-h4 font-weight-bold text-grey-darken-3">
               Мои анкеты
             </p>
             <p class="text-body-1 text-grey-darken-1 mt-2">
