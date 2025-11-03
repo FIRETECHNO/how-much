@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     ycAccessKeyId: process.env.YC_KEY_ID,
-    ycSecretAccessKKey: process.env.YC_SECRET,
+    ycSecretAccessKey: process.env.YC_SECRET,
     ycBucket: process.env.YC_BUCKET,
     zoomToken: process.env.ZOOM_TOKEN,
     dadataToken: process.env.DADATA_TOKEN,
