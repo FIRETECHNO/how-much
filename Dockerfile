@@ -1,30 +1,14 @@
-# ---------- Этап сборки ----------
-FROM node:20-alpine AS builder
+FROM node:23-alpine3.20 AS builder
 WORKDIR /app
-
-COPY package*.json ./
+COPY package.json package-lock.json ./
 RUN npm ci
-
 COPY . .
-
-ENV NUXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3011
-
 RUN npm run build
 
-# ---------- Этап продакшена ----------
-FROM node:20-alpine AS production
+
+FROM node:23-alpine3.20
 WORKDIR /app
-
 COPY --from=builder /app/.output ./.output
-COPY package*.json ./
-
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3011
-
-EXPOSE 3011
-
+COPY --from=builder /app/package.json /app/package-lock.json ./
+RUN npm ci --omit=dev
 CMD ["node", ".output/server/index.mjs"]
