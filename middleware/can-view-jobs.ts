@@ -10,7 +10,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return true
   }
 
-  if (process.client) {
+  if (process.client && isEmployer.value) {
     if (!isEmployerSubscriptionActive.value) {
       toast.warn("Оплатите подписку, чтобы посмотреть анкеты")
     } else {
