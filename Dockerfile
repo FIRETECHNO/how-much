@@ -12,7 +12,6 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3011
 
-# Сборка Nuxt
 RUN npm run build
 
 # ---------- Этап продакшена ----------
@@ -25,6 +24,7 @@ COPY package*.json ./
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3011
-EXPOSE 3000
+
+EXPOSE 3011
 
 CMD ["node", ".output/server/index.mjs"]
