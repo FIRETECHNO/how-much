@@ -73,10 +73,9 @@ function formatDate(dateString: string) {
       </template>
     </v-list-item>
 
-    <div class="d-flex flex-column flex-grow-1 pa-4">
+    <div class="d-flex flex-column flex-grow-1 px-4">
       <v-list-item :title="formatDate(jobReservation.startDate)" subtitle="Дата бронирования"
         prepend-icon="mdi-calendar-clock" density="compact" class="px-0"></v-list-item>
-      <v-divider class="my-3"></v-divider>
 
       <v-list density="compact" class="flex-grow-1">
         <v-list-item v-if="formattedSalary" :title="formattedSalary" subtitle="Зарплатные ожидания"

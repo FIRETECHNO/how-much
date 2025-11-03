@@ -25,13 +25,13 @@ const roles = [
         </p>
       </v-col>
 
-      <v-col v-for="item in roles" :key="item.role" cols="12" md="6" lg="4">
+      <v-col v-for="item in roles" :key="item.role" cols="6" md="4" lg="3">
         <NuxtLink :to="`/registration/${item.role}`" class="text-decoration-none">
           <v-sheet class="role-card d-flex flex-column align-center justify-center pa-8" rounded="xl" elevation="8"
             min-height="350">
             <v-icon :icon="item.icon" color="primary" size="90" class="mb-5"></v-icon>
 
-            <h2 class="text-h4 font-weight-bold text-grey-darken-3">
+            <h2 class="text-h5 text-lg-h4 font-weight-bold text-grey-darken-3">
               {{ item.title }}
             </h2>
 

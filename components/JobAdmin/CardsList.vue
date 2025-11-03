@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div>
     <v-row v-if="jobForms?.length > 0">
-      <v-col v-for="job in jobForms" :key="job._id" cols="12" md="6" lg="4">
+      <v-col v-for="job in jobForms" :key="job._id" cols="12" sm="6" md="4" xl="3">
         <v-card class="d-flex flex-column" height="100%">
           <v-responsive v-if="job.video && job.video.src" :aspect-ratio="16 / 9">
             <video :src="job.video.src" style="width: 100%; height: 100%; object-fit: cover;" controls></video>

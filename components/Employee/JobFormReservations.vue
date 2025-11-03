@@ -21,7 +21,7 @@ function formatDate(dateString: string | undefined): string {
 <template>
   <v-container>
     <v-row v-if="myReservations.length > 0">
-      <v-col v-for="item in myReservations" :key="item._id" cols="12" md="6">
+      <v-col v-for="item in myReservations" :key="item._id" cols="12" md="6" lg="4">
         <v-card border flat class="d-flex flex-column" height="100%">
           <v-list-item :title="item.employerId?.company?.data?.name?.short_with_opf || 'Название компании не указано'"
             subtitle="Забронировал(а) вашу анкету" class="py-3">
