@@ -5,9 +5,17 @@ import _ from 'lodash'
 const router = useRouter()
 const route = useRoute()
 const auth = useAuth()
+const employeeStore = useEmployeeJobFormFillRequest()
 
+/*
+/registration/employee?name=Григорий&vacancy=Маркетолог&email=grishadzyin@gmail.com&tgId=1155714398
+*/
 const emailFromQuery = ref(route.query.email as string || '');
-const isEmailDisabled = computed(() => !!emailFromQuery.value);
+const nameFromQuery = ref(route.query.name as string || '');
+const vacancyFromQuery = ref(route.query.vacancy as string || '');
+const tgIdFromQuery = ref(route.query.tgId as string || '');
+
+console.log(nameFromQuery.value, vacancyFromQuery.value, tgIdFromQuery.value);
 
 const { meta, handleSubmit } = useForm<{
   name: string,
@@ -16,7 +24,7 @@ const { meta, handleSubmit } = useForm<{
   agreement: boolean,
 }>({
   initialValues: {
-    name: '',
+    name: nameFromQuery.value,
     email: emailFromQuery.value,
     password: '',
     agreement: false,
@@ -57,14 +65,22 @@ let loading = ref(false)
 
 const submit = handleSubmit(async values => {
   loading.value = true
-  const finalValues = { ...values, email: email.value.value };
+  const finalValues: any = { ...values, email: email.value.value, tgId: null };
+
+  if (tgIdFromQuery.value) {
+    finalValues.tgId = Number(tgIdFromQuery.value)
+  }
 
   let res = await auth.registration(Object.assign(finalValues, {
     roles: ["employee"],
   }))
 
-  if (res)
+  if (res) {
+    if (vacancyFromQuery.value && auth.user?._id) {
+      await employeeStore.createJobFormFillRequestShort(auth.user?._id, vacancyFromQuery.value)
+    }
     router.push(`/me`)
+  }
 
   loading.value = false
 })
@@ -86,14 +102,29 @@ onMounted(() => {
         <div class="text-h6 font-weight-bold">
           Регистрация соискателя
         </div>
+        <div v-if="vacancyFromQuery" class="mt-4">
+          <p class="text-body-2 text-medium-emphasis">Ваша первая анкета будет на позицию:</p>
+          <v-chip color="primary" variant="tonal" class="mt-2" prepend-icon="mdi-briefcase-outline">
+            {{ vacancyFromQuery }}
+          </v-chip>
+        </div>
 
         <v-form class="mt-6 w-100" @submit.prevent="submit">
+
+          <div v-if="tgIdFromQuery" class="d-flex flex-column text-start mb-5">
+            <span class="text-success font-weight-medium">
+              Аккаунт подключён к Telegram
+            </span>
+            <span class="text-body-2 text-medium-emphasis">
+              Все уведомления будут приходить от бота
+            </span>
+          </div>
+
           <v-text-field label="ФИО" placeholder="Иван Иванов Иванович" v-model="name.value.value"
             :error-messages="name.errors.value" variant="outlined" density="compact" class="w-100" />
 
           <v-text-field label="Email" type="email" placeholder="ivan@mail.com" v-model="email.value.value"
-            :error-messages="email.errors.value" variant="outlined" density="compact" class="w-100 mt-1"
-            :disabled="isEmailDisabled" :readonly="isEmailDisabled" />
+            :error-messages="email.errors.value" variant="outlined" density="compact" class="w-100 mt-1" />
 
           <v-text-field label="Пароль" v-model="password.value.value"
             :append-inner-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"

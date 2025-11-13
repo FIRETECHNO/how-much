@@ -140,6 +140,6 @@ export function useEmployeeJobForms() {
     // vars
     myJobForms, BOOST_DELTA, myReservations, actualJobReservation,
     // functions
-    getMyJobForms, approveJobForm, disapproveJobForm, boostJobForm, getReservations, getActualReservedJob, submitJobReservationFeedback
+    getMyJobForms, approveJobForm, disapproveJobForm, boostJobForm, getReservations, getActualReservedJob, submitJobReservationFeedback,
   }
 }

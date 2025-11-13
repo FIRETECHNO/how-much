@@ -1,3 +1,4 @@
+import type { JobFormFillRequest, JobFormFillRequestDB } from "~/types/job-form-fill-request.interface"
 import type { JobForm } from "~/types/job-form.interface"
 import type { JobReservation, JobReservationDb, JobReservationDbWithEmployer } from "~/types/job-reservation.interface"
 
@@ -143,5 +144,51 @@ export default {
         reservationId
       }
     })
-  }
+  },
+  async createJobFormFillRequestShort(employeeId: string, job: string): Promise<JobFormFillRequestDB> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/create-short", {
+      method: "POST",
+      body: {
+        employeeId,
+        job
+      }
+    })
+  },
+  async getMyJobFormFillRequests(employeeId: string): Promise<JobFormFillRequestDB[]> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobFormFillRequestDB[]>("/job-form-fill-request/get-by-employee", {
+      method: "POST",
+      body: {
+        employeeId,
+      }
+    })
+  },
+  async createJobFormFillRequest(request: JobFormFillRequest): Promise<JobFormFillRequestDB> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/create", {
+      method: "POST",
+      body: {
+        request,
+      }
+    })
+  },
+  async getJobFormFillRequestById(requestId: string): Promise<JobFormFillRequestDB> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/get-by-id", {
+      method: "POST",
+      body: {
+        requestId,
+      }
+    })
+  },
+  async updateJobFormFillRequest(requestId: string, request: JobFormFillRequest): Promise<JobFormFillRequestDB> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/update", {
+      method: "POST",
+      body: {
+        requestId, request
+      }
+    })
+  },
 }

@@ -3,19 +3,9 @@
 @tailwind utilities;
 
 * {
-    font-family: Montserrat !important;
+  font-family: Montserrat !important;
 }
 a {
-    margin: 2px;
-    text-decoration: underline;
-}
-$primary-color: #1481F5;
-
-.submit-button {
-    background-color: $primary-color !important;
-    color: white !important;
-    border-radius: 1000px !important;
-}
-.default-btn {
-    border-radius: 1000px !important;
+  margin: 2px;
+  text-decoration: underline;
 }

@@ -4,7 +4,7 @@ definePageMeta({
 })
 
 const auth = useAuth()
-let { isEmployer } = useRole()
+let { isEmployer, isEmployee } = useRole()
 let { isEmployerSubscriptionActive, checkSubscriptionStatus, currentSubscription, manuallyCheckSubscriptionStatus } = useSubscription()
 const { user } = storeToRefs(auth)
 const { companyEmail } = useAppConst()
@@ -47,6 +47,7 @@ await checkSubscriptionStatus()
 
 <template>
   <v-container>
+    <MeEmployee v-if="isEmployee" />
     <v-row v-if="isEmployer && user?.isModerated">
       <v-col cols="12" md="4" v-if="currentSubscription?._id">
         <v-card to="/" class="mb-6" v-if="isEmployerSubscriptionActive">
