@@ -16,7 +16,8 @@ const breadcrumbTranslations: { [key: string]: string } = {
   "jobs": "Анкеты",
   "upload": "Загрузка",
   "list": "Список",
-  "admin": "Админка"
+  "admin": "Админка",
+  "manager": "Менеджер"
 };
 
 
