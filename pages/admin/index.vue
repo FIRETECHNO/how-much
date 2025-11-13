@@ -6,7 +6,7 @@ definePageMeta({
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" lg="3">
         <NuxtLink to="/admin/jobs/" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
@@ -20,7 +20,7 @@ definePageMeta({
           </v-sheet>
         </NuxtLink>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" lg="3">
         <NuxtLink to="/admin/employers/" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6" rounded="lg"
             elevation="6" height="350">
@@ -34,7 +34,7 @@ definePageMeta({
           </v-sheet>
         </NuxtLink>
       </v-col>
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" lg="3">
         <NuxtLink to="/admin/job-reservations/" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6 text-center" rounded="lg"
             elevation="6" height="350">
@@ -44,6 +44,20 @@ definePageMeta({
             </p>
             <p class="text-body-1 text-grey-darken-1 mt-2">
               Просмотр истории бронирований анкет
+            </p>
+          </v-sheet>
+        </NuxtLink>
+      </v-col>
+      <v-col cols="12" md="4" lg="3">
+        <NuxtLink to="/admin/invites/" class="text-decoration-none">
+          <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6 text-center" rounded="lg"
+            elevation="6" height="350">
+            <v-icon icon="mdi-email-plus-outline" color="primary" size="64" class="mb-4"></v-icon>
+            <p class="text-h6 text-md-h4 font-weight-bold text-grey-darken-3">
+              Инвайты
+            </p>
+            <p class="text-body-1 text-grey-darken-1 mt-2">
+              Создание и управление приглашениями
             </p>
           </v-sheet>
         </NuxtLink>

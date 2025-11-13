@@ -1,5 +1,6 @@
 import type { User } from "~/types/user.interface"
 import type { JobReservationDbWithEmployer } from "~/types/job-reservation.interface"
+import type { CreateInvitePayload, Invite } from "~/types/invite.interface"
 
 export default {
   getNotModeratedEmployers(): Promise<User[]> {
@@ -35,6 +36,21 @@ export default {
       method: 'POST',
       body: {
       }
+    })
+  },
+  getAllInvites(): Promise<Invite[]> {
+    const { $apiFetch } = useNuxtApp()
+
+    return $apiFetch<Invite[]>('/invites/get-all', {
+      method: 'GET',
+    })
+  },
+  createInvite(payload: CreateInvitePayload): Promise<any> {
+    const { $apiFetch } = useNuxtApp()
+
+    return $apiFetch<any>('/invites/create', {
+      method: 'POST',
+      body: payload
     })
   }
 }

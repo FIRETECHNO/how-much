@@ -1,10 +1,37 @@
 <script setup lang="ts">
-import { useField, useForm } from 'vee-validate'
-import _ from 'lodash'
+import { useField, useForm } from 'vee-validate';
+import AuthApi from '~/api/AuthApi'; // Предполагается, что у вас есть API-файл для Auth
 
-let router = useRouter()
-const auth = useAuth()
-let { user } = storeToRefs(auth);
+definePageMeta({
+  layout: 'default', // Укажите ваш layout
+});
+
+const router = useRouter();
+const route = useRoute();
+const auth = useAuth();
+
+const inviteToken = ref(route.query.invite_token as string | null);
+// Состояние токена: 'validating' (проверяется), 'valid' (валидный), 'invalid' (невалидный)
+const tokenState = ref<'validating' | 'valid' | 'invalid'>('validating');
+
+onMounted(async () => {
+  if (!inviteToken.value) {
+    tokenState.value = 'invalid';
+    return;
+  }
+  try {
+    const responseEmail = await AuthApi.validateInviteToken(inviteToken.value);
+    console.log(responseEmail);
+
+    tokenState.value = responseEmail.email ? 'valid' : 'invalid';
+
+    email.value.value = responseEmail.email
+  } catch (error) {
+    console.error("Ошибка при проверке инвайт-токена:", error);
+    tokenState.value = 'invalid'; // Любая ошибка делает токен невалидным
+  }
+});
+
 
 const { meta, handleSubmit } = useForm<{
   name: string,
@@ -20,69 +47,81 @@ const { meta, handleSubmit } = useForm<{
   },
   validationSchema: {
     name(value: string) {
-      if (value?.length === 0) return 'введите фамилию, имя'
-      if (value?.length < 4) return 'слишком короткое имя и фамилия'
-      if (value?.length > 200) return 'слишком длинное имя и фамилия'
-      return true
+      if (!value) return 'Введите ФИО';
+      if (value.length < 4) return 'Слишком короткое ФИО';
+      if (value.length > 200) return 'Слишком длинное ФИО';
+      return true;
     },
     email(value: string) {
-      if (value?.length === 0) return 'введите почту'
+      if (!value) return 'Введите почту';
       if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(value))
-        return 'неправильно ведено'
-      return true
+        return 'Некорректный формат почты';
+      return true;
     },
     password(value: string) {
-      if (value?.length === 0) return 'введите пароль'
-      if (value?.length < 8) return 'минимум 8 символов'
-      if (value?.length > 30) return 'слишком длинный пароль'
-      return true
+      if (!value) return 'Введите пароль';
+      if (value.length < 8) return 'Пароль должен быть не менее 8 символов';
+      if (value.length > 30) return 'Слишком длинный пароль';
+      return true;
     },
     agreement(value: boolean) {
-      if (value !== true) return 'Необходимо ваше согласие на обработку данных'
-      return true
+      if (value !== true) return 'Необходимо ваше согласие на обработку данных';
+      return true;
     },
   },
-})
+});
 
-let name = useField<string>('name')
-let email = useField<string>('email')
-let password = useField<string>('password')
-let agreement = useField<boolean>('agreement')
+const name = useField<string>('name');
+const email = useField<string>('email');
+const password = useField<string>('password');
+const agreement = useField<boolean>('agreement');
 
-let show_password = ref(false)
-let loading = ref(false)
+const show_password = ref(false);
+const loading = ref(false);
 
 const submit = handleSubmit(async values => {
-  // return;
-  loading.value = true
-  let res = await auth.registration(Object.assign(values, {
-    roles: ["manager"],
-  }))
+  loading.value = true;
+  try {
+    const res = await auth.registration({
+      ...values,
+      roles: ["manager"],
+      inviteToken: inviteToken.value,
+    });
 
-  if (res)
-    router.push(`/me`)
-
-  loading.value = false
-})
+    if (res) {
+      await router.push(`/me`);
+    }
+  } catch (error) {
+    console.error("Ошибка при регистрации:", error);
+  } finally {
+    loading.value = false;
+  }
+});
 </script>
+
 <template>
   <v-container>
     <BackButton />
 
     <v-col cols="12" xs="12" sm="10" md="7" lg="5" class="mt-4 ma-auto">
-      <v-card class="d-flex flex-column 
+
+      <div v-if="tokenState === 'validating'" class="text-center pa-10">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+        <p class="mt-4 text-h6 text-medium-emphasis">Проверка приглашения...</p>
+      </div>
+
+      <v-card v-else-if="tokenState === 'valid'" class="d-flex flex-column 
         justify-center align-center 
-        text-center w-100 pl-6 pr-6 
-        pt-4 pb-6 rounded-lg">
+        text-center w-100 pa-6 rounded-lg">
         <div class="text-h6 font-weight-bold">
-          Регистрация
+          Регистрация рекрутера
         </div>
 
         <v-form class="mt-6 w-100" @submit.prevent="submit">
-          <v-text-field label="ФИО" type="name" placeholder="Иван Иванов Иванович" v-model="name.value.value"
+          <v-text-field label="ФИО" placeholder="Иван Иванов Иванович" v-model="name.value.value"
             :error-messages="name.errors.value" variant="outlined" density="compact" class="w-100" />
 
-          <v-text-field label="Email" type="email" placeholder="vasya@ya.ru" v-model="email.value.value"
+          <v-text-field label="Email" type="email" placeholder="ivan@mail.com" v-model="email.value.value"
             :error-messages="email.errors.value" variant="outlined" density="compact" class="w-100 mt-1" />
 
           <v-text-field label="Пароль" v-model="password.value.value"
@@ -96,7 +135,7 @@ const submit = handleSubmit(async values => {
                 Я согласен с
                 <a href="/documents/Пользовательское_соглашение_для_внешних_рекрутеров.pdf" target="_blank" @click.stop
                   class="text-primary">
-                  с политикой конфиденциальности и обработки персональных данных
+                  политикой конфиденциальности и обработки персональных данных
                 </a>
               </div>
             </template>
@@ -114,6 +153,13 @@ const submit = handleSubmit(async values => {
           </NuxtLink>
         </div>
       </v-card>
+
+      <v-alert v-else type="error" title="Недействительная ссылка" variant="tonal" prominent icon="mdi-link-off">
+        Ссылка для регистрации недействительна, просрочена или уже была использована. Пожалуйста, обратитесь к
+        администратору
+        для получения новой ссылки.
+      </v-alert>
+
     </v-col>
   </v-container>
 </template>

@@ -11,7 +11,13 @@ const roles = [
     title: 'Работодатель',
     description: 'Для HR-ов, которые нанимают (физ. лицо, ИП или ООО)',
     icon: 'mdi-account-group-outline'
-  }
+  },
+  // {
+  //   role: 'manager',
+  //   title: 'Рекрутер',
+  //   description: 'Создание новых анкет',
+  //   icon: 'mdi-account-tie'
+  // }
 ]
 </script>
 
