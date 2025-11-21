@@ -6,7 +6,6 @@ definePageMeta({
   middleware: "employee"
 });
 
-// --- Инициализация ---
 const requestsStore = useEmployeeJobFormFillRequest();
 const authStore = useAuth();
 const router = useRouter();
@@ -21,15 +20,13 @@ const form = ref<VForm | null>(null);
 const loading = ref(false);
 const selectedJob = ref<string | null>(null);
 const selectedDate = ref<Date | null>(null);
-const startTime = ref<string | null>(null);
-const endTime = ref<string | null>(null);
+const selectedStartTime = ref<string | null>(null); // только начало
 
-// --- Логика режима формы (Создание vs Редактирование) ---
 const requestIdFromQuery = ref(route.query.request_id as string | null);
 const requestToEdit = ref<JobFormFillRequestDB | null>(null);
 const isEditMode = computed(() => !!requestToEdit.value);
 
-// --- Опции для полей выбора ---
+// --- Опции дат ---
 const dateOptions = computed(() => {
   const options = [];
   const today = new Date();
@@ -43,99 +40,115 @@ const dateOptions = computed(() => {
   return options;
 });
 
-const allTimeOptions = computed(() => {
-  const options = [];
-  for (let i = 9; i <= 21; i++) {
-    options.push(`${String(i).padStart(2, '0')}:00`);
+// --- Генерация временных слотов (30-минутные интервалы) ---
+const timeSlots = computed(() => {
+  const slots = [];
+  const startHour = 9;  // 09:00
+  const endHour = 21;   // 21:00
+  for (let hour = startHour; hour < endHour; hour++) {
+    slots.push(`${String(hour).padStart(2, '0')}:00`);
+    slots.push(`${String(hour).padStart(2, '0')}:30`);
   }
-  return options;
+  return slots;
 });
 
-const endTimeOptions = computed(() => {
-  if (!startTime.value) {
-    return allTimeOptions.value.slice(1);
+const groupedTimeSlots = computed(() => {
+  const slots = timeSlots.value;
+  const morning = [] as string[];
+  const day = [] as string[];
+  const evening = [] as string[];
+
+  for (const slot of slots) {
+    const hour = parseInt(slot.split(':')[0], 10);
+    if (hour >= 9 && hour < 12) {
+      morning.push(slot);
+    } else if (hour >= 12 && hour < 18) {
+      day.push(slot);
+    } else if (hour >= 18 && hour < 21) {
+      evening.push(slot);
+    }
   }
-  const startIndex = allTimeOptions.value.indexOf(startTime.value);
-  return allTimeOptions.value.slice(startIndex + 1);
+
+  return [
+    { title: 'Утро', slots: morning, color: 'blue' },
+    { title: 'День', slots: day, color: 'green' },
+    { title: 'Вечер', slots: evening, color: 'indigo' },
+  ];
 });
 
-// --- Наблюдатели и правила ---
-watch(startTime, (newStartTime) => {
-  if (endTime.value && newStartTime && endTime.value <= newStartTime) {
-    endTime.value = null;
-  }
-});
-
+// --- Правила валидации ---
 const jobRules = [(v: string | null) => !!v || 'Необходимо выбрать направление'];
 const dateRules = [(v: Date | null) => !!v || 'Необходимо выбрать дату'];
-const startTimeRules = [(v: string | null) => !!v || 'Укажите время начала'];
-const endTimeRules = [
-  (v: string | null) => !!v || 'Укажите время окончания',
-  (v: string | null) => {
-    if (startTime.value && v && v <= startTime.value) {
-      return 'Время окончания должно быть позже времени начала';
-    }
-    return true;
-  }
-];
+const timeRules = [(v: string | null) => !!v || 'Выберите время начала'];
 
-// --- Логика отправки ---
+// --- Расчёт окончания (для отправки) ---
+function calculateEndTime(startTime: string): string {
+  const [hours, minutes] = startTime.split(':').map(Number);
+  let endMinutes = minutes + 30;
+  let endHours = hours;
+  if (endMinutes >= 60) {
+    endMinutes -= 60;
+    endHours += 1;
+  }
+  return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
+}
+
+// --- Отправка ---
 async function submitRequest() {
-  if (!form.value || !user.value?._id) return;
+  if (!form.value || !user.value?._id || !selectedStartTime.value) return;
   const { valid } = await form.value.validate();
 
-  if (valid && selectedDate.value && startTime.value && endTime.value && selectedJob.value) {
+  if (valid && selectedDate.value && selectedJob.value) {
     loading.value = true;
     try {
-      const finalStartDateTime = new Date(selectedDate.value);
-      const [startHours] = startTime.value.split(':');
-      finalStartDateTime.setHours(parseInt(startHours), 0, 0, 0);
+      const startDate = new Date(selectedDate.value);
+      const [startHours, startMinutes] = selectedStartTime.value.split(':').map(Number);
+      startDate.setHours(startHours, startMinutes, 0, 0);
 
-      const finalEndDateTime = new Date(selectedDate.value);
-      const [endHours] = endTime.value.split(':');
-      finalEndDateTime.setHours(parseInt(endHours), 0, 0, 0);
+      const endDate = new Date(startDate);
+      const endTime = calculateEndTime(selectedStartTime.value);
+      const [endHours, endMinutes] = endTime.split(':').map(Number);
+      endDate.setHours(endHours, endMinutes, 0, 0);
 
       let toSend: JobFormFillRequest = {
         employee: user.value._id,
         job: selectedJob.value,
-        startDate: String(finalStartDateTime.toISOString()),
-        endDate: String(finalEndDateTime.toISOString())
-      }
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+      };
 
       if (isEditMode.value && requestToEdit.value) {
-        // РЕЖИМ РЕДАКТИРОВАНИЯ
         await updateJobFormFillRequest(requestToEdit.value._id, toSend);
       } else {
-        // РЕЖИМ СОЗДАНИЯ
         await createJobFormFillRequest(toSend);
       }
 
       await router.push('/me');
-
     } catch (error) {
       console.error("Ошибка при отправке заявки:", error);
-      // Здесь можно добавить уведомление об ошибке для пользователя
     } finally {
       loading.value = false;
     }
   }
 }
 
-// --- Жизненный цикл ---
+// --- Загрузка при редактировании ---
 onMounted(async () => {
   if (requestIdFromQuery.value) {
-    // Если в URL есть ID, пытаемся загрузить эту заявку для редактирования
     const foundRequest = await getRequestById(requestIdFromQuery.value);
     if (foundRequest) {
       requestToEdit.value = foundRequest;
-      selectedJob.value = foundRequest.job; // Автозаполнение
-    } else {
-      console.warn("Заявка для редактирования не найдена, форма работает в режиме создания.");
+      selectedJob.value = foundRequest.job;
+      if (foundRequest.startDate) {
+        selectedDate.value = new Date(foundRequest.startDate);
+        // Извлекаем время начала из startDate
+        const start = new Date(foundRequest.startDate);
+        selectedStartTime.value = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
+      }
     }
   }
 });
 </script>
-
 <template>
   <v-container>
     <v-row justify="center">
@@ -145,7 +158,7 @@ onMounted(async () => {
             {{ isEditMode ? 'Завершение заявки' : 'Новая заявка на интервью' }}
           </v-card-title>
           <v-card-subtitle>
-            Выберите удобный день и диапазон времени для связи.
+            Выберите удобный день и время для связи (интервью длится 30 минут).
           </v-card-subtitle>
           <v-divider class="mt-2"></v-divider>
 
@@ -155,21 +168,34 @@ onMounted(async () => {
                 class="mb-4" required></v-select>
 
               <v-select v-model="selectedDate" :items="dateOptions" :rules="dateRules" item-title="title"
-                item-value="value" label="Удобный день" variant="outlined" class="mb-4" required></v-select>
+                item-value="value" label="Удобный день" variant="outlined" class="mb-6" required></v-select>
 
-              <v-row>
-                <v-col cols="12" sm="6">
-                  <v-select v-model="startTime" :items="allTimeOptions" :rules="startTimeRules" label="Время С"
-                    variant="outlined" required></v-select>
-                </v-col>
-                <v-col cols="12" sm="6">
-                  <v-select v-model="endTime" :items="endTimeOptions" :rules="endTimeRules" label="Время ПО"
-                    variant="outlined" :disabled="!startTime" required
-                    no-data-text="Сначала выберите время начала"></v-select>
-                </v-col>
-              </v-row>
+              <!-- Выбор времени по категориям -->
+              <div v-if="selectedDate">
+                <p class="text-h6 font-weight-medium mb-3">Выберите время начала</p>
 
-              <v-btn type="submit" :loading="loading" color="primary" size="large" block class="mt-4">
+                <div v-for="group in groupedTimeSlots" :key="group.title" class="mb-6">
+                  <h3 class="text-h6 font-weight-bold mb-2 text-capitalize" :class="`text-${group.color}`">
+                    {{ group.title }}
+                  </h3>
+                  <div class="d-flex flex-wrap gap-3 justify-center">
+                    <v-btn v-for="slot in group.slots" :key="slot"
+                      :color="selectedStartTime === slot ? group.color : 'black'" variant="tonal" size="x-large"
+                      min-width="100" rounded @click="selectedStartTime = slot" class="text-body-1 font-weight-bold">
+                      {{ slot }}
+                    </v-btn>
+                  </div>
+                </div>
+
+                <div class="mt-2 mb-4">
+                  <v-alert v-if="!selectedStartTime" type="error" density="compact" variant="tonal">
+                    {{ timeRules[0](selectedStartTime) }}
+                  </v-alert>
+                </div>
+              </div>
+
+              <v-btn type="submit" :loading="loading" color="primary" size="x-large" block class="mt-2"
+                :disabled="!selectedStartTime">
                 Отправить заявку
               </v-btn>
             </v-form>
