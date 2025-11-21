@@ -145,13 +145,14 @@ export default {
       }
     })
   },
-  async createJobFormFillRequestShort(employeeId: string, job: string): Promise<JobFormFillRequestDB> {
+  async createJobFormFillRequestShort(employeeId: string, job: string, tgId: number | null): Promise<JobFormFillRequestDB> {
     const { $apiFetch } = useNuxtApp()
     return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/create-short", {
       method: "POST",
       body: {
         employeeId,
-        job
+        job,
+        tgId
       }
     })
   },
@@ -182,12 +183,12 @@ export default {
       }
     })
   },
-  async updateJobFormFillRequest(requestId: string, request: JobFormFillRequest): Promise<JobFormFillRequestDB> {
+  async updateJobFormFillRequest(requestId: string, request: JobFormFillRequest, tgId: number | null): Promise<JobFormFillRequestDB> {
     const { $apiFetch } = useNuxtApp()
     return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/update", {
       method: "POST",
       body: {
-        requestId, request
+        requestId, request, tgId
       }
     })
   },

@@ -23,9 +23,9 @@ export function useEmployeeJobFormFillRequest() {
     return false;
   })
 
-  async function createJobFormFillRequestShort(employeeId: string, job: string) {
+  async function createJobFormFillRequestShort(employeeId: string, job: string, tgId: number | null) {
     try {
-      let requestFromDb = await JobApi.createJobFormFillRequestShort(employeeId, job)
+      let requestFromDb = await JobApi.createJobFormFillRequestShort(employeeId, job, tgId)
       jobFormFillRequests.value.push(requestFromDb)
     } catch (error) {
       console.log("error useEmployeeJobFormFillRequest/createJobFormFillRequestShort", error);
@@ -53,7 +53,10 @@ export function useEmployeeJobFormFillRequest() {
 
   async function updateJobFormFillRequest(requestId: string, request: JobFormFillRequest) {
     try {
-      let requestFromDb = await JobApi.updateJobFormFillRequest(requestId, request)
+      let user = useAuth().user
+      if (!user) return;
+
+      let requestFromDb = await JobApi.updateJobFormFillRequest(requestId, request, user?.tgId)
 
       for (let i = 0; i < jobFormFillRequests.value.length; i++) {
         if (jobFormFillRequests.value[i]._id == requestFromDb._id) {

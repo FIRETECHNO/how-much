@@ -77,7 +77,7 @@ const submit = handleSubmit(async values => {
 
   if (res) {
     if (vacancyFromQuery.value && auth.user?._id) {
-      await employeeStore.createJobFormFillRequestShort(auth.user?._id, vacancyFromQuery.value)
+      await employeeStore.createJobFormFillRequestShort(auth.user?._id, vacancyFromQuery.value, auth.user.tgId)
     }
     router.push(`/me`)
   }
