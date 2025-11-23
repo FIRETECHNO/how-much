@@ -5,17 +5,17 @@ definePageMeta({
 
 const sections = [
   {
-    title: 'Анкеты',
-    description: 'Загрузка визиток и поднятие их в поиске',
-    icon: 'mdi-account-box-outline',
-    to: '/manager/jobs/',
+    title: 'Мои заявки',
+    description: 'Список заявок, которые вам нужно обработать',
+    icon: 'mdi-account-box-multiple-outline',
+    to: '/manager/job-form-fill-requests/my',
     color: 'primary'
   },
   {
-    title: 'Видео-интервью',
-    description: 'Мои анкеты и заявки от новых кандидатов',
+    title: 'Все заявки на Видео-интервью',
+    description: 'Заявки на прохождение видео-собеседований',
     icon: 'mdi-video-outline',
-    to: '/manager/job-form-fill-requests',
+    to: '/manager/job-form-fill-requests/all',
     color: 'primary'
   }
 ]
@@ -23,8 +23,8 @@ const sections = [
 
 <template>
   <v-container>
-    <v-row>
-      <v-col v-for="(section, index) in sections" :key="index" cols="12" md="6">
+    <v-row class="d-flex justify-center">
+      <v-col v-for="(section, index) in sections" :key="index" cols="6" md="4">
         <NuxtLink :to="section.to" class="text-decoration-none">
           <v-sheet class="clickable-sheet d-flex flex-column align-center justify-center pa-6 text-center" rounded="lg"
             elevation="6" height="350">

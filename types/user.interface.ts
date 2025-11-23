@@ -6,6 +6,7 @@ export interface User {
 	email: string
 	password: string
 	tgId: number | null
+	tgUsername: string | null
 	roles: string[]
 	company: CompanyFromDadata | null
 	isModerated: boolean

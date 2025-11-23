@@ -33,6 +33,7 @@ onMounted(async () => {
       await requestsStore.getMyRequests(authStore.user?._id)
 })
 </script>
+
 <template>
   <v-row>
     <v-col cols="12" md="6" v-if="latestRequest">
@@ -93,25 +94,35 @@ onMounted(async () => {
                   <v-icon>mdi-headset</v-icon>
                 </v-avatar>
               </template>
-              <v-list-item-title class="text-subtitle-1 font-weight-bold text-medium-emphasis">Связь с
-                рекрутером</v-list-item-title>
-              <div class="text-body-1 mt-1 text-medium-emphasis">
-                После успешной записи интервью наш рекрутер свяжется с вами для дальнейших шагов.
+              <v-list-item-title class="text-subtitle-1 font-weight-bold text-medium-emphasis">
+                Связь с рекрутером
+              </v-list-item-title>
+              <div class="text-body-1 mt-1">
+                <span v-if="latestRequest.manager">
+                  ✅ С вами свяжется менеджер по подбору.
+                </span>
+                <span v-else>
+                  После успешной записи интервью наш рекрутер свяжется с вами для дальнейших шагов.
+                </span>
               </div>
             </v-list-item>
           </v-list>
         </v-card-text>
       </v-card>
 
-
-      <!-- Состояние 2: Последний запрос - ЗАВЕРШЕННЫЙ (анкета создана) -->
+      <!-- Состояние 2: Последний запрос - ЗАВЕРШЕННЫЙ -->
       <v-card v-else flat border class="mb-6">
         <v-card-title class="text-h6 font-weight-bold d-flex align-center">
           <v-icon color="success" start>mdi-check-decagram-outline</v-icon>
           Заявка принята!
         </v-card-title>
         <v-card-subtitle>
-          Ваше интервью назначено. Наш рекрутер свяжется с вами в указанное время.
+          <span v-if="latestRequest.manager">
+            ✅ С вами свяжется менеджер по подбору.
+          </span>
+          <span v-else>
+            Ваше интервью назначено. Ожидайте контакта от рекрутера.
+          </span>
         </v-card-subtitle>
         <v-divider class="mt-2"></v-divider>
 
@@ -142,23 +153,23 @@ onMounted(async () => {
               <template #prepend>
                 <v-icon color="grey-darken-1">mdi-headset</v-icon>
               </template>
-              <v-list-item-title>Ожидайте уведомления от рекрутера</v-list-item-title>
+              <v-list-item-title>
+                <span v-if="latestRequest.manager">
+                  ✅ Менеджер свяжется с вами
+                </span>
+                <span v-else>
+                  Ожидайте контакта от рекрутера
+                </span>
+              </v-list-item-title>
               <v-list-item-subtitle>Следующий шаг</v-list-item-subtitle>
             </v-list-item>
           </v-list>
         </v-card-text>
-
-        <!-- <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn to="/me/job-forms" color="grey" variant="text">
-            Все мои анкеты
-          </v-btn>
-        </v-card-actions> -->
       </v-card>
     </v-col>
   </v-row>
 </template>
+
 <style scoped>
 .break-word {
   overflow-wrap: break-word;

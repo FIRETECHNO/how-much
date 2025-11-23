@@ -165,24 +165,6 @@ const navigationItems: any[] = [
     </v-navigation-drawer>
 
     <v-main>
-      <v-container v-if="route.path.startsWith('/manager')">
-        <v-row>
-          <v-col cols="12">
-            <v-breadcrumbs :items="breadcrumbs" class="text-h4 font-weight-bold pa-0">
-              <template v-slot:divider>
-                <v-icon icon="mdi-chevron-right"></v-icon>
-              </template>
-              <template v-slot:item="{ item }">
-                <v-breadcrumbs-item :to="item.to" :disabled="item.disabled" class="text-decoration-none">
-                  {{ item.title }}
-                </v-breadcrumbs-item>
-              </template>
-            </v-breadcrumbs>
-          </v-col>
-        </v-row>
-      </v-container>
-
-
       <slot />
     </v-main>
 

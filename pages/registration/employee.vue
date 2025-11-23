@@ -8,14 +8,15 @@ const auth = useAuth()
 const employeeStore = useEmployeeJobFormFillRequest()
 
 /*
-/registration/employee?name=Григорий&vacancy=Маркетолог&email=grishadzyin@gmail.com&tgId=1155714398
+/registration/employee?name=Григорий&vacancy=Маркетолог&email=grishadzyin@gmail.com&tgId=1155714398&tgUsername=grisha_tg
 */
 const emailFromQuery = ref(route.query.email as string || '');
 const nameFromQuery = ref(route.query.name as string || '');
 const vacancyFromQuery = ref(route.query.vacancy as string || '');
 const tgIdFromQuery = ref(route.query.tgId as string || '');
+const tgUsernameFromQuery = ref(route.query.tgUsername as string || ''); // ← добавлено
 
-console.log(nameFromQuery.value, vacancyFromQuery.value, tgIdFromQuery.value);
+console.log(nameFromQuery.value, vacancyFromQuery.value, tgIdFromQuery.value, tgUsernameFromQuery.value);
 
 const { meta, handleSubmit } = useForm<{
   name: string,
@@ -65,10 +66,15 @@ let loading = ref(false)
 
 const submit = handleSubmit(async values => {
   loading.value = true
-  const finalValues: any = { ...values, email: email.value.value, tgId: null };
+  const finalValues: any = {
+    ...values,
+    email: email.value.value,
+    tgId: null,
+    tgUsername: tgUsernameFromQuery.value || null, // ← добавлено
+  };
 
   if (tgIdFromQuery.value) {
-    finalValues.tgId = Number(tgIdFromQuery.value)
+    finalValues.tgId = String(tgIdFromQuery.value)
   }
 
   let res = await auth.registration(Object.assign(finalValues, {
@@ -77,7 +83,11 @@ const submit = handleSubmit(async values => {
 
   if (res) {
     if (vacancyFromQuery.value && auth.user?._id) {
-      await employeeStore.createJobFormFillRequestShort(auth.user?._id, vacancyFromQuery.value, auth.user.tgId)
+      await employeeStore.createJobFormFillRequestShort(
+        auth.user?._id,
+        vacancyFromQuery.value,
+        auth.user.tgId
+      )
     }
     router.push(`/me`)
   }
@@ -91,6 +101,7 @@ onMounted(() => {
   }
 })
 </script>
+
 <template>
   <v-container>
     <BackButton />
@@ -115,7 +126,10 @@ onMounted(() => {
             <span class="text-success font-weight-medium">
               Аккаунт подключён к Telegram
             </span>
-            <span class="text-body-2 text-medium-emphasis">
+            <span v-if="tgUsernameFromQuery" class="text-body-2 text-medium-emphasis">
+              @{{ tgUsernameFromQuery }}
+            </span>
+            <span v-else class="text-body-2 text-medium-emphasis">
               Все уведомления будут приходить от бота
             </span>
           </div>

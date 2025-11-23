@@ -17,7 +17,10 @@ const breadcrumbTranslations: { [key: string]: string } = {
   "upload": "Загрузка",
   "list": "Список",
   "admin": "Админка",
-  "manager": "Менеджер"
+  "manager": "Менеджер",
+  "job-form-fill-requests": "Видео-интервью",
+  "all": "Все заявки",
+  "my": "Мои заявки",
 };
 
 
@@ -46,6 +49,7 @@ const breadcrumbs = computed(() => {
     ...items,
   ];
 });
+
 
 const navigationItems: any[] = [
   { title: 'Панель управления', path: '/manager', icon: 'mdi-account-tie' },
@@ -142,7 +146,7 @@ async function logOut() {
       <v-container v-if="route.path.startsWith('/manager')">
         <v-row>
           <v-col cols="12">
-            <v-breadcrumbs :items="breadcrumbs" class="text-h4 font-weight-bold pa-0">
+            <v-breadcrumbs :items="breadcrumbs" class="text-h5 text-lg-h4 font-weight-bold pa-0 breadcrumbs-wrap">
               <template v-slot:divider>
                 <v-icon icon="mdi-chevron-right"></v-icon>
               </template>
@@ -173,3 +177,20 @@ async function logOut() {
     <Footer />
   </v-app>
 </template>
+<style>
+.breadcrumbs-wrap {
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  /* между элементами */
+}
+
+:deep(.v-breadcrumbs__divider) {
+  flex-shrink: 0;
+}
+
+:deep(.v-breadcrumbs__item) {
+  white-space: normal;
+  /* разрешить перенос слов */
+  word-break: break-word;
+}
+</style>

@@ -114,7 +114,8 @@ async function submitRequest() {
         employee: user.value._id,
         job: selectedJob.value,
         startDate: startDate.toISOString(),
-        endDate: endDate.toISOString()
+        endDate: endDate.toISOString(),
+        manager: null
       };
 
       if (isEditMode.value && requestToEdit.value) {

@@ -1,5 +1,6 @@
 import JobApi from "~/api/JobApi";
 import type { JobFormFillRequest, JobFormFillRequestDB } from "~/types/job-form-fill-request.interface";
+import type { User } from "~/types/user.interface";
 
 export function useEmployeeJobFormFillRequest() {
   let jobFormFillRequests = useState<JobFormFillRequestDB[]>(() => [])
@@ -23,7 +24,7 @@ export function useEmployeeJobFormFillRequest() {
     return false;
   })
 
-  async function createJobFormFillRequestShort(employeeId: string, job: string, tgId: number | null) {
+  async function createJobFormFillRequestShort(employeeId: string, job: string, tgId: User["tgId"]) {
     try {
       let requestFromDb = await JobApi.createJobFormFillRequestShort(employeeId, job, tgId)
       jobFormFillRequests.value.push(requestFromDb)

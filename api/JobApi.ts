@@ -1,6 +1,7 @@
 import type { JobFormFillRequest, JobFormFillRequestDB } from "~/types/job-form-fill-request.interface"
 import type { JobForm } from "~/types/job-form.interface"
 import type { JobReservation, JobReservationDb, JobReservationDbWithEmployer } from "~/types/job-reservation.interface"
+import type { User } from "~/types/user.interface"
 
 export default {
   async saveJob(jobForm: any): Promise<JobForm> {
@@ -145,7 +146,7 @@ export default {
       }
     })
   },
-  async createJobFormFillRequestShort(employeeId: string, job: string, tgId: number | null): Promise<JobFormFillRequestDB> {
+  async createJobFormFillRequestShort(employeeId: string, job: string, tgId: User["tgId"]): Promise<JobFormFillRequestDB> {
     const { $apiFetch } = useNuxtApp()
     return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/create-short", {
       method: "POST",
@@ -183,7 +184,7 @@ export default {
       }
     })
   },
-  async updateJobFormFillRequest(requestId: string, request: JobFormFillRequest, tgId: number | null): Promise<JobFormFillRequestDB> {
+  async updateJobFormFillRequest(requestId: string, request: JobFormFillRequest, tgId: User["tgId"]): Promise<JobFormFillRequestDB> {
     const { $apiFetch } = useNuxtApp()
     return $apiFetch<JobFormFillRequestDB>("/job-form-fill-request/update", {
       method: "POST",
