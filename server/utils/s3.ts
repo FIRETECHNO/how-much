@@ -9,6 +9,6 @@ export const s3 = new S3Client({
   endpoint: process.env.YC_ENDPOINT || 'https://storage.yandexcloud.net',
   credentials: {
     accessKeyId: config.ycAccessKeyId,
-    secretAccessKey: config.ycSecretAccessKKey,
+    secretAccessKey: config.ycSecretAccessKey,
   },
 });

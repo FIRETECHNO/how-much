@@ -42,3 +42,17 @@ export interface JobForm_upload {
   tmpId: number
   startDate: Date
 }
+
+export interface JobForm_form {
+  job: string,
+  fullName: string,
+  email: string,
+  phone: string,
+  telegram: string,
+  employeeId: string | null,
+  coverLetter: string,
+  salaryFrom: number | null,
+  salaryTo: number | null,
+  experience: string,
+  workFormat: string,
+}

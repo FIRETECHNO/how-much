@@ -3,6 +3,7 @@ import { toast } from 'vue3-toastify';
 import type { VForm } from 'vuetify/components'
 import { debounce } from 'lodash';
 import AdminApi from '~/api/AdminApi';
+import type { JobForm_form } from '~/types/job-form.interface';
 
 const jobsStore = useJobUploads();
 
@@ -13,19 +14,7 @@ const loading = ref(false)
 const form = ref<VForm | null>(null)
 const isCheckingEmail = ref(false);
 
-const formData = ref<{
-  job: string,
-  fullName: string,
-  email: string,
-  phone: string,
-  telegram: string,
-  employeeId: string | null,
-  coverLetter: string,
-  salaryFrom: number | null,
-  salaryTo: number | null,
-  experience: string | null,
-  workFormat: string | null,
-}>({
+const formData = ref<JobForm_form>({
   job: '',
   fullName: '',
   email: '',
@@ -35,8 +24,8 @@ const formData = ref<{
   coverLetter: '',
   salaryFrom: null,
   salaryTo: null,
-  experience: null,
-  workFormat: null,
+  experience: "",
+  workFormat: "",
 })
 
 const { jobItems, experienceOptions, workFormatOptions } = useAppConst()

@@ -42,8 +42,11 @@ onMounted(async () => {
   <v-container>
     <v-row>
       <v-col cols="12">
-        <h1 class="text-h5 font-weight-medium mb-6">Мои заявки на интервью</h1>
+        <BackButton :button-text="'Назад'"></BackButton>
       </v-col>
+      <!-- <v-col cols="12">
+        <h1 class="text-h5 font-weight-medium mb-6">Заявки на интервью</h1>
+      </v-col> -->
     </v-row>
 
     <v-row v-if="!myJobRequests">
