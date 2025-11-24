@@ -20,7 +20,7 @@ const form = ref<VForm | null>(null);
 const loading = ref(false);
 const selectedJob = ref<string | null>(null);
 const selectedDate = ref<Date | null>(null);
-const selectedStartTime = ref<string | null>(null); // только начало
+const selectedStartTime = ref<string | null>(null);
 
 const requestIdFromQuery = ref(route.query.request_id as string | null);
 const requestToEdit = ref<JobFormFillRequestDB | null>(null);
@@ -40,25 +40,38 @@ const dateOptions = computed(() => {
   return options;
 });
 
-// --- Генерация временных слотов (30-минутные интервалы) ---
-const timeSlots = computed(() => {
+// --- Проверка, прошёл ли слот ---
+function isSlotInPast(slot: string, date: Date | null): boolean {
+  if (!date) return false;
+
+  const now = new Date();
+  const slotDate = new Date(date);
+  const [hours, minutes] = slot.split(':').map(Number);
+  slotDate.setHours(hours, minutes, 0, 0);
+
+  return slotDate < now;
+}
+
+// --- Группировка временных слотов с фильтрацией ---
+const groupedTimeSlots = computed(() => {
+  if (!selectedDate.value) return [];
+
   const slots = [];
-  const startHour = 9;  // 09:00
-  const endHour = 21;   // 21:00
+  const startHour = 9;
+  const endHour = 21;
   for (let hour = startHour; hour < endHour; hour++) {
     slots.push(`${String(hour).padStart(2, '0')}:00`);
     slots.push(`${String(hour).padStart(2, '0')}:30`);
   }
-  return slots;
-});
 
-const groupedTimeSlots = computed(() => {
-  const slots = timeSlots.value;
+  // Фильтруем прошедшие слоты
+  const availableSlots = slots.filter(slot => !isSlotInPast(slot, selectedDate.value));
+
   const morning = [] as string[];
   const day = [] as string[];
   const evening = [] as string[];
 
-  for (const slot of slots) {
+  for (const slot of availableSlots) {
     const hour = parseInt(slot.split(':')[0], 10);
     if (hour >= 9 && hour < 12) {
       morning.push(slot);
@@ -73,7 +86,7 @@ const groupedTimeSlots = computed(() => {
     { title: 'Утро', slots: morning, color: 'blue' },
     { title: 'День', slots: day, color: 'green' },
     { title: 'Вечер', slots: evening, color: 'indigo' },
-  ];
+  ]
 });
 
 // --- Правила валидации ---
@@ -81,7 +94,7 @@ const jobRules = [(v: string | null) => !!v || 'Необходимо выбра�
 const dateRules = [(v: Date | null) => !!v || 'Необходимо выбрать дату'];
 const timeRules = [(v: string | null) => !!v || 'Выберите время начала'];
 
-// --- Расчёт окончания (для отправки) ---
+// --- Расчёт окончания ---
 function calculateEndTime(startTime: string): string {
   const [hours, minutes] = startTime.split(':').map(Number);
   let endMinutes = minutes + 30;
@@ -133,7 +146,6 @@ async function submitRequest() {
   }
 }
 
-// --- Загрузка при редактировании ---
 onMounted(async () => {
   if (requestIdFromQuery.value) {
     const foundRequest = await getRequestById(requestIdFromQuery.value);
@@ -142,7 +154,6 @@ onMounted(async () => {
       selectedJob.value = foundRequest.job;
       if (foundRequest.startDate) {
         selectedDate.value = new Date(foundRequest.startDate);
-        // Извлекаем время начала из startDate
         const start = new Date(foundRequest.startDate);
         selectedStartTime.value = `${String(start.getHours()).padStart(2, '0')}:${String(start.getMinutes()).padStart(2, '0')}`;
       }
@@ -179,17 +190,21 @@ onMounted(async () => {
                   <h3 class="text-h6 font-weight-bold mb-2 text-capitalize" :class="`text-${group.color}`">
                     {{ group.title }}
                   </h3>
-                  <div class="d-flex flex-wrap gap-3 justify-center">
+                  <div v-if="group.slots.length > 0" class="d-flex flex-wrap gap-3 justify-center">
                     <v-btn v-for="slot in group.slots" :key="slot"
                       :color="selectedStartTime === slot ? group.color : 'black'" variant="tonal" size="x-large"
                       min-width="100" rounded @click="selectedStartTime = slot" class="text-body-1 font-weight-bold">
                       {{ slot }}
                     </v-btn>
                   </div>
+                  <v-alert v-else type="info" density="compact" variant="tonal">
+                    На это время нет доступных слотов.
+                  </v-alert>
                 </div>
 
                 <div class="mt-2 mb-4">
-                  <v-alert v-if="!selectedStartTime" type="error" density="compact" variant="tonal">
+                  <v-alert v-if="!selectedStartTime && groupedTimeSlots.some(g => g.slots.length > 0)" type="error"
+                    density="compact" variant="tonal">
                     {{ timeRules[0](selectedStartTime) }}
                   </v-alert>
                 </div>
