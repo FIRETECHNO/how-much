@@ -32,5 +32,20 @@ export default {
         manager
       }
     })
+  },
+  /***
+   * @returns те слоты, которые заняты в базе данных (они не обязательно полностью заняты, есть и свободные не полностью, за это отвечает availableManagers)
+   */
+  async getPossibleTimeSlots(): Promise<{
+    startDate: string,
+    availableManagers: number
+  }[]> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<{
+      startDate: string,
+      availableManagers: number
+    }[]>("/job-form-fill-request/possible-time-slots", {
+      method: "GET",
+    })
   }
 }

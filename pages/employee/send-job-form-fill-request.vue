@@ -22,6 +22,8 @@ const selectedJob = ref<string | null>(null);
 const selectedDate = ref<Date | null>(null);
 const selectedStartTime = ref<string | null>(null);
 
+let slotsFromDb = ref<{ startDate: string, availableManagers: number }[] | null>([])
+
 const requestIdFromQuery = ref(route.query.request_id as string | null);
 const requestToEdit = ref<JobFormFillRequestDB | null>(null);
 const isEditMode = computed(() => !!requestToEdit.value);
@@ -40,54 +42,98 @@ const dateOptions = computed(() => {
   return options;
 });
 
-// --- Проверка, прошёл ли слот ---
 function isSlotInPast(slot: string, date: Date | null): boolean {
   if (!date) return false;
 
   const now = new Date();
-  const slotDate = new Date(date);
-  const [hours, minutes] = slot.split(':').map(Number);
-  slotDate.setHours(hours, minutes, 0, 0);
 
-  return slotDate < now;
+  // Если выбранная дата НЕ сегодня — прошлых слотов быть не может
+  const isToday =
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate();
+
+  if (!isToday) return false;
+
+  // Создаём локальную дату для слота
+  const [hours, minutes] = slot.split(':').map(Number);
+
+  const slotDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    hours,
+    minutes,
+    0,
+    0
+  );
+
+  return slotDate.getTime() < now.getTime();
 }
 
 // --- Группировка временных слотов с фильтрацией ---
 const groupedTimeSlots = computed(() => {
-  if (!selectedDate.value) return [];
+  if (!selectedDate.value || !slotsFromDb.value) return [];
 
-  const slots = [];
+  // backendSlots: [{ startDate: string, availableManagers: number }]
+
+  // Создаём карту доступности: "HH:MM" -> availableManagers
+  const availabilityMap = new Map<string, number>();
+  for (const slot of slotsFromDb.value) {
+    if (new Date(selectedDate.value).getDay() == new Date(slot.startDate).getDay()) {
+      const d = new Date(slot.startDate);
+      const hh = String(d.getHours()).padStart(2, "0");
+      const mm = String(d.getMinutes()).padStart(2, "0");
+      const time = `${hh}:${mm}`;
+      availabilityMap.set(time, slot.availableManagers);
+    }
+  }
+
+  // Генерируем слоты 09:00–21:00 (каждые 30 минут)
   const startHour = 9;
   const endHour = 21;
+  const generated: { time: string; available: number }[] = [];
+
   for (let hour = startHour; hour < endHour; hour++) {
-    slots.push(`${String(hour).padStart(2, '0')}:00`);
-    slots.push(`${String(hour).padStart(2, '0')}:30`);
+    const t1 = `${String(hour).padStart(2, '0')}:00`;
+    const t2 = `${String(hour).padStart(2, '0')}:30`;
+
+    // Если слот есть в availabilityMap — берём значение, иначе считаем свободным (большое число)
+    generated.push({
+      time: t1,
+      available: availabilityMap.has(t1) ? availabilityMap.get(t1)! : 1
+    });
+    generated.push({
+      time: t2,
+      available: availabilityMap.has(t2) ? availabilityMap.get(t2)! : 1
+    });
   }
 
   // Фильтруем прошедшие слоты
-  const availableSlots = slots.filter(slot => !isSlotInPast(slot, selectedDate.value));
+  const filteredByTime = generated.filter(s => !isSlotInPast(s.time, selectedDate.value));
 
-  const morning = [] as string[];
-  const day = [] as string[];
-  const evening = [] as string[];
+  // Оставляем только свободные (available > 0)
+  const freeSlots = filteredByTime.filter(s => s.available > 0);
 
-  for (const slot of availableSlots) {
-    const hour = parseInt(slot.split(':')[0], 10);
-    if (hour >= 9 && hour < 12) {
-      morning.push(slot);
-    } else if (hour >= 12 && hour < 18) {
-      day.push(slot);
-    } else if (hour >= 18 && hour < 21) {
-      evening.push(slot);
-    }
+  // Группируем по блокам
+  const morning: string[] = [];
+  const day: string[] = [];
+  const evening: string[] = [];
+
+  for (const s of freeSlots) {
+    const hour = parseInt(s.time.split(':')[0], 10);
+    if (hour >= 9 && hour < 12) morning.push(s.time);
+    else if (hour >= 12 && hour < 18) day.push(s.time);
+    else if (hour >= 18 && hour < 21) evening.push(s.time);
   }
 
   return [
     { title: 'Утро', slots: morning, color: 'blue' },
     { title: 'День', slots: day, color: 'green' },
-    { title: 'Вечер', slots: evening, color: 'indigo' },
-  ]
+    { title: 'Вечер', slots: evening, color: 'indigo' }
+  ];
 });
+
 
 // --- Правила валидации ---
 const jobRules = [(v: string | null) => !!v || 'Необходимо выбрать направление'];
@@ -147,6 +193,8 @@ async function submitRequest() {
 }
 
 onMounted(async () => {
+  slotsFromDb.value = await requestsStore.getPossibleTimeSlots()
+
   if (requestIdFromQuery.value) {
     const foundRequest = await getRequestById(requestIdFromQuery.value);
     if (foundRequest) {

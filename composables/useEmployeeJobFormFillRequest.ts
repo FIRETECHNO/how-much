@@ -1,4 +1,5 @@
 import JobApi from "~/api/JobApi";
+import JobReqApi from "~/api/JobReqApi";
 import type { JobFormFillRequest, JobFormFillRequestDB } from "~/types/job-form-fill-request.interface";
 import type { User } from "~/types/user.interface";
 
@@ -74,7 +75,19 @@ export function useEmployeeJobFormFillRequest() {
       let requestFromDb = await JobApi.getJobFormFillRequestById(requestId)
       return requestFromDb
     } catch (error) {
-      console.log("error useEmployerJobs/getRequestById", error);
+      console.log("error useEmployeeJobFormFillRequest/getRequestById", error);
+      return null
+    }
+  }
+
+  async function getPossibleTimeSlots(): Promise<{
+    startDate: string,
+    availableManagers: number
+  }[] | null> {
+    try {
+      return await JobReqApi.getPossibleTimeSlots()
+    } catch (error) {
+      console.log("error useEmployeeJobFormFillRequest/getPossibleTimeSlots", error);
       return null
     }
   }
@@ -83,6 +96,6 @@ export function useEmployeeJobFormFillRequest() {
     // vars
     jobFormFillRequests, shortJobFormFillRequest, latestRequest, isLatestRequestShort,
     // functions
-    createJobFormFillRequestShort, getMyRequests, createJobFormFillRequest, updateJobFormFillRequest, getRequestById
+    createJobFormFillRequestShort, getMyRequests, createJobFormFillRequest, updateJobFormFillRequest, getRequestById, getPossibleTimeSlots
   }
 }
