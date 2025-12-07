@@ -106,19 +106,19 @@ const { meta, handleSubmit, setValues } = useForm<{
 })
 
 const name = useField<string>('name')
-const innField = useField<string>('inn')
+const inn = useField<string>('inn')
 const email = useField<string>('email')
 const password = useField<string>('password')
 const agreement = useField<boolean>('agreement')
 
 // Следим за изменениями ИНН и ищем компанию
-watch(() => innField.value.value, async (newVal) => {
+watch(() => inn.value.value, async (newVal) => {
   if (newVal.length >= 10) {
     const found = await checkCompanyAndDisplayIt(newVal)
     if (!found) {
-      innField.setErrors(['Компания с таким ИНН не найдена'])
+      inn.setErrors(['Компания с таким ИНН не найдена'])
     } else {
-      innField.setErrors([])
+      inn.setErrors([])
     }
   }
 })
@@ -166,7 +166,7 @@ const submit = handleSubmit(async (values) => {
       name: values.name,
       email: values.email,
       password: values.password,
-      // company: targetCompany.value,
+      company: targetCompany.value,
       roles: ["employer"],
       // Передаём внешние параметры для сохранения
       tgId: externalParams.value.tgId,
@@ -198,9 +198,8 @@ const submit = handleSubmit(async (values) => {
           <v-text-field label="ФИО контактного лица" placeholder="Иван Иванов Иванович" v-model="name.value.value"
             :error-messages="name.errors.value" variant="outlined" density="compact" class="w-100" />
 
-          <v-text-field label="ИНН" placeholder="10 или 12 цифр без пробелов" v-model="innField.value.value"
-            :error-messages="innField.errors.value" variant="outlined" density="compact" class="w-100 mt-1"
-            counter="12" />
+          <v-text-field label="ИНН" placeholder="10 или 12 цифр без пробелов" v-model="inn.value.value"
+            :error-messages="inn.errors.value" variant="outlined" density="compact" class="w-100 mt-1" counter="12" />
 
           <v-card variant="outlined" border v-if="targetCompany" class="mb-8">
             <v-card-title class="text-h6 pb-1">
