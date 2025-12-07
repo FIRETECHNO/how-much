@@ -1,25 +1,35 @@
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate'
-import _ from 'lodash'
+import { onMounted, ref, watch } from 'vue'
 import type { CompanyFromDadata } from '~/types/company.interface'
 import { toast } from 'vue3-toastify'
+import { useRoute } from 'vue-router'
 
-let router = useRouter()
+const route = useRoute()
+const router = useRouter()
 const auth = useAuth()
 
 let targetCompany = ref<CompanyFromDadata>()
 
-async function checkCompanyAndDisplayIt(inn: string): Promise<boolean> {
-  let res = await $fetch<CompanyFromDadata[]>("/api/dadata/search-company", {
-    method: "GET",
-    query: {
-      q: inn
-    }
-  })
-  console.log(res);
+// Сохраняем параметры из URL для отправки на бэкенд
+const externalParams = ref({
+  name: '',
+  inn: '',
+  email: '',
+  tgId: '',
+  tgUsername: '',
+})
 
-  let companies: CompanyFromDadata[] = res.map(suggestion => {
-    return {
+async function checkCompanyAndDisplayIt(inn: string): Promise<boolean> {
+  if (!inn) return false
+
+  try {
+    const res = await $fetch<CompanyFromDadata[]>("/api/dadata/search-company", {
+      method: "GET",
+      query: { q: inn }
+    })
+
+    const companies = res.map(suggestion => ({
       value: suggestion.value,
       data: {
         name: {
@@ -31,22 +41,24 @@ async function checkCompanyAndDisplayIt(inn: string): Promise<boolean> {
         ogrn: suggestion.data.ogrn,
         okved: suggestion.data.okved,
         kpp: suggestion.data.kpp || null,
-        address: {
-          value: suggestion.data.address?.value,
-        }
+        address: { value: suggestion.data.address?.value }
       }
-    };
-  });
+    }))
 
-  if (companies.length > 0) {
-    targetCompany.value = companies[0]
-    return true;
+    if (companies.length > 0) {
+      targetCompany.value = companies[0]
+      return true
+    }
+
+    targetCompany.value = undefined
+    return false
+  } catch (error) {
+    console.error('Ошибка поиска компании:', error)
+    return false
   }
-  targetCompany.value = undefined;
-  return false
 }
 
-const { meta, handleSubmit } = useForm<{
+const { meta, handleSubmit, setValues } = useForm<{
   name: string,
   inn: string,
   email: string,
@@ -93,47 +105,81 @@ const { meta, handleSubmit } = useForm<{
   },
 })
 
-let name = useField<string>('name')
-let inn = useField<string>('inn')
-let email = useField<string>('email')
-let password = useField<string>('password')
-let agreement = useField<boolean>('agreement')
+const name = useField<string>('name')
+const inn = useField<string>('inn')
+const email = useField<string>('email')
+const password = useField<string>('password')
+const agreement = useField<boolean>('agreement')
 
+// Следим за изменениями ИНН и ищем компанию
 watch(() => inn.value.value, async (newVal) => {
-  let isCompanyFound = await checkCompanyAndDisplayIt(newVal);
-  if (!isCompanyFound)
-    inn.setErrors("Компания с таким ИНН не найдена")
+  if (newVal.length >= 10) {
+    const found = await checkCompanyAndDisplayIt(newVal)
+    if (!found) {
+      inn.setErrors(['Компания с таким ИНН не найдена'])
+    } else {
+      inn.setErrors([])
+    }
+  }
 })
 
-let show_password = ref(false)
-let loading = ref(false)
+// Загрузка данных из URL
+onMounted(async () => {
+  const query = route.query
+  const name = query.name as string || ''
+  const inn = query.inn as string || ''
+  const email = query.email as string || ''
+  const tgId = query.tgId as string || ''
+  const tgUsername = query.tgUsername as string || ''
 
-const submit = handleSubmit(async values => {
+  // Сохраняем для отправки
+  externalParams.value = { name, inn, email, tgId, tgUsername }
+
+  // Подставляем в форму
+  setValues({
+    name,
+    inn,
+    email,
+    password: '',
+    agreement: false,
+  })
+
+  // Если ИНН есть — сразу ищем компанию
+  if (inn) {
+    await checkCompanyAndDisplayIt(inn)
+  }
+})
+
+const show_password = ref(false)
+const loading = ref(false)
+
+const submit = handleSubmit(async (values) => {
   if (!targetCompany.value) {
-    toast("Непредвиденная ошибка! Перезагрузите страницу", {
-      type: "error",
-      autoClose: 5000
-    })
-    return false;
+    toast("Непредвиденная ошибка! Перезагрузите страницу", { type: "error" })
+    return false
   }
 
   loading.value = true
 
-  let toSend = {
-    name: values.name,
-    email: values.email,
-    password: values.password,
-    company: targetCompany.value,
-    roles: ["employer"],
+  try {
+    const toSend = {
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      company: targetCompany.value,
+      roles: ["employer"],
+      // Передаём внешние параметры для сохранения
+      tgId: externalParams.value.tgId,
+      tgUsername: externalParams.value.tgUsername,
+    }
+
+    const res = await auth.registration(toSend)
+    if (res) router.push('/me')
+  } catch (error) {
+    toast("Ошибка регистрации", { type: "error" })
+  } finally {
+    loading.value = false
   }
-  console.log(toSend);
-
-  let res = await auth.registration(toSend)
-
-  if (res)
-    router.push(`/me`)
-
-  loading.value = false
 })
 </script>
 <template>
