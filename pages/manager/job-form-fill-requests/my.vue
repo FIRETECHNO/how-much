@@ -28,10 +28,12 @@ function getTelegramLink(tgUsername: string | null | undefined, tgId: number | n
   return "";
 }
 
-// function getStatusText(request: JobFormFillRequestDBPopulated): string {
-//   // Здесь можно добавить логику статуса, если она есть
-//   return 'Ожидает подтверждения';
-// }
+function getConfirmationStatus(confirmed: boolean | undefined): { text: string; color: string } {
+  if (confirmed) {
+    return { text: '✅ Подтверждено соискателем', color: 'success' };
+  }
+  return { text: '⏳ Ожидает подтверждения', color: 'warning' };
+}
 
 onMounted(async () => {
   await managerStore.getMyJobRequests()
@@ -44,9 +46,6 @@ onMounted(async () => {
       <v-col cols="12">
         <BackButton :button-text="'Назад'"></BackButton>
       </v-col>
-      <!-- <v-col cols="12">
-        <h1 class="text-h5 font-weight-medium mb-6">Заявки на интервью</h1>
-      </v-col> -->
     </v-row>
 
     <v-row v-if="!myJobRequests">
@@ -112,12 +111,13 @@ onMounted(async () => {
               <span class="text-body-2">{{ request.job || '—' }}</span>
             </div>
 
-            <!-- Статус -->
-            <!-- <div class="text-center">
-              <v-chip color="warning" text-color="white" size="small" variant="flat">
-                {{ getStatusText(request) }}
+            <!-- Статус подтверждения -->
+            <div class="text-center mt-2">
+              <v-chip :color="getConfirmationStatus(request.confirmedByEmployee).color" text-color="white" size="small"
+                variant="flat">
+                {{ getConfirmationStatus(request.confirmedByEmployee).text }}
               </v-chip>
-            </div> -->
+            </div>
           </v-card-text>
         </v-card>
       </v-col>
