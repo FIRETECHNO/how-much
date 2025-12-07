@@ -79,13 +79,13 @@ const { meta, handleSubmit, setValues } = useForm<{
       if (value.length > 200) return 'Слишком длинное ФИО'
       return true
     },
-    async inn(value: string) {
-      if (!value) return 'Введите ИНН'
-      if (!/^(\d{10}|\d{12})$/.test(value)) {
-        return 'ИНН должен состоять из 10 или 12 цифр'
-      }
-      return true
-    },
+    // async inn(value: string) {
+    //   if (!value) return 'Введите ИНН'
+    //   if (!/^(\d{10}|\d{12})$/.test(value)) {
+    //     return 'ИНН должен состоять из 10 или 12 цифр'
+    //   }
+    //   return true
+    // },
     email(value: string) {
       if (!value) return 'Введите почту'
       if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(value))
