@@ -1,6 +1,6 @@
 import JobApi from "~/api/JobApi";
 import JobReqApi from "~/api/JobReqApi";
-import type { JobFormFillRequest, JobFormFillRequestDB } from "~/types/job-form-fill-request.interface";
+import type { JobFormFillRequest, JobFormFillRequestDB, JobFormFillRequestDBPopulatedManager } from "~/types/job-form-fill-request.interface";
 import type { User } from "~/types/user.interface";
 
 export function useEmployeeJobFormFillRequest() {
@@ -80,6 +80,11 @@ export function useEmployeeJobFormFillRequest() {
     }
   }
 
+  async function getRequestByIdForConfirmation(requestId: string): Promise<JobFormFillRequestDBPopulatedManager | null> {
+    let requestFromDb = await JobApi.getRequestByIdForConfirmation(requestId)
+    return requestFromDb
+  }
+
   async function getPossibleTimeSlots(): Promise<{
     startDate: string,
     availableManagers: number
@@ -92,10 +97,15 @@ export function useEmployeeJobFormFillRequest() {
     }
   }
 
+  async function employeeConfirmFormFillReq(requestId: string) {
+    return await JobReqApi.employeeConfirmFormFillReq(requestId)
+  }
+
   return {
     // vars
     jobFormFillRequests, shortJobFormFillRequest, latestRequest, isLatestRequestShort,
     // functions
-    createJobFormFillRequestShort, getMyRequests, createJobFormFillRequest, updateJobFormFillRequest, getRequestById, getPossibleTimeSlots
+    createJobFormFillRequestShort, getMyRequests, createJobFormFillRequest, updateJobFormFillRequest, getRequestById, getPossibleTimeSlots,
+    getRequestByIdForConfirmation, employeeConfirmFormFillReq,
   }
 }

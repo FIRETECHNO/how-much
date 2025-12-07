@@ -1,4 +1,4 @@
-import type { JobFormFillRequest, JobFormFillRequestDB } from "~/types/job-form-fill-request.interface"
+import type { JobFormFillRequest, JobFormFillRequestDB, JobFormFillRequestDBPopulatedManager } from "~/types/job-form-fill-request.interface"
 import type { JobForm } from "~/types/job-form.interface"
 import type { JobReservation, JobReservationDb, JobReservationDbWithEmployer } from "~/types/job-reservation.interface"
 import type { User } from "~/types/user.interface"
@@ -193,4 +193,13 @@ export default {
       }
     })
   },
+  async getRequestByIdForConfirmation(requestId: string): Promise<JobFormFillRequestDBPopulatedManager> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobFormFillRequestDBPopulatedManager>("/job-form-fill-request/get-by-id-for-confirmation", {
+      method: "POST",
+      body: {
+        requestId,
+      }
+    })
+  }
 }

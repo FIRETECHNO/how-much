@@ -47,5 +47,14 @@ export default {
     }[]>("/job-form-fill-request/possible-time-slots", {
       method: "GET",
     })
+  },
+  async employeeConfirmFormFillReq(requestId: string): Promise<any> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<any[]>("/job-form-fill-request/employee-confirm", {
+      method: "POST",
+      body: {
+        requestId
+      }
+    })
   }
 }
