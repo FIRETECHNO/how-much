@@ -33,6 +33,7 @@ export default defineNuxtConfig({
       }
     }],
     "@pinia/nuxt",
+    '@vite-pwa/nuxt',
   ],
   vite: {
     vue: {
@@ -52,5 +53,43 @@ export default defineNuxtConfig({
   },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
+  },
+  pwa: {
+    registerType: 'autoUpdate',
+    injectRegister: 'auto',
+
+    manifest: {
+      name: 'Сколько - рекрутинговая платформа',
+      short_name: 'Сколько',
+      description: 'Nuxt 4 PWA',
+      theme_color: '#1e8d99',
+      background_color: '#ffffff',
+      display: 'standalone',
+      start_url: '/',
+      lang: 'ru',
+      icons: [
+        {
+          src: '/pwa-192-192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '/pwa-512-512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        },
+        // {
+        //   src: '/pwa-512x512-maskable.png',
+        //   sizes: '512x512',
+        //   type: 'image/png',
+        //   purpose: 'maskable'
+        // }
+      ]
+    },
+
+    workbox: {
+      navigateFallback: '/',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+    },
   },
 })
