@@ -57,6 +57,10 @@ export default defineNuxtConfig({
   pwa: {
     registerType: 'autoUpdate',
     injectRegister: 'auto',
+    workbox: {
+      navigateFallback: '/index.html',
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
+    },
 
     manifest: {
       name: 'Сколько - рекрутинговая платформа',
