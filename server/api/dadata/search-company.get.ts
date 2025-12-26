@@ -21,12 +21,9 @@ export default defineEventHandler(async (event) => {
         query: q
       })
     })
-    console.log(res);
-
 
     return res.suggestions
   } catch (error) {
-    console.log(error);
-    return [];
+    return error;
   }
 });

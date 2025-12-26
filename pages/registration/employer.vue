@@ -24,10 +24,13 @@ async function checkCompanyAndDisplayIt(inn: string): Promise<boolean> {
   if (!inn) return false
 
   try {
-    const res = await $fetch<CompanyFromDadata[]>("/api/dadata/search-company", {
+    const res = await $fetch<CompanyFromDadata[] | any>("/api/dadata/search-company", {
       method: "GET",
       query: { q: inn }
     })
+
+    console.log(res);
+
 
     const companies = res.map(suggestion => ({
       value: suggestion.value,
