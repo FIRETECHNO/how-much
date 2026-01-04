@@ -8,6 +8,10 @@ export default defineEventHandler(async (event) => {
 
   var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party";
 
+  console.log('HAS TOKEN:', !!config.dadataToken)
+  console.log('TOKEN LENGTH:', config.dadataToken?.length)
+
+
   try {
     console.log(config.dadataToken);
 
