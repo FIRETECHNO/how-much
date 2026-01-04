@@ -2,16 +2,17 @@
 const currentYear = new Date().getFullYear()
 
 const footerLinks = [
-  { text: 'Политика конфиденциальности', to: '/privacy-policy' },
+  { text: 'Политика конфиденциальности для Рекрутеров', to: '/documents/Пользовательское_соглашение_для_внешних_рекрутеров.pdf' },
+  { text: 'Политика конфиденциальности для Работодателя', to: '/documents/Пользовательское_соглашение_для_цифровой_платформы_по_поиску_сотрудников.pdf' },
   { text: 'Инструкция', to: '/guide' },
-  { text: 'О системе', to: '/about' },
-  { text: 'Техподдержка', to: '/support' },
+  // { text: 'О системе', to: '/about' },
+  // { text: 'Техподдержка', to: '/support' },
 ]
 
-const socialLinks = [
-  { icon: 'mdi-telegram', href: '#' },
-  { icon: 'mdi-vk', href: '#' },
-  { icon: 'mdi-youtube', href: '#' },
+const socialLinks: any[] = [
+  // { icon: 'mdi-telegram', href: '#' },
+  // { icon: 'mdi-vk', href: '#' },
+  // { icon: 'mdi-youtube', href: '#' },
 ]
 </script>
 
@@ -26,7 +27,8 @@ const socialLinks = [
         </v-col>
 
         <v-col cols="12" md="8" class="hidden-sm-and-down text-md-right">
-          <v-btn v-for="link in footerLinks" :key="link.text" :to="link.to" variant="text" class="mx-1" rounded="lg">
+          <v-btn v-for="link in footerLinks" :key="link.text" :href="link.to" target="_blank" variant="text"
+            class="mx-1" rounded="lg">
             {{ link.text }}
           </v-btn>
         </v-col>
@@ -36,7 +38,7 @@ const socialLinks = [
 
       <v-row align="center" class="py-2">
         <v-col cols="12" md="8" class="text-center text-md-left text-body-2 text-medium-emphasis">
-          © {{ currentYear }} Сколько? — Все права защищены.
+          © {{ currentYear }} Сколько — Все права защищены.
         </v-col>
 
         <v-col cols="12" md="4" class="text-center text-md-right">

@@ -29,10 +29,7 @@ async function checkCompanyAndDisplayIt(inn: string): Promise<boolean> {
       query: { q: inn }
     })
 
-    console.log(res);
-
-
-    const companies = res.map(suggestion => ({
+    const companies = res.map((suggestion: any) => ({
       value: suggestion.value,
       data: {
         name: {
