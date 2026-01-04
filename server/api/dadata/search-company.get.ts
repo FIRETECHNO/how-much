@@ -9,6 +9,8 @@ export default defineEventHandler(async (event) => {
   var url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party";
 
   try {
+    console.log(config.dadataToken);
+
     let res = await $fetch<{ suggestions: any }>(url, {
       method: "POST",
       mode: "cors",
