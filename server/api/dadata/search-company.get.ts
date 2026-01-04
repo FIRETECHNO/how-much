@@ -22,8 +22,12 @@ export default defineEventHandler(async (event) => {
       })
     })
 
+    console.log("dadata res: ", res);
+
+
     return res.suggestions
   } catch (error) {
+    console.log("dadata error: ", error);
     return error;
   }
 });
