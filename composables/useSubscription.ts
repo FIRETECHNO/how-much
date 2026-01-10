@@ -6,7 +6,9 @@ import { toast } from "vue3-toastify"
 export const useSubscription = () => {
   let currentSubscription = useState<EmployerPaymentOrder | null>("currentSubscription", () => null)
 
-  const isEmployerSubscriptionActive = ref<boolean>(false)
+  let subscriptionStatus = useState<"none" | "active" | "pending" | "expired">('subscriptionStatus', () => 'none')
+
+  const isEmployerSubscriptionActive = useState<boolean>(() => false)
 
   async function checkSubscriptionStatus() {
     let { isEmployer } = useRole();
@@ -28,13 +30,21 @@ export const useSubscription = () => {
           currentSubscription.value = res;
         }
 
+        subscriptionStatus.value = "expired"
         let currentTime = new Date().getTime()
         let subStart = new Date(currentSubscription.value.updatedAt).getTime();
         let delta = currentTime - subStart;
 
-        if (delta <= EMPLOYER_SUBSCRIPTION_DURATION && currentSubscription.value.status == "CONFIRMED") {
-          isEmployerSubscriptionActive.value = true;
-          return true;
+        if (delta <= EMPLOYER_SUBSCRIPTION_DURATION) {
+          if (currentSubscription.value.status == "CONFIRMED") {
+            subscriptionStatus.value = "active"
+            isEmployerSubscriptionActive.value = true;
+            return true;
+          } else {
+            subscriptionStatus.value = "pending"
+            isEmployerSubscriptionActive.value = false;
+            return false;
+          }
         }
       }
     }
@@ -86,6 +96,7 @@ export const useSubscription = () => {
     // vars
     isEmployerSubscriptionActive,
     currentSubscription,
+    subscriptionStatus,
     // functions
     createEmployerPaymentOrder,
     checkSubscriptionStatus,
