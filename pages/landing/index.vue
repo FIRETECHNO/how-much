@@ -18,7 +18,24 @@
     </v-row>
 
     <v-row style="margin-top: 100px; margin-bottom: 100px;">
-      <v-col cols="12" class="d-flex justify-center align-center flex-column">
+
+      <!-- small screens -->
+      <v-col cols="12" class="d-flex d-md-none justify-center align-center flex-column">
+        <div class="landing-header">
+          <img src="/logo.png" alt="Логотип"
+            style="height: clamp(1.875rem, 0.3835rem + 4.2614vw, 3.75rem); width: clamp(1.875rem, 0.3835rem + 4.2614vw, 3.75rem);"
+            class="logo-float" />
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight break-words">
+            колько –– СЕРВИС, СОЕДИНЯЮЩИЙ СОИСКАТЕЛЕЙ И РАБОТОДАТЕЛЕЙ
+          </h1>
+          <h3 class="text-sm md:text-lg font-bold text-gray-600">
+            более 1000 работодателей уже нашли своих сотрудников
+          </h3>
+        </div>
+      </v-col>
+      <!-- small screens -->
+      <!-- big screens -->
+      <v-col cols="12" class="d-none d-md-flex justify-center align-center flex-column">
         <div class="flex items-center">
           <img height="60" width="60" src="/logo.png" alt="Логотип" class="shrink-0" />
           <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
@@ -29,8 +46,8 @@
           более 1000 работодателей уже нашли своих сотрудников
         </h3>
       </v-col>
+      <!-- big screens -->
     </v-row>
-
     <v-row class="d-flex justify-center">
       <v-col cols="12" class="d-flex justify-center"
         style="margin-bottom: clamp(3.75rem, 1.7614rem + 5.6818vw, 6.25rem);">
@@ -113,5 +130,19 @@
 
 .manager-border {
   border-left: 3px solid rgb(var(--v-theme-manager));
+}
+
+.landing-header {
+  display: block;
+  overflow: hidden;
+  /* clearfix */
+}
+
+.logo-float {
+  float: left;
+  margin-right: 0.25rem;
+  /* отступ между логотипом и текстом */
+  // margin-bottom: 0.25rem;
+  /* небольшой отступ снизу, если текст короткий */
 }
 </style>
