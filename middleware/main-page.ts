@@ -6,5 +6,5 @@ export default defineNuxtRouteMiddleware((to, from) => {
     return navigateTo("/jobs");
   }
 
-  return navigateTo("/landing/select-role")
+  return navigateTo("/landing")
 })

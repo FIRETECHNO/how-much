@@ -9,6 +9,7 @@ definePageMeta({
 const router = useRouter();
 const route = useRoute();
 const auth = useAuth();
+const { companyEmail } = useAppConst()
 
 const inviteToken = ref(route.query.invite_token as string | null);
 // Состояние токена: 'validating' (проверяется), 'valid' (валидный), 'invalid' (невалидный)
@@ -154,11 +155,26 @@ const submit = handleSubmit(async values => {
         </div>
       </v-card>
 
-      <v-alert v-else type="error" title="Недействительная ссылка" variant="tonal" prominent icon="mdi-link-off">
-        Ссылка для регистрации недействительна, просрочена или уже была использована. Пожалуйста, обратитесь к
-        администратору
-        для получения новой ссылки.
-      </v-alert>
+      <v-card v-else class="d-flex flex-column justify-center align-center text-center w-100 pa-6 rounded-lg"
+        variant="tonal">
+        <v-icon size="x-large" color="error">mdi-link-off</v-icon>
+        <h2 class="text-h6 font-weight-bold mt-4">Ссылка недействительна</h2>
+        <p class="mt-2 text-body-2">
+          Ссылка для регистрации устарела, уже использована или не существует.
+        </p>
+        <p class="mt-4 text-body-1 font-weight-medium">
+          Пожалуйста, свяжитесь с администратором платформы:
+        </p>
+        <div class="mt-2 d-flex flex-column align-center">
+          <a href="mailto:admin@kolko.ru" class="text-subtitle-1 text-primary text-decoration-none">
+            {{ companyEmail }}
+          </a>
+          <!-- Можно добавить Telegram, телефон и т.д. -->
+          <!-- <a href="https://t.me/kolko_admin" target="_blank" class="mt-1 text-caption text-primary text-decoration-none">
+        Написать в Telegram
+      </a> -->
+        </div>
+      </v-card>
 
     </v-col>
   </v-container>

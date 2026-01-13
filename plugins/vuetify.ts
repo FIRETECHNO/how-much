@@ -18,6 +18,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 					colors: {
 						primary: "#1e8d99", // #1e8d99
 						secondary: "#894eff", // #894eff
+
+						employer: "#44C2C0",
+						employee: "#8944C2",
+						manager: "#FF7F69"
 					}
 				},
 				dark: {
@@ -25,6 +29,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 					colors: {
 						primary: "#1e8d99", // #1e8d99
 						secondary: "#894eff", // #894eff
+
+						employer: "#44C2C0",
+						employee: "#8944C2",
+						manager: "#FF7F69"
 					}
 				},
 			},

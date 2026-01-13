@@ -9,3 +9,8 @@ a {
   margin: 2px;
   text-decoration: underline;
 }
+
+img {
+  -webkit-user-drag: none !important;
+  user-select: none !important;
+}
