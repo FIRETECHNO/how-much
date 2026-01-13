@@ -12,7 +12,7 @@ let mapPath = computed(() => theme.global.current.value.dark ? "/roadmap-whitete
           <LandingMainMessageCloud :variant="'left'" />
         </ClientOnly>
       </v-col>
-      <v-col cols="12" md="6" lg="5" xl="4" style="min-height: 72vh !important;" class="d-flex align-center">
+      <v-col cols="12" md="6" lg="5" xl="4" style="min-height: 80vh !important;" class="d-flex align-center">
         <LandingMainImageSelect />
       </v-col>
       <v-col cols="12" md="3" lg="3" xl="4" class="d-none d-md-flex">
