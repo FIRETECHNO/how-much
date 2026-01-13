@@ -72,6 +72,7 @@ const { meta, handleSubmit, setValues } = useForm<{
     password: '',
     agreement: false,
   },
+  validateOnMount: false,
   validationSchema: {
     name(value: string) {
       if (!value) return 'Введите ФИО контактного лица'
@@ -180,6 +181,20 @@ const submit = handleSubmit(async (values) => {
   } finally {
     loading.value = false
   }
+})
+
+onMounted(async () => {
+  await nextTick()
+  await nextTick() // иногда нужно два тика
+
+    // Жёсткий сброс состояния всех полей
+    ;[name, inn, email, password, agreement].forEach((field: any) => {
+      field.resetField({
+        value: field.value.value,     // сохраняем текущее значение
+        touched: false,
+        dirty: false
+      })
+    })
 })
 </script>
 <template>

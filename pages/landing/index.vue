@@ -7,7 +7,7 @@ let mapPath = computed(() => theme.global.current.value.dark ? "/roadmap-whitete
 <template>
   <v-container>
     <v-row class="d-flex justify-center align-center">
-      <v-col cols="12" md="3" lg="3" xl="4">
+      <v-col cols="12" md="3" lg="3" xl="4" class="d-none d-md-flex">
         <ClientOnly>
           <LandingMainMessageCloud :variant="'left'" />
         </ClientOnly>
@@ -111,7 +111,7 @@ let mapPath = computed(() => theme.global.current.value.dark ? "/roadmap-whitete
       </v-col>
     </v-row>
 
-    <v-row class="d-flex justify-center">
+    <v-row class="d-flex justify-center" style="margin-bottom: 100px;">
       <v-col cols="12" class="d-flex justify-center"
         style="margin-top: clamp(4.375rem, 1.8892rem + 7.1023vw, 7.5rem); margin-bottom: clamp(3.125rem, 2.1307rem + 2.8409vw, 4.375rem);">
         <h1 class="text-xl sm:text-2xl md:text-3xl font-bold leading-tight">
