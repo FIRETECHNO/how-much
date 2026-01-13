@@ -70,7 +70,7 @@ async function logOut() {
     <v-app-bar flat border>
       <v-container class="d-flex align-center">
         <NuxtLink to="/" class="text-decoration-none text-high-emphasis">
-          <v-img src="/logo.png" height="60" width="60"></v-img>
+          <v-img src="/logo.svg" height="60" width="60"></v-img>
         </NuxtLink>
 
         <v-spacer></v-spacer>
