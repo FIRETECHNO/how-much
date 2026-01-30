@@ -1,4 +1,38 @@
 <script setup lang="ts">
+useHead({
+  title: 'Сколько — сервис, соединяющий соискателей и работодателей',
+  meta: [
+    {
+      name: 'description',
+      content: 'Более 1000 работодателей уже нашли своих сотрудников. Видео-интервью вместо бесконечных собеседований — быстро, честно, бесплатно для кандидатов.'
+    },
+    // Open Graph
+    { property: 'og:title', content: 'Сколько — сервис, соединяющий соискателей и работодателей' },
+    {
+      property: 'og:description',
+      content: 'Более 1000 работодателей уже нашли своих сотрудников. Видео-интервью вместо бесконечных собеседований — быстро, честно, бесплатно для кандидатов.'
+    },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://how-much.firetechno.ru/' },
+    { property: 'og:image', content: 'https://how-much.firetechno.ru/logo.png' },
+    { property: 'og:image:width', content: '1200' },
+    { property: 'og:image:height', content: '630' },
+    { property: 'og:locale', content: 'ru_RU' },
+
+    // Twitter Card
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'Сколько — сервис, соединяющий соискателей и работодателей' },
+    {
+      name: 'twitter:description',
+      content: 'Более 1000 работодателей уже нашли своих сотрудников. Видео-интервью вместо бесконечных собеседований — быстро, честно, бесплатно для кандидатов.'
+    },
+    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/logo.png' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://how-much.firetechno.ru/' }
+  ]
+})
+
 import { useTheme } from "vuetify";
 
 const theme = useTheme();

@@ -1,4 +1,38 @@
 <script setup lang="ts">
+useHead({
+  title: 'Найдите сотрудников без собеседований — смотрите видеовизитки кандидатов',
+  meta: [
+    {
+      name: 'description',
+      content: 'Для предпринимателей, которые устали искать кадры. Видео-кандидаты в продажах, маркетинге и ассистировании — ежедневно пополняются.'
+    },
+    // Open Graph (Facebook, WhatsApp, Telegram и др.)
+    { property: 'og:title', content: 'Найдите сотрудников без собеседований — смотрите видеовизитки кандидатов' },
+    {
+      property: 'og:description',
+      content: 'Для предпринимателей, которые устали искать кадры. Видео-кандидаты в продажах, маркетинге и ассистировании — ежедневно пополняются.'
+    },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://how-much.firetechno.ru/landing/employer' },
+    { property: 'og:image', content: 'https://how-much.firetechno.ru/logo.png' },
+    { property: 'og:image:width', content: '1200' },
+    { property: 'og:image:height', content: '630' },
+    { property: 'og:locale', content: 'ru_RU' },
+
+    // Twitter Card
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: 'Найдите сотрудников без собеседований — смотрите видеовизитки кандидатов' },
+    {
+      name: 'twitter:description',
+      content: 'Для предпринимателей, которые устали искать кадры. Видео-кандидаты в продажах, маркетинге и ассистировании — ежедневно пополняются.'
+    },
+    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/logo.png' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://how-much.firetechno.ru/landing/employer' }
+  ]
+})
+
 const steps = [
   {
     number: 1,

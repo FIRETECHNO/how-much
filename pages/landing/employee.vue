@@ -1,4 +1,29 @@
 <script setup lang="ts">
+useHead({
+  title: 'Найди работу быстрее — одно видео-интервью и ты в подборке',
+  meta: [
+    {
+      name: 'description',
+      content: 'Запишись на короткое интервью с рекрутером. Работодатели сразу видят тебя в деле — без бесконечных собесов.'
+    },
+    // Open Graph (Facebook, WhatsApp, Telegram и др.)
+    { property: 'og:title', content: 'Найди работу быстрее — одно видео-интервью и ты в подборке' },
+    {
+      property: 'og:description',
+      content: 'Запишись на короткое интервью с рекрутером. Работодатели сразу видят тебя в деле — без бесконечных собесов.'
+    },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://how-much.firetechno.ru/landing/employee' }, // ← замените на ваш реальный URL
+    { property: 'og:image', content: 'https://how-much.firetechno.ru/logo.png' }, // ← обязательно HTTPS
+    { property: 'og:image:width', content: '1200' },
+    { property: 'og:image:height', content: '630' },
+    { property: 'og:locale', content: 'ru_RU' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://how-much.firetechno.ru/landing/employee' }
+  ]
+})
+
 const steps = [
   {
     number: 1,
