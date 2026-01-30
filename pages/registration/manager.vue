@@ -157,22 +157,19 @@ const submit = handleSubmit(async values => {
 
       <v-card v-else class="d-flex flex-column justify-center align-center text-center w-100 pa-6 rounded-lg"
         variant="tonal">
-        <v-icon size="x-large" color="error">mdi-link-off</v-icon>
-        <h2 class="text-h6 font-weight-bold mt-4">Ссылка недействительна</h2>
+        <!-- <v-icon size="x-large" color="error">mdi-link-off</v-icon> -->
+        <h2 class="text-h6 font-weight-bold mt-4">Чтобы получить доступ, свяжитесь с администратором платформы</h2>
         <p class="mt-2 text-body-2">
           Ссылка для регистрации устарела, уже использована или не существует.
         </p>
-        <p class="mt-4 text-body-1 font-weight-medium">
-          Пожалуйста, свяжитесь с администратором платформы:
-        </p>
         <div class="mt-2 d-flex flex-column align-center">
-          <a href="mailto:admin@kolko.ru" class="text-subtitle-1 text-primary text-decoration-none">
+          <a :href="`mailto:${companyEmail}`" class="text-subtitle-1 text-primary text-decoration-none">
             {{ companyEmail }}
           </a>
           <!-- Можно добавить Telegram, телефон и т.д. -->
-          <!-- <a href="https://t.me/kolko_admin" target="_blank" class="mt-1 text-caption text-primary text-decoration-none">
-        Написать в Telegram
-      </a> -->
+          <a href="https://t.me/HR_GLAZYRINAinfo" target="_blank" class="mt-3 text-primary text-decoration-none">
+            Написать в Telegram
+          </a>
         </div>
       </v-card>
 

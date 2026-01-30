@@ -1,5 +1,5 @@
 export function useAppConst() {
-  let companyEmail = "glazyrina@anna-glazyrina.ru"
+  let companyEmail = "ya.bezm2012@yandex.ru"
   const jobItems = [
     'Продажи',
     'Маркетинг',

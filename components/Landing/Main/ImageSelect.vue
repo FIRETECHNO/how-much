@@ -22,11 +22,11 @@ function getLinkByImageName(name: string) {
   return a[2].split('-')[0]
 }
 const getHeight = (index: number) =>
-  index === activeIndex.value ? '65vh' : '50vh'
+  index === activeIndex.value ? '55vh' : '45vh'
 </script>
 
 <template>
-  <v-row>
+  <v-row style="min-height: 60vh;">
     <v-col v-for="(img, index) in images" :key="img" class="d-flex align-center justify-center">
       <v-img :src="img" cover :style="{
         height: getHeight(index),
