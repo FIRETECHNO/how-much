@@ -14,7 +14,7 @@ useHead({
     },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://how-much.firetechno.ru/' },
-    { property: 'og:image', content: 'https://how-much.firetechno.ru/logo.png' },
+    { property: 'og:image', content: 'https://how-much.firetechno.ru/og/main.png' },
     { property: 'og:image:width', content: '1200' },
     { property: 'og:image:height', content: '630' },
     { property: 'og:locale', content: 'ru_RU' },
@@ -26,7 +26,7 @@ useHead({
       name: 'twitter:description',
       content: 'Более 1000 работодателей уже нашли своих сотрудников. Видео-интервью вместо бесконечных собеседований — быстро, честно, бесплатно для кандидатов.'
     },
-    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/logo.png' },
+    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/og/main.png' },
   ],
   link: [
     { rel: 'canonical', href: 'https://how-much.firetechno.ru/' }

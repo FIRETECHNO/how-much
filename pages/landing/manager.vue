@@ -14,9 +14,9 @@ useHead({
     },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://how-much.firetechno.ru/landing/manager' },
-    { property: 'og:image', content: 'https://how-much.firetechno.ru/logo.png' },
-    { property: 'og:image:width', content: '1200' },
-    { property: 'og:image:height', content: '630' },
+    { property: 'og:image', content: 'https://how-much.firetechno.ru/og/manager.png' },
+    { property: 'og:image:width', content: '1853' },
+    { property: 'og:image:height', content: '957' },
     { property: 'og:locale', content: 'ru_RU' },
 
     // Twitter Card
@@ -26,7 +26,7 @@ useHead({
       name: 'twitter:description',
       content: 'Регистрируйтесь, берите заявки соискателей, проводите интервью и получайте деньги после активации анкеты.'
     },
-    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/logo.png' },
+    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/og/manager.png' },
   ],
   link: [
     { rel: 'canonical', href: 'https://how-much.firetechno.ru/landing/manager' }

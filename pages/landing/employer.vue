@@ -14,9 +14,9 @@ useHead({
     },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://how-much.firetechno.ru/landing/employer' },
-    { property: 'og:image', content: 'https://how-much.firetechno.ru/logo.png' },
-    { property: 'og:image:width', content: '1200' },
-    { property: 'og:image:height', content: '630' },
+    { property: 'og:image', content: 'https://how-much.firetechno.ru/og/employer.png' },
+    { property: 'og:image:width', content: '1667' },
+    { property: 'og:image:height', content: '875' },
     { property: 'og:locale', content: 'ru_RU' },
 
     // Twitter Card
@@ -26,7 +26,7 @@ useHead({
       name: 'twitter:description',
       content: 'Для предпринимателей, которые устали искать кадры. Видео-кандидаты в продажах, маркетинге и ассистировании — ежедневно пополняются.'
     },
-    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/logo.png' },
+    { name: 'twitter:image', content: 'https://how-much.firetechno.ru/og/employer.png' },
   ],
   link: [
     { rel: 'canonical', href: 'https://how-much.firetechno.ru/landing/employer' }
