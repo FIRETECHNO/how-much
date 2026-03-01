@@ -39,8 +39,6 @@ async function logOut() {
           <v-btn icon @click="toggleTheme" title="Переключить тему">
             <v-icon icon="mdi-theme-light-dark"></v-icon>
           </v-btn>
-
-          <v-btn to="/me" prepend-icon="mdi-account-outline">Личный кабинет</v-btn>
         </div>
       </v-container>
     </v-app-bar>

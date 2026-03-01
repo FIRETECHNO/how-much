@@ -11,26 +11,7 @@ export const useSubscription = () => {
   const isEmployerSubscriptionActive = useState<boolean>(() => false)
 
   async function checkSubscriptionStatus() {
-    currentSubscription.value = {
-      _id: "67a1b2c3d4e5f67890123456",
-      user: "67a1b2c3d4e5f67890123450",
-      status: "AUTHORIZED",
-      payment: {
-        TerminalKey: "TinkoffTestTerminal",
-        Amount: 150000, // 1500 рублей в копейках
-        Success: true,
-        Status: "CONFIRMED",
-        Token: "abc123def456ghi789jkl012",
-        PaymentId: "pay_9876543210",
-        PaymentURL: "https://securepay.tinkoff.ru/form/pay_9876543210"
-      },
-      createdAt: "2026-02-04T10:00:00.000Z",
-      updatedAt: "2026-02-04T10:05:00.000Z"
-    };
-    subscriptionStatus.value = "active"
-    isEmployerSubscriptionActive.value = true;
-    return true;
-    /*let { isEmployer } = useRole();
+    let { isEmployer } = useRole();
 
     if (isEmployerSubscriptionActive.value) return true;
 
@@ -67,7 +48,7 @@ export const useSubscription = () => {
         }
       }
     }
-    return false;*/
+    return false;
   }
 
   async function manuallyCheckSubscriptionStatus() {

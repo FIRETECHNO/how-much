@@ -26,11 +26,11 @@ const socialLinks: any[] = [
           </NuxtLink>
         </v-col>
 
-        <v-col cols="12" md="8" class="text-right d-flex flex-column">
-          <NuxtLink v-for="link in footerLinks" :key="link.text" :href="link.to" target="_blank" class="ma-2"
-            rounded="lg">
+        <v-col cols="12" md="8" class="text-right">
+          <v-btn v-for="link in footerLinks" :key="link.text" :href="link.to" target="_blank" variant="text"
+            class="mx-1" rounded="lg">
             {{ link.text }}
-          </NuxtLink>
+          </v-btn>
         </v-col>
       </v-row>
 
