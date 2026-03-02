@@ -9,7 +9,7 @@ const userStore = useAuth();
 const employerStore = useEmployer()
 const employerJobsStore = useEmployerJobs()
 
-let { reservedJob } = employerJobsStore;
+let { currentReservation } = employerJobsStore;
 
 let excludedRoutes = ["/employer/reservation-feedback-chat", "/employer/job-form-history"]
 let isReservedFormAlertOpen = ref(true)
@@ -17,7 +17,7 @@ let reservedFormAlertVisible = computed(() => {
   if (excludedRoutes.indexOf(route.path) != -1) {
     return false;
   }
-  if (isReservedFormAlertOpen.value && reservedJob.value?._id) return true
+  if (isReservedFormAlertOpen.value && currentReservation.value?._id) return true
   return false;
 })
 
@@ -153,7 +153,7 @@ const navigationItems: any[] = [
       @click="router.push('/employer/reservation-feedback-chat')">
       <v-list-item class="py-2" prepend-icon="mdi-account-star-outline" subtitle="Забронированная анкета">
         <template #title>
-          {{ reservedJob.jobFormId.job }} / {{ reservedJob.jobFormId?.fullName }}
+          {{ currentReservation.jobFormId.job }} / {{ currentReservation.jobFormId?.fullName }}
         </template>
         <template #append>
           <v-btn icon="mdi-close" variant="text" size="small" @click.stop="isReservedFormAlertOpen = false"
@@ -166,11 +166,12 @@ const navigationItems: any[] = [
       <v-card-text class="d-flex justify-space-between align-center">
         <div class="d-flex align-center">
           <v-icon size="small">mdi-phone-outline</v-icon>
-          <span class="ml-2 font-weight-medium">{{ reservedJob.jobFormId?.phone }}</span>
+          <span class="ml-2 font-weight-medium">{{ currentReservation.jobFormId?.phone }}</span>
         </div>
 
         <ClientOnly>
-          <CountdownTimer :start-date="reservedJob.startDate" @finished="employerJobsStore.removeCurrentReservedJob">
+          <CountdownTimer :start-date="currentReservation.startDate"
+            @finished="employerJobsStore.removeCurrentReservedJob">
             <template v-slot="{ hours, minutes, seconds }">
               <span style="line-height: 1;" class="d-flex align-center">
                 <v-icon size="small" class="mr-1">mdi-clock-outline</v-icon>

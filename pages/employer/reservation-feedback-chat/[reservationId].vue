@@ -6,7 +6,7 @@ definePageMeta({
 });
 
 const jobsStore = useEmployerJobs();
-const { reservedJob } = jobsStore
+const { currentReservation } = jobsStore
 
 const loading = ref(true);
 const feedbackSubmitted = ref(false);
@@ -26,7 +26,7 @@ const systemMessage = {
 };
 
 async function submitFeedback(feedback: string) {
-  if (!reservedJob.value) return;
+  if (!currentReservation.value) return;
 
   isSubmitting.value = true;
   try {
@@ -41,10 +41,10 @@ async function submitFeedback(feedback: string) {
 
 onMounted(async () => {
   try {
-    if (!reservedJob.value) {
+    if (!currentReservation.value) {
       await jobsStore.getReservedJob();
     }
-    if (reservedJob.value?.employerFeedback) {
+    if (currentReservation.value?.employerFeedback) {
       feedbackSubmitted.value = true;
     }
   } catch (error) {
@@ -64,7 +64,7 @@ onMounted(async () => {
           <p class="mt-4">Загрузка данных о резервации...</p>
         </div>
 
-        <v-sheet v-else-if="!reservedJob" rounded="lg"
+        <v-sheet v-else-if="!currentReservation" rounded="lg"
           class="d-flex align-center justify-center text-center pa-10 fill-height">
           <div>
             <v-icon icon="mdi-calendar-search" size="64" color="grey"></v-icon>
@@ -79,7 +79,7 @@ onMounted(async () => {
         </v-sheet>
 
         <div v-else class="d-flex flex-column">
-          <EmployerJobReservationCard :job-reservation="reservedJob" />
+          <EmployerJobReservationCard :job-reservation="currentReservation" />
 
           <v-sheet class="d-flex flex-column fill-height rounded-lg elevation-0 mt-5" border style="min-height: 50vh">
             <v-divider></v-divider>

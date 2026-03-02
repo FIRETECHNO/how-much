@@ -13,20 +13,20 @@ const jobsStore = useEmployerJobs()
 const rolesStore = useRole();
 
 let { isEmployer, isAdmin } = rolesStore;
-let { reservedJob } = jobsStore
+let { currentReservation } = jobsStore
 
 const job = ref<JobForm | null>(null)
 const loading = ref(true)
 const error = ref(false)
 
 const showReserveJobButton = computed<boolean>(() => {
-  if (!reservedJob.value?._id && (isEmployer.value || isAdmin.value)) return true;
+  if (!currentReservation.value?._id && (isEmployer.value || isAdmin.value)) return true;
 
   return false;
 })
 
 const showRemainingReserveTime = computed<boolean>(() => {
-  if (reservedJob.value?.jobFormId == job.value?._id)
+  if (currentReservation.value?.jobFormId == job.value?._id)
     return true;
   return false;
 })
@@ -128,7 +128,7 @@ await fetchJobDetails()
       <v-col cols="12" lg="4">
         <v-card variant="outlined">
           <v-card-title>Кандидат</v-card-title>
-          <v-list v-if="reservedJob?.jobFormId == job._id">
+          <v-list v-if="currentReservation?.jobFormId == job._id">
             <v-list-item :title="job.fullName" subtitle="ФИО" prepend-icon="mdi-account-outline"></v-list-item>
 
             <v-list-item :title="job.email || 'не указан'" subtitle="Email"
@@ -155,7 +155,7 @@ await fetchJobDetails()
               собеседование</v-btn>
             <v-btn v-if="showRemainingReserveTime" block size="large" variant="flat">
               <ClientOnly>
-                <CountdownTimer :start-date="reservedJob?.startDate">
+                <CountdownTimer :start-date="currentReservation?.startDate">
                   <template v-slot="{ hours, minutes, seconds }">
                     <span>Осталось {{ hours }}:{{ minutes }}:{{ seconds }}</span>
                   </template>
