@@ -201,5 +201,15 @@ export default {
         requestId,
       }
     })
+  },
+  async finishJobFormReservation(jobReservationId: string, jobFormId: string): Promise<JobFormFillRequestDB> {
+    const { $apiFetch } = useNuxtApp()
+    return $apiFetch<JobFormFillRequestDB>("/job-form/finish-reservation", {
+      method: "POST",
+      body: {
+        jobFormId,
+        jobReservationId
+      }
+    })
   }
 }

@@ -5,10 +5,10 @@ import type { JobReservation, JobReservationDbWithEmployer } from "~/types/job-r
 
 export function useEmployerJobs() {
   let jobs = useState<JobForm[]>(() => [])
-  let reservedJob = useState<JobReservation | any>()
+  let currentReservation = useState<JobReservation | any>()
 
   function removeCurrentReservedJob() {
-    reservedJob.value = null
+    currentReservation.value = null
   }
 
   async function getById(jobId: string): Promise<JobForm | null> {
@@ -63,7 +63,7 @@ export function useEmployerJobs() {
       let date = new Date()
       let res = await JobApi.reserveJob(jobId, date.toISOString(), authStore.user._id, employeeId)
 
-      reservedJob.value = res;
+      currentReservation.value = res;
     } catch (error: any) {
       console.log("error useEmployerJobs/reserveJob", error);
     }
@@ -72,7 +72,7 @@ export function useEmployerJobs() {
   async function getReservedJob() {
     const authStore = useAuth()
 
-    if (reservedJob.value?._id)
+    if (currentReservation.value?._id)
       return
 
     if (!authStore.user?._id) {
@@ -82,7 +82,7 @@ export function useEmployerJobs() {
     try {
       let res = await JobApi.getReservedJob(authStore.user._id)
       if (res != null)
-        reservedJob.value = res;
+        currentReservation.value = res;
     } catch (error: any) {
       console.log("error useEmployerJobs/getReservedJob", error);
     }
@@ -92,16 +92,27 @@ export function useEmployerJobs() {
     try {
       let res = await JobApi.submitJobReservationFeedback(reservationId, feedback, "employer")
 
-      reservedJob.value = res
+      currentReservation.value = res
     } catch (error) {
       console.log("error useEmployerJobs/submitJobReservationFeedback", error);
     }
   }
 
+  async function finishJobFormReservation(reservationId: string, jobFormId: string) {
+    try {
+      let res = await JobApi.finishJobFormReservation(reservationId, jobFormId)
+
+      currentReservation.value = null
+    } catch (error) {
+      console.log("error useEmployerJobs/finishJobFormReservation", error);
+    }
+  }
+
   return {
     // vars
-    jobs, reservedJob,
+    jobs, currentReservation,
     // functions
-    getById, getAll, reserveJob, getReservedJob, removeCurrentReservedJob, submitJobReservationFeedback
+    getById, getAll, reserveJob, getReservedJob, removeCurrentReservedJob, submitJobReservationFeedback,
+    finishJobFormReservation
   }
 }

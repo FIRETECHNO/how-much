@@ -7,7 +7,7 @@ definePageMeta({
 });
 
 const jobsStore = useEmployerJobs();
-const { reservedJob } = jobsStore
+const { currentReservation } = jobsStore
 
 const loading = ref(true);
 const feedbackSubmitted = ref(false);
@@ -23,12 +23,12 @@ const systemMessage = {
 };
 
 let userMessage = computed(() => {
-  if (reservedJob.value.employerFeedback?.textContent)
+  if (currentReservation.value.employerFeedback?.textContent)
     return {
       _id: "user-01",
       isIncoming: false,
       author: "Вы",
-      text: reservedJob.value.employerFeedback?.textContent
+      text: currentReservation.value.employerFeedback?.textContent
     }
   return {
     _id: "user-01",
@@ -39,11 +39,11 @@ let userMessage = computed(() => {
 })
 
 async function submitFeedback(feedback: string) {
-  if (!reservedJob.value) return;
+  if (!currentReservation.value) return;
 
   isSubmitting.value = true;
   try {
-    await jobsStore.submitJobReservationFeedback(reservedJob.value._id, feedback);
+    await jobsStore.submitJobReservationFeedback(currentReservation.value._id, feedback);
     feedbackSubmitted.value = true;
   } catch (error) {
     console.error("Ошибка при отправке отзыва:", error);
@@ -51,13 +51,22 @@ async function submitFeedback(feedback: string) {
     isSubmitting.value = false;
   }
 }
+let finishReservationDialog = ref(false)
+
+async function finishReservation() {
+  try {
+    await jobsStore.finishJobFormReservation(currentReservation.value._id, currentReservation.value.jobFormId)
+  } catch (error) {
+
+  }
+}
 
 onMounted(async () => {
   try {
-    if (!reservedJob.value) {
+    if (!currentReservation.value) {
       await jobsStore.getReservedJob();
     }
-    if (reservedJob.value?.employerFeedback?.textContent) {
+    if (currentReservation.value?.employerFeedback?.textContent) {
       feedbackSubmitted.value = true;
     }
   } catch (error) {
@@ -77,7 +86,7 @@ onMounted(async () => {
           <p class="mt-4">Загрузка данных о бронировании...</p>
         </div>
 
-        <v-sheet v-else-if="!reservedJob" rounded="lg"
+        <v-sheet v-else-if="!currentReservation" rounded="lg"
           class="d-flex align-center justify-center text-center pa-10 fill-height">
           <div>
             <v-icon icon="mdi-calendar-search" size="64" color="grey"></v-icon>
@@ -92,7 +101,7 @@ onMounted(async () => {
         </v-sheet>
 
         <div v-else class="d-flex flex-column">
-          <EmployerJobReservationCard :job-reservation="reservedJob" />
+          <EmployerJobReservationCard :job-reservation="currentReservation" />
 
           <v-sheet class="d-flex flex-column fill-height rounded-lg elevation-0 my-5" border style="min-height: 50vh">
             <v-divider></v-divider>
@@ -104,16 +113,32 @@ onMounted(async () => {
               <ChatMessageOutgoing v-if="feedbackSubmitted" :message="userMessage" />
             </v-card-text>
             <v-card-actions class="pa-4">
-              <div v-if="!feedbackSubmitted" class="d-flex flex-wrap ga-2 w-100 justify-end">
+              <div class="d-flex flex-wrap ga-2 w-100 justify-end">
                 <v-btn v-for="option in jobReservationFeedbackOptions" :key="option" @click="submitFeedback(option)"
                   :loading="isSubmitting" color="blue-lighten-1" variant="tonal" size="x-large">
                   {{ option }}
                 </v-btn>
               </div>
-              <v-alert v-else type="success" text="Спасибо за ваш отзыв!" variant="tonal" density="compact"
-                class="w-100"></v-alert>
+              <!-- <v-alert v-else type="success" text="Спасибо за ваш отзыв!" variant="tonal" density="compact"
+                class="w-100"></v-alert> -->
             </v-card-actions>
           </v-sheet>
+
+          <v-btn variant="tonal" size="large" class="mt-2 mb-8"
+            @click="finishReservationDialog = !finishReservationDialog">завершить
+            бронирование</v-btn>
+
+          <v-dialog max-width="500" v-model="finishReservationDialog">
+            <v-card>
+              <v-card-title>
+                Завершить бронирование?
+              </v-card-title>
+              <v-card-actions class="d-flex justify-center mt-6">
+                <v-btn variant="tonal" size="large" color="error">Нет</v-btn>
+                <v-btn variant="tonal" size="large" @click.stop="finishReservation">Да, завершить</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
       </v-col>
     </v-row>

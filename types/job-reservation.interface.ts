@@ -23,6 +23,7 @@ export interface JobReservationDb {
   employeeId: string
   employerFeedback: Feedback
   employeeFeedback: Feedback
+  isPreFinished: boolean
 }
 
 interface EmployerForJobReservation {
@@ -38,4 +39,5 @@ export interface JobReservationDbWithEmployer {
   employeeId: string
   employerFeedback: Feedback
   employeeFeedback: Feedback
+  isPreFinished: boolean
 }

@@ -8,6 +8,8 @@ let { RESERVATION_DURATION } = useEmployer()
 let employerJobsStore = useEmployerJobs()
 
 const showRemainingReserveTime = computed<boolean>(() => {
+  if (props.jobReservation.isPreFinished) return false;
+
   let fDate = new Date(jobReservation.value.startDate)
   let currentDate = new Date()
   const delta = currentDate.getTime() - fDate.getTime()
