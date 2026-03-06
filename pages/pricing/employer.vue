@@ -5,10 +5,14 @@ definePageMeta({
 
 const subscriptionStore = useSubscription()
 const loading = ref(false);
+let paymentUrl = ref('')
 
 async function handlePayment() {
   loading.value = true;
-  subscriptionStore.createEmployerPaymentOrder(100)
+  let res = await subscriptionStore.createEmployerPaymentOrder(100)
+  if (res)
+    paymentUrl.value = res
+
   loading.value = false;
 }
 </script>
@@ -30,7 +34,7 @@ async function handlePayment() {
       </v-col>
     </v-row>
 
-    <v-row justify="center" class="mt-8">
+    <v-row justify="center" class="mt-8" v-if="!paymentUrl">
       <v-col cols="12" md="8" lg="6">
         <v-card border elevation="4" rounded="lg">
           <v-card-title class="text-center text-h5 font-weight-medium pa-4">
@@ -67,6 +71,13 @@ async function handlePayment() {
             </v-btn>
           </v-card-actions>
         </v-card>
+      </v-col>
+    </v-row>
+    <v-row v-else class="d-flex justify-center">
+      <v-col cols="12" md="8" lg="6">
+        <iframe :src="paymentUrl" width="100%" height="600" frameborder="0" allow="payment"
+          sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation"
+          referrerpolicy="no-referrer"></iframe>
       </v-col>
     </v-row>
   </v-container>

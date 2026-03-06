@@ -71,10 +71,11 @@ export const useSubscription = () => {
     }
   }
 
-  async function createEmployerPaymentOrder(amount: number) {
+  async function createEmployerPaymentOrder(amount: number): Promise<string | undefined> {
     let { user } = useAuth()
     if (!user?._id || !user.email) {
-      return toast.error("Пользователь не авторизован!")
+      toast.error("Пользователь не авторизован!")
+      return
     }
 
     let res = await PaymentApi.createEmployerPaymentOrder(user._id, amount, user.email)
@@ -84,11 +85,12 @@ export const useSubscription = () => {
     } else {
       console.log("createEmployerPaymentOrder---- ");
       console.log(JSON.stringify(res));
-      if (res.payment?.PaymentURL && process.client) {
-        window.open(res.payment?.PaymentURL, "_blank");
-      }
+      // if (res.payment?.PaymentURL && process.client) {
+      //   window.open(res.payment?.PaymentURL, "_blank");
+      // }
       console.log(res);
       console.log("createEmployerPaymentOrder---- ");
+      return res.payment?.PaymentURL
     }
   }
 
