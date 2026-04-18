@@ -41,6 +41,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 			VBtn: {
 				style: 'text-transform: none; letter-spacing: normal',
 			},
+			VCard: {
+				rounded: 'xl',
+			},
 			global: {
 				ripple: false,
 			},

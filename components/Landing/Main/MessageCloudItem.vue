@@ -41,31 +41,49 @@ onUnmounted(() => {
   <div class="message-container">
     <v-avatar color="surface-variant">{{ currentMessage.name[0] }}</v-avatar>
     <Transition name="fade" mode="out-in">
-      <div :key="currentMessage.text" class="d-flex flex-column">
+      <div :key="currentMessage.text" class="message-body d-flex flex-column">
         <span class="text-caption ml-2">
           {{ currentMessage.name }}
         </span>
-        <v-chip variant="tonal" class="message-chip">
+        <div class="message-bubble">
           {{ currentMessage.text }}
-        </v-chip>
+        </div>
       </div>
     </Transition>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .message-container {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
-  /* Гарантируем, что высота не изменится */
   min-height: 32px;
-  /* высота v-chip по умолчанию */
+  max-width: 100%;
+  min-width: 0;
 }
 
-/* Важно: чип должен быть inline-block, чтобы занимать свою ширину */
-.message-chip {
+.message-body {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.message-bubble {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 2px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   transition: opacity 0.4s ease;
+  background-color: rgba(var(--v-theme-on-surface), 0.08);
+  color: rgb(var(--v-theme-on-surface));
 }
 
 .fade-enter-active,

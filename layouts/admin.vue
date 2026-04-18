@@ -67,10 +67,10 @@ async function logOut() {
 
 <template>
   <v-app>
-    <v-app-bar flat border>
-      <v-container class="d-flex align-center">
-        <NuxtLink to="/" class="text-decoration-none text-high-emphasis">
-          <v-img src="/logo.svg" height="60" width="60"></v-img>
+    <v-app-bar flat border class="app-bar--shell">
+      <v-container class="d-flex align-center py-2 py-sm-3">
+        <NuxtLink to="/" class="text-decoration-none text-high-emphasis d-flex align-center">
+          <v-img src="/logo.svg" class="app-bar-logo" height="52" width="52" max-width="60" max-height="60" />
         </NuxtLink>
 
         <v-spacer></v-spacer>
@@ -138,25 +138,27 @@ async function logOut() {
       </template>
     </v-navigation-drawer>
 
-    <v-main>
-      <v-container v-if="route.path.startsWith('/admin')">
-        <v-row>
-          <v-col cols="12">
-            <v-breadcrumbs :items="breadcrumbs" class="text-h4 font-weight-bold pa-0">
-              <template v-slot:divider>
-                <v-icon icon="mdi-chevron-right"></v-icon>
-              </template>
-              <template v-slot:item="{ item }">
-                <v-breadcrumbs-item :to="item.to" :disabled="item.disabled" class="text-decoration-none">
-                  {{ item.title }}
-                </v-breadcrumbs-item>
-              </template>
-            </v-breadcrumbs>
-          </v-col>
-        </v-row>
-      </v-container>
+    <v-main class="app-main app-main--tinted">
+      <div class="app-page-shell">
+        <v-container v-if="route.path.startsWith('/admin')" class="pt-4 pb-0">
+          <v-row>
+            <v-col cols="12">
+              <v-breadcrumbs :items="breadcrumbs" class="text-h5 text-sm-h4 font-weight-bold pa-0 breadcrumbs-wrap">
+                <template v-slot:divider>
+                  <v-icon icon="mdi-chevron-right"></v-icon>
+                </template>
+                <template v-slot:item="{ item }">
+                  <v-breadcrumbs-item :to="item.to" :disabled="item.disabled" class="text-decoration-none">
+                    {{ item.title }}
+                  </v-breadcrumbs-item>
+                </template>
+              </v-breadcrumbs>
+            </v-col>
+          </v-row>
+        </v-container>
 
-      <slot />
+        <slot />
+      </div>
     </v-main>
 
     <v-dialog v-model="dialog" max-width="400">

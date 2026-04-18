@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { JobForm } from '~/types/job-form.interface'
+import { coerceBoolean } from '~/utils/coerceBoolean'
+
 const employeeJobFormsStore = useEmployeeJobForms();
 
 const { myJobForms, BOOST_DELTA } = employeeJobFormsStore
@@ -9,6 +12,30 @@ let props = defineProps<{
 
 const form = computed(() => {
   return myJobForms.value.find(f => f._id === props.form) || null
+})
+
+/** Прошла модерацию платформы (то же поле, что в админке «Одобрена»). */
+const moderationPassed = computed(() => coerceBoolean(form.value?.isApproved))
+
+/**
+ * Видна работодателям в /jobs. Если бэкенд шлёт isEmployerVisible — он главный;
+ * иначе остаётся прежняя семантика через isApproved (как в старой версии).
+ */
+const shownToEmployers = computed(() => {
+  const f = form.value as (JobForm & { isEmployerVisible?: boolean }) | null
+  if (!f) return false
+  if (f.isEmployerVisible !== undefined && f.isEmployerVisible !== null)
+    return coerceBoolean(f.isEmployerVisible)
+  return coerceBoolean(f.isApproved)
+})
+
+/** Показать кнопку «Опубликовать»: раньше — пока isApproved ложно; с отдельным флагом — после модерации, но ещё скрыта. */
+const canPublish = computed(() => {
+  const f = form.value
+  if (!f) return false
+  if (f.isEmployerVisible !== undefined && f.isEmployerVisible !== null)
+    return moderationPassed.value && !shownToEmployers.value
+  return !moderationPassed.value
 })
 
 const dialog = ref(false); // Управляет видимостью диалога
@@ -66,24 +93,58 @@ async function boostJobForm(jobFormId: string) {
 <template>
   <v-card border flat class="d-flex flex-column status-card" height="100%" v-if="form">
 
-    <div class="status-chip-container">
-      <div v-if="form.isApproved">
-        <v-chip variant="elevated" prepend-icon="mdi-clock-outline" class="mr-2" v-if="form.lastRaiseDate">
+    <div class="status-chip-container d-flex flex-column align-end ga-1">
+      <v-chip
+        v-if="!moderationPassed"
+        variant="elevated"
+        color="warning"
+        size="small"
+        prepend-icon="mdi-clock-outline"
+      >
+        На модерации
+      </v-chip>
+      <template v-else>
+        <v-chip
+          v-if="shownToEmployers && form.lastRaiseDate"
+          variant="elevated"
+          prepend-icon="mdi-clock-outline"
+          class="mr-0"
+          size="small"
+        >
           <b>
             <ClientOnly>
               <BigCountdownTimer :start-date="form.lastRaiseDate" :duration="BOOST_DELTA" />
             </ClientOnly>
           </b>
         </v-chip>
-        <v-chip color="success" variant="elevated">
-          <b>
-            Опубликована
-          </b>
+        <v-chip
+          v-if="shownToEmployers && form.isEmployerVisible !== undefined && form.isEmployerVisible !== null"
+          color="success"
+          variant="elevated"
+          size="small"
+          prepend-icon="mdi-eye-outline"
+        >
+          <b>В каталоге</b>
         </v-chip>
-      </div>
-      <v-chip v-else variant="elevated" color="error">
-        Не опубликована
-      </v-chip>
+        <v-chip
+          v-else-if="shownToEmployers"
+          color="info"
+          variant="elevated"
+          size="small"
+          prepend-icon="mdi-shield-check-outline"
+        >
+          <b>Одобрена модератором</b>
+        </v-chip>
+        <v-chip
+          v-else
+          variant="elevated"
+          color="surface-variant"
+          size="small"
+          prepend-icon="mdi-eye-off-outline"
+        >
+          Скрыта из каталога
+        </v-chip>
+      </template>
     </div>
 
     <v-responsive v-if="form.video && form.video?.src" :aspect-ratio="16 / 9">
@@ -108,16 +169,27 @@ async function boostJobForm(jobFormId: string) {
       </v-list>
 
       <v-card-actions class="pa-3">
-        <v-btn v-if="form?.isApproved" variant="tonal" size="small" append-icon="mdi-eye-off"
-          @click="disapproveJobForm(form._id)">
+        <v-btn
+          v-if="shownToEmployers"
+          variant="tonal"
+          size="small"
+          append-icon="mdi-eye-off"
+          @click="disapproveJobForm(form._id)"
+        >
           Скрыть
         </v-btn>
         <v-spacer></v-spacer>
-        <v-btn v-if="!form?.isApproved" color="success" variant="tonal" size="large" append-icon="mdi-check"
-          @click="openApproveDialog(form._id)">
+        <v-btn
+          v-if="canPublish"
+          color="success"
+          variant="tonal"
+          size="large"
+          append-icon="mdi-check"
+          @click="openApproveDialog(form._id)"
+        >
           Опубликовать анкету
         </v-btn>
-        <template v-if="form?.isApproved && isMustBeBoosted(form._id)">
+        <template v-if="shownToEmployers && isMustBeBoosted(form._id)">
           <v-btn class="pulsing-button" color="success" variant="tonal" size="large"
             append-icon="mdi-arrow-up-bold-box-outline" @click="boostJobForm(form._id)">
             Поднять в поиске

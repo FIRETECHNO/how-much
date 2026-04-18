@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useField, useForm } from 'vee-validate';
-import AuthApi from '~/api/AuthApi'; // Предполагается, что у вас есть API-файл для Auth
+import AuthApi from '~/api/AuthApi';
 
 definePageMeta({
-  layout: 'default', // Укажите ваш layout
+  layout: 'default',
 });
 
 const router = useRouter();
@@ -12,7 +12,6 @@ const auth = useAuth();
 const { companyEmail } = useAppConst()
 
 const inviteToken = ref(route.query.invite_token as string | null);
-// Состояние токена: 'validating' (проверяется), 'valid' (валидный), 'invalid' (невалидный)
 const tokenState = ref<'validating' | 'valid' | 'invalid'>('validating');
 
 onMounted(async () => {
@@ -22,14 +21,11 @@ onMounted(async () => {
   }
   try {
     const responseEmail = await AuthApi.validateInviteToken(inviteToken.value);
-    console.log(responseEmail);
-
     tokenState.value = responseEmail.email ? 'valid' : 'invalid';
-
     email.value.value = responseEmail.email
   } catch (error) {
     console.error("Ошибка при проверке инвайт-токена:", error);
-    tokenState.value = 'invalid'; // Любая ошибка делает токен невалидным
+    tokenState.value = 'invalid';
   }
 });
 
@@ -101,78 +97,231 @@ const submit = handleSubmit(async values => {
 </script>
 
 <template>
-  <v-container>
-    <BackButton />
+  <div class="manager-reg-page">
+    <v-container class="py-6 py-md-10">
+      <BackButton />
 
-    <v-col cols="12" xs="12" sm="10" md="7" lg="5" class="mt-4 ma-auto">
+      <v-row justify="center">
+        <v-col cols="12" sm="11" md="8" lg="5" xl="4">
 
-      <div v-if="tokenState === 'validating'" class="text-center pa-10">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-        <p class="mt-4 text-h6 text-medium-emphasis">Проверка приглашения...</p>
-      </div>
+          <div v-if="tokenState === 'validating'" class="manager-reg-card manager-reg-card--muted text-center pa-10 pa-md-12">
+            <v-progress-circular indeterminate size="56" width="4" color="manager" />
+            <p class="mt-6 text-h6 font-weight-medium">Проверка приглашения…</p>
+            <p class="mt-2 text-body-2 text-medium-emphasis">
+              Подождите, мы подтверждаем вашу ссылку
+            </p>
+          </div>
 
-      <v-card v-else-if="tokenState === 'valid'" class="d-flex flex-column 
-        justify-center align-center 
-        text-center w-100 pa-6 rounded-lg">
-        <div class="text-h6 font-weight-bold">
-          Регистрация рекрутера
-        </div>
+          <v-card
+            v-else-if="tokenState === 'valid'"
+            class="manager-reg-card"
+            elevation="6"
+            rounded="xl"
+          >
+            <div class="manager-reg-banner text-center pa-6 pa-sm-8">
+              <v-avatar size="64" class="manager-reg-banner__avatar mb-4">
+                <v-icon icon="mdi-account-tie" size="36" color="manager" />
+              </v-avatar>
+              <h1 class="text-h5 text-sm-h4 font-weight-bold">
+                Регистрация рекрутера
+              </h1>
+              <p class="manager-reg-banner__subtitle text-body-2 mt-3 mb-0">
+                Создайте аккаунт и присоединяйтесь к платформе «Сколько»
+              </p>
+            </div>
 
-        <v-form class="mt-6 w-100" @submit.prevent="submit">
-          <v-text-field label="ФИО" placeholder="Иван Иванов Иванович" v-model="name.value.value"
-            :error-messages="name.errors.value" variant="outlined" density="compact" class="w-100" />
+            <v-divider />
 
-          <v-text-field label="Email" type="email" placeholder="ivan@mail.com" v-model="email.value.value"
-            :error-messages="email.errors.value" variant="outlined" density="compact" class="w-100 mt-1" />
+            <v-card-text class="pa-6 pa-sm-8">
+              <v-form @submit.prevent="submit">
+                <v-text-field
+                  v-model="name.value.value"
+                  label="ФИО"
+                  placeholder="Иван Иванов Иванович"
+                  :error-messages="name.errors.value"
+                  variant="outlined"
+                  color="manager"
+                  density="comfortable"
+                  class="mb-1"
+                  hide-details="auto"
+                />
 
-          <v-text-field label="Пароль" v-model="password.value.value"
-            :append-inner-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append-inner="show_password = !show_password" :type="show_password ? 'text' : 'password'"
-            :error-messages="password.errorMessage.value" variant="outlined" density="compact" class="w-100 mt-1" />
+                <v-text-field
+                  v-model="email.value.value"
+                  label="Email"
+                  type="email"
+                  placeholder="ivan@mail.com"
+                  :error-messages="email.errors.value"
+                  variant="outlined"
+                  color="manager"
+                  density="comfortable"
+                  class="mb-1"
+                  hide-details="auto"
+                />
 
-          <v-checkbox v-model="agreement.value.value" :error-messages="agreement.errorMessage.value" class="mt-2">
-            <template v-slot:label>
-              <div class="text-caption text-left">
-                Я согласен с
-                <a href="/documents/Пользовательское_соглашение_для_внешних_рекрутеров.pdf" target="_blank" @click.stop
-                  class="text-primary">
-                  политикой конфиденциальности и обработки персональных данных
-                </a>
+                <v-text-field
+                  v-model="password.value.value"
+                  label="Пароль"
+                  :type="show_password ? 'text' : 'password'"
+                  :append-inner-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
+                  :error-messages="password.errorMessage.value"
+                  variant="outlined"
+                  color="manager"
+                  density="comfortable"
+                  hide-details="auto"
+                  @click:append-inner="show_password = !show_password"
+                />
+
+                <v-checkbox
+                  v-model="agreement.value.value"
+                  color="manager"
+                  :error-messages="agreement.errorMessage.value"
+                  hide-details="auto"
+                  class="mt-4 align-start"
+                >
+                  <template #label>
+                    <div class="text-body-2 text-left text-wrap">
+                      Я согласен с
+                      <a
+                        href="/documents/Пользовательское_соглашение_для_внешних_рекрутеров.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="manager-reg-link text-decoration-none"
+                        @click.stop
+                      >
+                        политикой конфиденциальности и обработки персональных данных
+                      </a>
+                    </div>
+                  </template>
+                </v-checkbox>
+
+                <v-btn
+                  type="submit"
+                  block
+                  size="large"
+                  rounded="xl"
+                  color="manager"
+                  :disabled="!meta.valid"
+                  :loading="loading"
+                  class="manager-reg-submit mt-6"
+                >
+                  Зарегистрироваться
+                </v-btn>
+              </v-form>
+            </v-card-text>
+
+            <v-card-actions class="px-6 px-sm-8 pb-8 pt-0 flex-column align-stretch">
+              <p class="text-body-2 text-center text-medium-emphasis mb-0">
+                Уже есть аккаунт?
+                <NuxtLink to="/login" class="manager-reg-link font-weight-bold text-decoration-none">
+                  Войти
+                </NuxtLink>
+              </p>
+            </v-card-actions>
+          </v-card>
+
+          <v-card
+            v-else
+            class="manager-reg-card"
+            elevation="6"
+            rounded="xl"
+          >
+            <v-card-text class="pa-8 pa-sm-10 text-center">
+              <v-avatar size="72" color="manager" variant="tonal" class="mb-4">
+                <v-icon icon="mdi-email-fast-outline" size="40" color="manager" />
+              </v-avatar>
+              <h2 class="text-h5 font-weight-bold">
+                Напишите нам
+              </h2>
+              <p class="mt-3 text-body-1 text-medium-emphasis mx-auto" style="max-width: 26rem;">
+                Подскажем, как получить доступ к платформе в роли рекрутера, и поможем с регистрацией.
+              </p>
+              <div class="mt-8 d-flex flex-column ga-3 mx-auto" style="max-width: 22rem;">
+                <v-btn
+                  :href="`mailto:${companyEmail}`"
+                  prepend-icon="mdi-email-outline"
+                  block
+                  rounded="xl"
+                  size="large"
+                  color="manager"
+                  variant="flat"
+                >
+                  {{ companyEmail }}
+                </v-btn>
+                <v-btn
+                  href="https://t.me/HR_GLAZYRINAinfo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  prepend-icon="mdi-send"
+                  block
+                  rounded="xl"
+                  size="large"
+                  color="manager"
+                  variant="outlined"
+                >
+                  Написать в Telegram
+                </v-btn>
               </div>
-            </template>
-          </v-checkbox>
+              <p class="mt-8 text-caption text-medium-emphasis mb-0 mx-auto" style="max-width: 28rem;">
+                Регистрация только по приглашению. Если что-то пошло не так со ссылкой — просто напишите, пришлём новую.
+              </p>
+            </v-card-text>
+          </v-card>
 
-          <v-btn type="submit" :disabled="!meta.valid" :loading="loading" color="accent" class="mt-2" block>
-            Зарегистрироваться
-          </v-btn>
-        </v-form>
-
-        <div class="text-subtitle-1 w-100 mt-4">
-          Уже есть аккаунт?
-          <NuxtLink to="/login" class="font-weight-bold text-primary text-decoration-none">
-            Войти
-          </NuxtLink>
-        </div>
-      </v-card>
-
-      <v-card v-else class="d-flex flex-column justify-center align-center text-center w-100 pa-6 rounded-lg"
-        variant="tonal">
-        <!-- <v-icon size="x-large" color="error">mdi-link-off</v-icon> -->
-        <h2 class="text-h6 font-weight-bold mt-4">Чтобы получить доступ, свяжитесь с администратором платформы</h2>
-        <p class="mt-2 text-body-2">
-          Ссылка для регистрации устарела, уже использована или не существует.
-        </p>
-        <div class="mt-2 d-flex flex-column align-center">
-          <a :href="`mailto:${companyEmail}`" class="text-subtitle-1 text-primary text-decoration-none">
-            {{ companyEmail }}
-          </a>
-          <!-- Можно добавить Telegram, телефон и т.д. -->
-          <a href="https://t.me/HR_GLAZYRINAinfo" target="_blank" class="mt-3 text-primary text-decoration-none">
-            Написать в Telegram
-          </a>
-        </div>
-      </v-card>
-
-    </v-col>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
+
+<style scoped lang="scss">
+.manager-reg-page {
+  min-height: 100%;
+}
+
+.manager-reg-card {
+  border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  overflow: hidden;
+
+  &--muted {
+    background: rgb(var(--v-theme-surface));
+    border-radius: 24px;
+    border: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  }
+}
+
+.manager-reg-banner {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--v-theme-manager)) 0%,
+    rgba(var(--v-theme-manager), 0.88) 55%,
+    rgba(var(--v-theme-manager), 0.75) 100%
+  );
+  color: white;
+
+  &__avatar {
+    background: white !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &__subtitle {
+    opacity: 0.95;
+    max-width: 22rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.manager-reg-link {
+  color: rgb(var(--v-theme-manager));
+
+  &:hover {
+    text-decoration: underline !important;
+  }
+}
+
+.manager-reg-submit {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+</style>

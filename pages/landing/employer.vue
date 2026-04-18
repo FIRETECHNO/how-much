@@ -140,9 +140,9 @@ const advantages = [
       </v-col>
     </v-row>
     <!-- small screen -->
-    <v-row class="d-flex d-md-none">
-      <v-col cols="12" v-for="value in advantages">
-        {{ value }}
+    <v-row class="d-flex justify-center d-md-none">
+      <v-col cols="12" md="10" lg="9">
+        <LandingAdvantagesMobile :items="advantages" color="employer" />
       </v-col>
     </v-row>
 

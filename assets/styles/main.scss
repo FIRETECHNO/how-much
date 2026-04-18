@@ -3,14 +3,79 @@
 @tailwind utilities;
 
 * {
-  font-family: Montserrat !important;
-}
-a {
-  margin: 2px;
-  text-decoration: underline;
+  font-family: Montserrat, system-ui, sans-serif !important;
 }
 
 img {
   -webkit-user-drag: none !important;
   user-select: none !important;
+}
+
+/* ——— Общая оболочка страниц (все layout’ы) ——— */
+
+.v-main.app-main {
+  background: rgb(var(--v-theme-surface));
+  min-height: calc(100dvh - var(--v-layout-top, 64px));
+}
+
+.app-main--tinted {
+  background: linear-gradient(
+    180deg,
+    rgba(var(--v-theme-primary), 0.06) 0,
+    rgb(var(--v-theme-surface)) 120px
+  );
+}
+
+.app-page-shell {
+  min-height: calc(100dvh - var(--v-layout-top, 64px) - 48px);
+  padding-bottom: 2rem;
+}
+
+.v-app-bar.app-bar--shell {
+  backdrop-filter: saturate(1.2) blur(10px);
+  background: rgba(var(--v-theme-surface), 0.88) !important;
+  border-bottom: thin solid rgba(var(--v-theme-on-surface), 0.08) !important;
+}
+
+.app-bar-logo {
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .app-bar-logo.v-img {
+    max-height: 44px !important;
+    max-width: 44px !important;
+  }
+}
+
+/* Текстовые ссылки в контенте (не кнопки Vuetify) */
+.app-page-shell {
+  p a,
+  .text-body-1 a,
+  .text-body-2 a,
+  .text-caption a {
+    color: rgb(var(--v-theme-primary));
+    text-decoration: none;
+    border-bottom: 1px solid rgba(var(--v-theme-primary), 0.35);
+    transition: border-color 0.15s ease, color 0.15s ease;
+
+    &:hover {
+      border-bottom-color: rgb(var(--v-theme-primary));
+    }
+  }
+}
+
+/* Хлебные крошки в кабинетах */
+.breadcrumbs-wrap {
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.breadcrumbs-wrap .v-breadcrumbs__divider {
+  flex-shrink: 0;
+}
+
+.breadcrumbs-wrap .v-breadcrumbs-item {
+  white-space: normal;
+  word-break: break-word;
 }

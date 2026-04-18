@@ -49,10 +49,10 @@ const navigationItems: any[] = [
 
 <template>
   <v-app>
-    <v-app-bar flat border>
-      <v-container class="d-flex align-center">
-        <NuxtLink to="/" class="text-decoration-none text-high-emphasis">
-          <v-img src="/logo.svg" height="60" width="60"></v-img>
+    <v-app-bar flat border class="app-bar--shell">
+      <v-container class="d-flex align-center py-2 py-sm-3">
+        <NuxtLink to="/" class="text-decoration-none text-high-emphasis d-flex align-center">
+          <v-img src="/logo.svg" class="app-bar-logo" height="52" width="52" max-width="60" max-height="60" />
         </NuxtLink>
 
         <v-spacer></v-spacer>
@@ -134,8 +134,10 @@ const navigationItems: any[] = [
       </template>
     </v-navigation-drawer>
 
-    <v-main>
-      <slot />
+    <v-main class="app-main app-main--tinted">
+      <div class="app-page-shell">
+        <slot />
+      </div>
     </v-main>
 
     <v-dialog v-model="dialog" max-width="400">

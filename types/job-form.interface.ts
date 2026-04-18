@@ -10,7 +10,13 @@ export interface JobForm {
   telegram: string
   email: string
   employeeId: string | null,
+  /** Модерация платформы (админка / рекрутер: «Одобрена» / «На модерации») */
   isApproved: boolean
+  /**
+   * Видна работодателям в каталоге /jobs (согласие соискателя после /job-form/approve).
+   * Если бэкенд отдаёт отдельно — используем его; иначе UI может опираться на isApproved.
+   */
+  isEmployerVisible?: boolean
   lastReservationDate: string
   lastRaiseDate: string
   salaryFrom: number | null,

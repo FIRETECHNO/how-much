@@ -2,6 +2,41 @@ import { toast } from "vue3-toastify";
 import JobApi from "~/api/JobApi"
 import type { JobForm } from "~/types/job-form.interface";
 import type { JobReservationDbWithEmployer, JobReservation } from "~/types/job-reservation.interface";
+import { coerceBoolean } from "~/utils/coerceBoolean";
+
+function pickEmployerVisible(raw: Record<string, unknown>): boolean | undefined {
+  const keys = [
+    'isEmployerVisible',
+    'is_employer_visible',
+    'visibleToEmployers',
+    'visible_in_employer_catalog',
+    'isListedForEmployers',
+    'is_listed_for_employers',
+    'publishedToEmployers',
+    'published_to_employers',
+    'employeePublished',
+    'employee_published',
+  ] as const
+  for (const k of keys) {
+    if (raw[k] !== undefined && raw[k] !== null)
+      return coerceBoolean(raw[k])
+  }
+  if (raw.hiddenFromEmployers !== undefined && raw.hiddenFromEmployers !== null)
+    return !coerceBoolean(raw.hiddenFromEmployers)
+  if (raw.isHiddenFromEmployers !== undefined && raw.isHiddenFromEmployers !== null)
+    return !coerceBoolean(raw.isHiddenFromEmployers)
+  return undefined
+}
+
+function normalizeJobForm(raw: unknown): JobForm {
+  const r = raw as Record<string, unknown>
+  const isApproved = coerceBoolean(r.isApproved)
+  const employerVisible = pickEmployerVisible(r)
+  const next = { ...r, isApproved } as JobForm
+  if (employerVisible !== undefined)
+    next.isEmployerVisible = employerVisible
+  return next
+}
 
 export function useEmployeeJobForms() {
   let myJobForms = useState<JobForm[]>("myJobForms", () => [])
@@ -25,7 +60,7 @@ export function useEmployeeJobForms() {
     }
     try {
       let res = await JobApi.getMyJobForms(authStore.user._id)
-      myJobForms.value = res.reverse();
+      myJobForms.value = res.reverse().map((item) => normalizeJobForm(item))
     } catch (error: any) {
       console.log("error useEmployeeJobForms/getMyJobForms", error);
     }
@@ -33,38 +68,22 @@ export function useEmployeeJobForms() {
 
   async function approveJobForm(jobFormId: string) {
     try {
-      let res = await JobApi.approveJobForm(jobFormId)
-      if (res._id) {
-        for (let i = 0; i < myJobForms.value.length; i++) {
-          if (myJobForms.value[i]._id == res._id) {
-            myJobForms.value[i].isApproved = true;
-            toast("Теперь анкета в общем доступе!", {
-              type: "success"
-            })
-            break;
-          }
-        }
-      }
-
+      await JobApi.approveJobForm(jobFormId)
+      toast("Теперь анкета в общем доступе!", {
+        type: "success"
+      })
+      await getMyJobForms()
     } catch (error: any) {
       console.log("error approveJobForm/getMyJobForms", error);
     }
   }
   async function disapproveJobForm(jobFormId: string) {
     try {
-      let res = await JobApi.disapproveJobForm(jobFormId)
-      if (res._id) {
-        for (let i = 0; i < myJobForms.value.length; i++) {
-          if (myJobForms.value[i]._id == res._id) {
-            myJobForms.value[i].isApproved = false;
-            toast("Анкета спрятана!", {
-              type: "warning"
-            })
-            break;
-          }
-        }
-      }
-
+      await JobApi.disapproveJobForm(jobFormId)
+      toast("Анкета спрятана!", {
+        type: "warning"
+      })
+      await getMyJobForms()
     } catch (error: any) {
       console.log("error approveJobForm/getMyJobForms", error);
     }
@@ -74,20 +93,11 @@ export function useEmployeeJobForms() {
     try {
       let date = new Date()
 
-      let res = await JobApi.boostJobForm(jobFormId, date.toISOString())
-      if (res._id) {
-        for (let i = 0; i < myJobForms.value.length; i++) {
-          if (myJobForms.value[i]._id == res._id) {
-            myJobForms.value[i].isApproved = true;
-            myJobForms.value[i].lastRaiseDate = res.lastRaiseDate;
-            toast("Анкета поднята в поиске!", {
-              type: "success"
-            })
-            break;
-          }
-        }
-      }
-
+      await JobApi.boostJobForm(jobFormId, date.toISOString())
+      toast("Анкета поднята в поиске!", {
+        type: "success"
+      })
+      await getMyJobForms()
     } catch (error: any) {
       console.log("error approveJobForm/getMyJobForms", error);
     }
