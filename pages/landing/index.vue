@@ -100,7 +100,7 @@ let mapPath = computed(() => theme.global.current.value.dark ? "/roadmap-whitete
       </v-col>
     </v-row>
 
-    <v-row class="d-flex justify-center">
+    <!-- <v-row class="d-flex justify-center">
       <v-col cols="12" class="d-flex justify-center" style="margin: clamp(3.75rem, 1.7614rem + 5.6818vw, 6.25rem) 0;  ">
         <h1 class=" text-xl sm:text-2xl md:text-3xl font-bold leading-tight">
           ПОЧЕМУ МЫ?
@@ -143,7 +143,7 @@ let mapPath = computed(() => theme.global.current.value.dark ? "/roadmap-whitete
           </v-col>
         </v-row>
       </v-col>
-    </v-row>
+    </v-row> -->
 
     <v-row class="d-flex justify-center" style="margin-bottom: 100px;">
       <v-col cols="12" class="d-flex justify-center"
