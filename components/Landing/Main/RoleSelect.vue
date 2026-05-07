@@ -6,11 +6,9 @@ const router = useRouter()
   <v-row>
     <v-col cols="12" md="4">
       <div class="employer card" @click="router.push('/registration/employer')">
-        <h1
-          lang="ru"
-          class="role-card-heading sm:text-lg md:text-xl lg:text-2xl font-semibold text-white leading-tight break-words"
-        >
-          Я — работодатель
+        <h1 lang="ru"
+          class="role-card-heading sm:text-lg md:text-xl lg:text-2xl font-semibold text-white leading-tight break-words">
+          Ищу сотрудника
         </h1>
         <div class="w-100 d-flex justify-end">
           <img src="/icons/employer.png" alt="">
@@ -19,11 +17,9 @@ const router = useRouter()
     </v-col>
     <v-col cols="12" md="4">
       <div class="employee card" @click="router.push('/registration/employee')">
-        <h1
-          lang="ru"
-          class="role-card-heading sm:text-lg md:text-xl lg:text-2xl font-semibold text-white leading-tight break-words"
-        >
-          Я — сотрудник
+        <h1 lang="ru"
+          class="role-card-heading sm:text-lg md:text-xl lg:text-2xl font-semibold text-white leading-tight break-words">
+          Ищу работу
         </h1>
         <div class="w-100 d-flex justify-end">
           <img src="/icons/employee.png" alt="">
@@ -32,10 +28,8 @@ const router = useRouter()
     </v-col>
     <v-col cols="12" md="4">
       <div class="manager card" @click="router.push('/registration/manager')">
-        <h1
-          lang="ru"
-          class="role-card-heading sm:text-lg md:text-xl lg:text-2xl font-semibold text-white leading-tight break-words"
-        >
+        <h1 lang="ru"
+          class="role-card-heading sm:text-lg md:text-xl lg:text-2xl font-semibold text-white leading-tight break-words">
           Я — рекрутер
         </h1>
         <div class="w-100 d-flex justify-end">

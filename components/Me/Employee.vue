@@ -167,6 +167,23 @@ onMounted(async () => {
         </v-card-text>
       </v-card>
     </v-col>
+
+    <v-col cols="12" md="6" v-else>
+      <v-card flat border class="mb-6">
+        <v-card-title class="text-h6 font-weight-bold">
+          Заявка на интервью
+        </v-card-title>
+        <v-card-subtitle class="break-word">
+          Заполните заявку, чтобы выбрать удобное время видео-интервью и продолжить отбор.
+        </v-card-subtitle>
+        <v-divider class="mt-2"></v-divider>
+        <v-card-text>
+          <v-btn to="/employee/send-job-form-fill-request" color="primary" variant="flat" size="large">
+            Заполнить заявку
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-col>
   </v-row>
 </template>
 
